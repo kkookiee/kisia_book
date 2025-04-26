@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장바구니 - 온라인 서점</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>온라인 서점</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">홈</a></li>
+                <li><a href="books.html">도서 목록</a></li>
+                <li><a href="cart.html">장바구니</a></li>
+                <li><a href="login.html">로그인</a></li>
+                <li><a href="signup.html">회원가입</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="cart-container">
+            <h2>장바구니</h2>
+            
+            <div class="cart-items">
+                <!-- 장바구니 아이템 예시 -->
+                <div class="cart-item">
+                    <img src="images/book1.jpg" alt="도서 이미지">
+                    <div class="item-details">
+                        <h4>도서 제목 1</h4>
+                        <p>저자명</p>
+                        <p class="price">15,000원</p>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn">-</button>
+                        <input type="number" value="1" min="1" max="99">
+                        <button class="quantity-btn">+</button>
+                    </div>
+                    <button class="remove-btn">삭제</button>
+                </div>
+
+                <div class="cart-item">
+                    <img src="images/book2.jpg" alt="도서 이미지">
+                    <div class="item-details">
+                        <h4>도서 제목 2</h4>
+                        <p>저자명</p>
+                        <p class="price">20,000원</p>
+                    </div>
+                    <div class="quantity-control">
+                        <button class="quantity-btn">-</button>
+                        <input type="number" value="1" min="1" max="99">
+                        <button class="quantity-btn">+</button>
+                    </div>
+                    <button class="remove-btn">삭제</button>
+                </div>
+            </div>
+
+            <div class="cart-summary">
+                <div class="summary-item">
+                    <span>상품 금액</span>
+                    <span>35,000원</span>
+                </div>
+                <div class="summary-item">
+                    <span>배송비</span>
+                    <span>3,000원</span>
+                </div>
+                <div class="summary-item total">
+                    <span>총 결제 금액</span>
+                    <span>38,000원</span>
+                </div>
+                <button class="checkout-btn">주문하기</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 온라인 서점. All rights reserved.</p>
+    </footer>
+</body>
+</html> 
