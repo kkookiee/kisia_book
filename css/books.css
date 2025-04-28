@@ -35,24 +35,32 @@
 }
 
 .search-box input {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    width: 200px;
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #2376c7;
+    border-radius: 4px 0 0 4px;
+    font-size: 1.15rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-box input:focus {
+    border-color: #0056a3;
 }
 
 .search-box button {
-    padding: 0.5rem 1rem;
-    background-color: #3498db;
-    color: white;
+    padding: 0.7rem 1.2rem;
+    background: #2376c7;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 0 4px 4px 0;
+    font-size: 1.1rem;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .search-box button:hover {
-    background-color: #2980b9;
+    background: #0056a3;
 }
 
 .book-grid {
