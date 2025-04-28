@@ -6,39 +6,11 @@
     <title>온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
-    <header>
-        <div class="top-header">
-            <div class="container">
-                <div class="top-links">
-                    <a href="#">로그인</a>
-                    <a href="#">회원가입</a>
-                    <a href="#">고객센터</a>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <div class="container">
-                <div class="nav-wrapper">
-                    <div class="logo">
-                        <h1>온라인 서점</h1>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="검색어를 입력하세요">
-                        <button type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="index.html">홈</a></li>
-                        <li><a href="books.html">도서</a></li>
-                        <li><a href="cart.html">장바구니</a></li>
-                        <li><a href="mypage.html">마이페이지</a></li>
-                        <li><a href="board.html">게시판/리뷰</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- 헤더 컨테이너 -->
+    <div id="header-container"></div>
 
     <main>
         <div class="container">
@@ -48,117 +20,148 @@
                 </div>
             </section>
 
-            <section class="category-section">
-                <h2>카테고리</h2>
-                <div class="category-grid">
-                    <a href="#" class="category-item">
-                        <i class="fas fa-book"></i>
-                        <span>소설</span>
-                    </a>
-                    <a href="#" class="category-item">
-                        <i class="fas fa-pen"></i>
-                        <span>에세이</span>
-                    </a>
-                    <a href="#" class="category-item">
-                        <i class="fas fa-lightbulb"></i>
-                        <span>자기계발</span>
-                    </a>
-                    <a href="#" class="category-item">
-                        <i class="fas fa-history"></i>
-                        <span>역사</span>
-                    </a>
-                </div>
-            </section>
-
             <section class="best-sellers">
-                <h2>베스트셀러</h2>
+                <div class="section-header">
+                    <h2>베스트셀러</h2>
+                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
+                </div>
                 <div class="book-grid">
                     <div class="book-card">
                         <div class="book-rank">1</div>
                         <img src="images/book1.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 1</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">15,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.5</span>
-                            <span class="reviews">(120)</span>
+                            <h4>도서 제목 1</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">15,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.5</span>
+                                <span class="reviews">(120)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                     <div class="book-card">
                         <div class="book-rank">2</div>
                         <img src="images/book2.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 2</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">20,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.3</span>
-                            <span class="reviews">(98)</span>
+                            <h4>도서 제목 2</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">20,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.3</span>
+                                <span class="reviews">(98)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                     <div class="book-card">
                         <div class="book-rank">3</div>
                         <img src="images/book3.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 3</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">18,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.7</span>
-                            <span class="reviews">(156)</span>
+                            <h4>도서 제목 3</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">18,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.7</span>
+                                <span class="reviews">(156)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                 </div>
             </section>
 
             <section class="new-releases">
-                <h2>신간 도서</h2>
+                <div class="section-header">
+                    <h2>신간 도서</h2>
+                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
+                </div>
                 <div class="book-grid">
                     <div class="book-card">
                         <div class="new-badge">NEW</div>
                         <img src="images/book4.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 4</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">22,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.2</span>
-                            <span class="reviews">(45)</span>
+                            <h4>도서 제목 4</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">22,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.2</span>
+                                <span class="reviews">(45)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                     <div class="book-card">
                         <div class="new-badge">NEW</div>
                         <img src="images/book5.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 5</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">19,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.4</span>
-                            <span class="reviews">(67)</span>
+                            <h4>도서 제목 5</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">19,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.4</span>
+                                <span class="reviews">(67)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                     <div class="book-card">
                         <div class="new-badge">NEW</div>
                         <img src="images/book6.jpg" alt="도서 이미지" class="book-image">
-                        <h4>도서 제목 6</h4>
-                        <p class="author">저자명</p>
-                        <p class="price">25,000원</p>
                         <div class="book-info">
-                            <span class="rating">★ 4.6</span>
-                            <span class="reviews">(89)</span>
+                            <h4>도서 제목 6</h4>
+                            <p class="author">저자명</p>
+                            <p class="price">25,000원</p>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.6</span>
+                                <span class="reviews">(89)</span>
+                            </div>
                         </div>
-                        <button>장바구니 담기</button>
+                        <button class="cart-btn">장바구니 담기</button>
                     </div>
                 </div>
             </section>
 
-            <section class="quick-links" style="margin:2rem 0;">
-                <div class="container" style="display:flex;gap:2rem;justify-content:center;">
-                    <a href="cart.html" class="quick-link-btn" style="background:#2376c7;color:#fff;padding:1.2rem 2.5rem;border-radius:8px;font-size:1.2rem;text-decoration:none;font-weight:bold;transition:background 0.2s;">장바구니</a>
-                    <a href="mypage.html" class="quick-link-btn" style="background:#2376c7;color:#fff;padding:1.2rem 2.5rem;border-radius:8px;font-size:1.2rem;text-decoration:none;font-weight:bold;transition:background 0.2s;">마이페이지</a>
-                    <a href="board.html" class="quick-link-btn" style="background:#2376c7;color:#fff;padding:1.2rem 2.5rem;border-radius:8px;font-size:1.2rem;text-decoration:none;font-weight:bold;transition:background 0.2s;">게시판/리뷰</a>
+            <section class="special-offers">
+                <div class="section-header">
+                    <h2>특가 도서</h2>
+                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="book-grid">
+                    <div class="book-card">
+                        <div class="discount-badge">30%</div>
+                        <img src="images/book7.jpg" alt="도서 이미지" class="book-image">
+                        <div class="book-info">
+                            <h4>도서 제목 7</h4>
+                            <p class="author">저자명</p>
+                            <div class="price-info">
+                                <p class="original-price">30,000원</p>
+                                <p class="discount-price">21,000원</p>
+                            </div>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.8</span>
+                                <span class="reviews">(89)</span>
+                            </div>
+                        </div>
+                        <button class="cart-btn">장바구니 담기</button>
+                    </div>
+                    <div class="book-card">
+                        <div class="discount-badge">20%</div>
+                        <img src="images/book8.jpg" alt="도서 이미지" class="book-image">
+                        <div class="book-info">
+                            <h4>도서 제목 8</h4>
+                            <p class="author">저자명</p>
+                            <div class="price-info">
+                                <p class="original-price">25,000원</p>
+                                <p class="discount-price">20,000원</p>
+                            </div>
+                            <div class="rating-info">
+                                <span class="rating">★ 4.7</span>
+                                <span class="reviews">(78)</span>
+                            </div>
+                        </div>
+                        <button class="cart-btn">장바구니 담기</button>
+                    </div>
                 </div>
             </section>
         </div>

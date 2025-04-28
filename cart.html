@@ -7,80 +7,52 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
-    <header>
-        <div class="top-header">
-            <div class="container">
-                <div class="top-links">
-                    <a href="#">로그인</a>
-                    <a href="#">회원가입</a>
-                    <a href="#">고객센터</a>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <div class="container">
-                <div class="nav-wrapper">
-                    <div class="logo">
-                        <h1>온라인 서점</h1>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="검색어를 입력하세요">
-                        <button type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="index.html">홈</a></li>
-                        <li><a href="books.html">도서</a></li>
-                        <li><a href="cart.html">장바구니</a></li>
-                        <li><a href="mypage.html">마이페이지</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- 헤더 컨테이너 -->
+    <div id="header-container"></div>
 
     <main>
         <div class="cart-container">
-            <h2>장바구니</h2>
-            
-            <div class="cart-items">
-                <!-- 장바구니 아이템 예시 -->
-                <div class="cart-item">
-                    <img src="images/book1.jpg" alt="도서 이미지">
-                    <div class="item-details">
-                        <h4>도서 제목 1</h4>
-                        <p>저자명</p>
-                        <p class="price">15,000원</p>
-                    </div>
-                    <div class="quantity-control">
-                        <button class="quantity-btn">-</button>
-                        <input type="number" value="1" min="1" max="99">
-                        <button class="quantity-btn">+</button>
-                    </div>
-                    <button class="remove-btn">삭제</button>
-                </div>
-
-                <div class="cart-item">
-                    <img src="images/book2.jpg" alt="도서 이미지">
-                    <div class="item-details">
-                        <h4>도서 제목 2</h4>
-                        <p>저자명</p>
-                        <p class="price">20,000원</p>
-                    </div>
-                    <div class="quantity-control">
-                        <button class="quantity-btn">-</button>
-                        <input type="number" value="1" min="1" max="99">
-                        <button class="quantity-btn">+</button>
-                    </div>
-                    <button class="remove-btn">삭제</button>
-                </div>
-            </div>
-
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th style="width:40%;">상품정보</th>
+                        <th style="width:15%;">수량</th>
+                        <th style="width:15%;">상품금액</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="cart-product-info">
+                            <input type="checkbox" />
+                            <img src="images/book1.jpg" alt="도서 이미지" class="cart-thumb" />
+                            <div class="cart-info-detail">
+                                <span class="cart-tag">소득공제</span>
+                                <span class="cart-title">[도서] 밀크티와 고양이</span>
+                                <div class="cart-meta">
+                                    <span class="cart-price-original">16,800원</span>
+                                    <span class="cart-price-sale">15,120원</span>
+                                    <span class="cart-discount">(10% 할인)</span>
+                                    <span class="cart-point">P 840원</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="cart-qty">
+                            <input type="number" value="1" min="1" max="99" />
+                            <button class="cart-update-btn">변경</button>
+                        </td>
+                        <td class="cart-sum">
+                            <span class="cart-price-sale">15,120원</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div class="cart-summary">
                 <div class="summary-item">
                     <span>상품 금액</span>
-                    <span>35,000원</span>
+                    <span>15,120원</span>
                 </div>
                 <div class="summary-item">
                     <span>배송비</span>
@@ -88,7 +60,7 @@
                 </div>
                 <div class="summary-item total">
                     <span>총 결제 금액</span>
-                    <span>38,000원</span>
+                    <span>18,120원</span>
                 </div>
                 <button class="checkout-btn">주문하기</button>
             </div>

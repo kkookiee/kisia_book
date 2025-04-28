@@ -5,44 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판/리뷰 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/board.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
-    <header>
-        <div class="top-header">
-            <div class="container">
-                <div class="top-links">
-                    <a href="#">로그인</a>
-                    <a href="#">회원가입</a>
-                    <a href="#">고객센터</a>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <div class="container">
-                <div class="nav-wrapper">
-                    <div class="logo">
-                        <h1>온라인 서점</h1>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="검색어를 입력하세요">
-                        <button type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="index.html">홈</a></li>
-                        <li><a href="books.html">도서</a></li>
-                        <li><a href="cart.html">장바구니</a></li>
-                        <li><a href="mypage.html">마이페이지</a></li>
-                        <li><a href="board.html">게시판/리뷰</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- 헤더 컨테이너 -->
+    <div id="header-container"></div>
+
     <main>
-        <div class="container">
-            <h2>게시판/리뷰</h2>
-            <p>도서에 대한 리뷰를 남기거나, 자유롭게 글을 작성할 수 있습니다.</p>
+        <div class="board-container">
+            <div class="board-header">
+                <h2>게시판/리뷰</h2>
+                <div class="board-actions">
+                    <button class="write-btn">글쓰기</button>
+                </div>
+            </div>
+            <div class="board-filters">
+                <select class="filter-select">
+                    <option value="all">전체</option>
+                    <option value="notice">공지사항</option>
+                    <option value="review">도서 리뷰</option>
+                    <option value="qna">Q&A</option>
+                </select>
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="검색어를 입력하세요">
+                    <button class="search-btn">검색</button>
+                </div>
+            </div>
+            <table class="board-table">
+                <thead>
+                    <tr>
+                        <th class="post-number">번호</th>
+                        <th class="post-title">제목</th>
+                        <th class="post-author">작성자</th>
+                        <th class="post-date">작성일</th>
+                        <th class="post-views">조회</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="post-number">1</td>
+                        <td class="post-title">도서 리뷰: 인생에 대한 깊은 통찰</td>
+                        <td class="post-author">홍길동</td>
+                        <td class="post-date">2023-04-01</td>
+                        <td class="post-views">42</td>
+                    </tr>
+                    <tr>
+                        <td class="post-number">2</td>
+                        <td class="post-title">새로운 도서 출간 안내</td>
+                        <td class="post-author">관리자</td>
+                        <td class="post-date">2023-03-30</td>
+                        <td class="post-views">128</td>
+                    </tr>
+                    <tr>
+                        <td class="post-number">3</td>
+                        <td class="post-title">도서 배송 관련 문의</td>
+                        <td class="post-author">김철수</td>
+                        <td class="post-date">2023-03-29</td>
+                        <td class="post-views">56</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">3</a>
+                <a href="#" class="page-link">4</a>
+                <a href="#" class="page-link">5</a>
+            </div>
         </div>
     </main>
     <footer>

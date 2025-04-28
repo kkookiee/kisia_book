@@ -5,50 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mypage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/header.js"></script>
 </head>
 <body>
-    <header>
-        <div class="top-header">
-            <div class="container">
-                <div class="top-links">
-                    <a href="#">로그인</a>
-                    <a href="#">회원가입</a>
-                    <a href="#">고객센터</a>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <div class="container">
-                <div class="nav-wrapper">
-                    <div class="logo">
-                        <h1>온라인 서점</h1>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="검색어를 입력하세요">
-                        <button type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="index.html">홈</a></li>
-                        <li><a href="books.html">도서</a></li>
-                        <li><a href="cart.html">장바구니</a></li>
-                        <li><a href="mypage.html">마이페이지</a></li>
-                        <li><a href="board.html">게시판/리뷰</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <!-- 헤더 컨테이너 -->
+    <div id="header-container"></div>
+
     <main>
-        <div class="container">
-            <h2>마이페이지</h2>
-            <p>내 정보, 주문 내역, 리뷰 등을 확인할 수 있습니다.</p>
+        <div class="mypage-container">
+            <div class="mypage-content">
+                <aside class="sidebar">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="user-name">홍길동</h3>
+                        <p class="user-email">user@example.com</p>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active"><i class="fas fa-shopping-bag"></i> 주문 내역</a></li>
+                        <li><a href="#"><i class="fas fa-heart"></i> 찜 목록</a></li>
+                        <li><a href="#"><i class="fas fa-comment"></i> 내가 쓴 리뷰</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> 회원 정보 수정</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                    </ul>
+                </aside>
+                <div class="main-content">
+                    <div class="content-header">
+                        <h3>주문 내역</h3>
+                    </div>
+                    <div class="order-list">
+                        <div class="order-item">
+                            <div class="order-header">
+                                <span class="order-number">주문번호: 20230401001</span>
+                                <span class="order-date">2023-04-01</span>
+                                <span class="order-status status-completed">배송완료</span>
+                            </div>
+                            <div class="order-details">
+                                <div class="order-product">
+                                    <img src="images/book1.jpg" alt="도서 이미지" class="product-image">
+                                    <div class="product-info">
+                                        <h4 class="product-title">도서 제목 1</h4>
+                                        <p class="product-author">저자명</p>
+                                        <p class="product-price">15,000원</p>
+                                    </div>
+                                </div>
+                                <div class="order-actions">
+                                    <button class="action-btn primary-btn">리뷰 작성</button>
+                                    <button class="action-btn secondary-btn">주문 상세</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-        </div>
-    </footer>
 </body>
 </html> 

@@ -1,0 +1,288 @@
+/* 마이페이지 스타일 */
+.mypage-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.mypage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.mypage-header h2 {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.mypage-content {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+}
+
+.sidebar {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+.user-info {
+    text-align: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-avatar i {
+    font-size: 2rem;
+    color: #ccc;
+}
+
+.user-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.user-email {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.sidebar-menu i {
+    margin-right: 0.8rem;
+    font-size: 1.1rem;
+}
+
+.main-content {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content-header h3 {
+    font-size: 1.4rem;
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+.order-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.order-item {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.order-header {
+    background: #f9f9f9;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-number {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.order-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.order-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.order-details {
+    padding: 1rem;
+}
+
+.order-product {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-product:last-child {
+    border-bottom: none;
+}
+
+.product-image {
+    width: 80px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.product-title {
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin-bottom: 0.5rem;
+}
+
+.product-author {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.order-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.primary-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.primary-btn:hover {
+    background: #0056a3;
+}
+
+.secondary-btn {
+    background: white;
+    color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+}
+
+.secondary-btn:hover {
+    background: #f5f5f5;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .mypage-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .order-product {
+        flex-direction: column;
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .order-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        width: 100%;
+    }
+} 
