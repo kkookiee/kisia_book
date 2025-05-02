@@ -1,3 +1,5 @@
+<?php require_once 'session_start.php'; ?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -5,18 +7,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/banner.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/header.js"></script>
 </head>
 <body>
-    <!-- 헤더 컨테이너 -->
-    <div id="header-container"></div>
-
+    <?php include 'header.php'; ?>   
+ 
     <main>
         <div class="container">
             <section class="main-banner">
                 <div class="banner-slider">
-                    <img src="images/banner1.jpg" alt="메인 배너" class="banner-image">
+                    <div class="banner-container">
+                        <div class="banner-slide active">
+                            <img src="images/banner1.jpg?<?php echo time(); ?>" alt="메인 배너 1" class="banner-image">
+                        </div>
+                        <div class="banner-slide">
+                            <img src="images/banner2.jpg?<?php echo time(); ?>" alt="메인 배너 2" class="banner-image">
+                        </div>
+                        <div class="banner-slide">
+                            <img src="images/banner3.jpg?<?php echo time(); ?>" alt="메인 배너 3" class="banner-image">
+                        </div>
+                    </div>
+                    <div class="banner-controls">
+                        <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                        <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="banner-indicators">
+                        <span class="indicator active"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                    </div>
                 </div>
             </section>
 
@@ -166,35 +187,72 @@
             </section>
         </div>
     </main>
+    <?php include 'footer.php'; ?>   
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.banner-slide');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            let currentSlide = 0;
+            let slideInterval;
 
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>고객센터</h3>
-                    <p>전화: 1234-5678</p>
-                    <p>이메일: support@bookstore.com</p>
-                    <p>운영시간: 평일 9:00 - 18:00</p>
-                </div>
-                <div class="footer-section">
-                    <h3>회사정보</h3>
-                    <p>회사명: 온라인 서점</p>
-                    <p>주소: 서울시 강남구</p>
-                    <p>사업자등록번호: 123-45-67890</p>
-                </div>
-                <div class="footer-section">
-                    <h3>팔로우하기</h3>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+            function showSlide(index) {
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                slides[index].classList.add('active');
+                indicators[index].classList.add('active');
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            function startSlideShow() {
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+
+            function stopSlideShow() {
+                clearInterval(slideInterval);
+            }
+
+            // 이벤트 리스너 추가
+            prevBtn.addEventListener('click', () => {
+                stopSlideShow();
+                prevSlide();
+                startSlideShow();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                stopSlideShow();
+                nextSlide();
+                startSlideShow();
+            });
+
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    stopSlideShow();
+                    showSlide(index);
+                    startSlideShow();
+                });
+            });
+
+            // 마우스가 배너 위에 있을 때 자동 슬라이드 중지
+            const banner = document.querySelector('.banner-slider');
+            banner.addEventListener('mouseenter', stopSlideShow);
+            banner.addEventListener('mouseleave', startSlideShow);
+
+            // 초기 슬라이드 쇼 시작
+            startSlideShow();
+        });
+    </script>
 </body>
 </html> 

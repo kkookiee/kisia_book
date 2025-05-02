@@ -1,0 +1,29 @@
+<footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>고객센터</h3>
+                    <p>전화: 1234-5678</p>
+                    <p>이메일: support@bookstore.com</p>
+                    <p>운영시간: 평일 9:00 - 18:00</p>
+                </div>
+                <div class="footer-section">
+                    <h3>회사정보</h3>
+                    <p>회사명: 온라인 서점</p>
+                    <p>주소: 서울시 강남구</p>
+                    <p>사업자등록번호: 123-45-67890</p>
+                </div>
+                <div class="footer-section">
+                    <h3>팔로우하기</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 온라인 서점. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>

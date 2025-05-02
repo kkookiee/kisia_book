@@ -1,3 +1,20 @@
+<?php 
+require_once 'session_start.php';
+require_once 'connect.php';
+
+// 로그인된 사용자의 정보를 데이터베이스에서 가져옴
+if(!empty($id)) {
+    $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+    $stmt->bind_param("s", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+    
+    $name = $user_data['name'];
+    $email = $user_data['email'];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -5,24 +22,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/mypage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/header.js"></script>
 </head>
 <body>
-    <!-- 헤더 컨테이너 -->
-    <div id="header-container"></div>
-
+    <?php include 'header.php'; ?>
     <main>
         <div class="mypage-container">
+            <?php
+            if(!empty($id)): ?>
             <div class="mypage-content">
                 <aside class="sidebar">
                     <div class="user-info">
                         <div class="user-avatar">
                             <i class="fas fa-user"></i>
                         </div>
-                        <h3 class="user-name">홍길동</h3>
-                        <p class="user-email">user@example.com</p>
+                        <h3 class="user-name"><?= htmlspecialchars($name)?></h3>
+                        <p class="user-email"><?= htmlspecialchars($email)?></p>
                     </div>
                     <ul class="sidebar-menu">
                         <li><a href="#" class="active"><i class="fas fa-shopping-bag"></i> 주문 내역</a></li>
@@ -62,6 +79,12 @@
                 </div>
             </div>
         </div>
+        <?php else: ?>
+            <div class="mypage-content">
+                <script>alert('로그인 후 이용해주세요.');</script>
+                <script>location.href='login.php';</script>
+            </div>
+        <?php endif; ?>
     </main>
 </body>
 </html> 

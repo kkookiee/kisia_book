@@ -9,37 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <div class="top-header">
-            <div class="container">
-                <div class="top-links">
-                    <a href="#">로그인</a>
-                    <a href="#">회원가입</a>
-                    <a href="#">고객센터</a>
-                </div>
-            </div>
-        </div>
-        <nav>
-            <div class="container">
-                <div class="nav-wrapper">
-                    <div class="logo">
-                        <h1>온라인 서점</h1>
-                    </div>
-                    <div class="search-box">
-                        <input type="text" placeholder="검색어를 입력하세요">
-                        <button type="button"><i class="fas fa-search"></i></button>
-                    </div>
-                    <ul class="nav-links">
-                        <li><a href="index.html">홈</a></li>
-                        <li><a href="books.html">도서</a></li>
-                        <li><a href="cart.html">장바구니</a></li>
-                        <li><a href="mypage.html">마이페이지</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
+    <?php include 'header.php'; ?>
     <main>
         <div class="books-container">
             <div class="books-header">

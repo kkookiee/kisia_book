@@ -1,3 +1,19 @@
+<?php 
+require_once 'session_start.php';
+require_once 'connect.php';
+
+// 로그인된 사용자의 정보를 데이터베이스에서 가져옴
+if(!empty($id)) {
+    $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+    $stmt->bind_param("s", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+    
+    $name = $user_data['name'];
+    $email = $user_data['email'];
+}
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -5,14 +21,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장바구니 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="js/header.js"></script>
 </head>
 <body>
-    <!-- 헤더 컨테이너 -->
-    <div id="header-container"></div>
-
+    <?php include 'header.php'; ?>
     <main>
         <div class="cart-container">
             <table class="cart-table">

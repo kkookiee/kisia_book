@@ -1,0 +1,246 @@
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 2px solid #0066cc;
+}
+
+.category-header h1 {
+    color: #0066cc;
+    font-size: 28px;
+    margin: 0;
+}
+
+.category-filter {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #0066cc;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.book-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.book-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.book-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-image img {
+    transform: scale(1.05);
+}
+
+.book-info {
+    padding: 15px;
+}
+
+.book-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.book-info .author {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 5px 0;
+}
+
+.book-info .price {
+    color: #0066cc;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.rating-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.rating {
+    color: #ffc107;
+    font-size: 14px;
+}
+
+.reviews {
+    color: #666;
+    font-size: 12px;
+}
+
+.cart-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cart-btn:hover {
+    background-color: #0052a3;
+}
+
+/* 카테고리별 색상 */
+.novel .category-header {
+    border-bottom-color: #8e44ad;
+}
+
+.novel .category-header h1 {
+    color: #8e44ad;
+}
+
+.novel .price {
+    color: #8e44ad;
+}
+
+.novel .cart-btn {
+    background-color: #8e44ad;
+}
+
+.novel .cart-btn:hover {
+    background-color: #6c3483;
+}
+
+.self-improvement .category-header {
+    border-bottom-color: #27ae60;
+}
+
+.self-improvement .category-header h1 {
+    color: #27ae60;
+}
+
+.self-improvement .price {
+    color: #27ae60;
+}
+
+.self-improvement .cart-btn {
+    background-color: #27ae60;
+}
+
+.self-improvement .cart-btn:hover {
+    background-color: #219a52;
+}
+
+.computer-it .category-header {
+    border-bottom-color: #3498db;
+}
+
+.computer-it .category-header h1 {
+    color: #3498db;
+}
+
+.computer-it .price {
+    color: #3498db;
+}
+
+.computer-it .cart-btn {
+    background-color: #3498db;
+}
+
+.computer-it .cart-btn:hover {
+    background-color: #2980b9;
+}
+
+.economy .category-header {
+    border-bottom-color: #e67e22;
+}
+
+.economy .category-header h1 {
+    color: #e67e22;
+}
+
+.economy .price {
+    color: #e67e22;
+}
+
+.economy .cart-btn {
+    background-color: #e67e22;
+}
+
+.economy .cart-btn:hover {
+    background-color: #d35400;
+}
+
+.science .category-header {
+    border-bottom-color: #e74c3c;
+}
+
+.science .category-header h1 {
+    color: #e74c3c;
+}
+
+.science .price {
+    color: #e74c3c;
+}
+
+.science .cart-btn {
+    background-color: #e74c3c;
+}
+
+.science .cart-btn:hover {
+    background-color: #c0392b;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .category-filter {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+} 
