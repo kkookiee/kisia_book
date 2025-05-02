@@ -38,8 +38,8 @@ if(!empty($id)) {
                         <div class="user-avatar">
                             <i class="fas fa-user"></i>
                         </div>
-                        <h3 class="user-name"><?= htmlspecialchars($name)?></h3>
-                        <p class="user-email"><?= htmlspecialchars($email)?></p>
+                        <h3 class="user-name"><?= ($name)?></h3>
+                        <p class="user-email"><?= ($email)?></p>
                     </div>
                     <ul class="sidebar-menu">
                         <li><a href="#" class="active"><i class="fas fa-shopping-bag"></i> 주문 내역</a></li>
