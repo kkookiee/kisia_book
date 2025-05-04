@@ -3,16 +3,37 @@ require_once 'session_start.php';
 require_once 'connect.php';
 
 // 로그인된 사용자의 정보를 데이터베이스에서 가져옴
-if(!empty($id)) {
+if (!empty($id)) {
     $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
     $stmt->bind_param("s", $id);
     $stmt->execute();
     $result = $stmt->get_result();
     $user_data = $result->fetch_assoc();
-    
+
     $name = $user_data['name'];
-    $email = $user_data['email'];
-}
+    $email = $user_data['email'];}
+
+$sql = "
+    SELECT o.id AS order_id, o.created_at, b.title, b.author, b.price, oi.quantity
+    FROM orders o
+    JOIN order_items oi ON o.id = oi.order_id
+    JOIN books b ON oi.book_id = b.id
+    WHERE o.user_id = ?
+    ORDER BY o.created_at DESC
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$current_order_id = null;
+
+    // 주문별로 묶기
+    while ($row = $result->fetch_assoc()) {
+        $orders[$row['order_id']]['created_at'] = $row['created_at'];
+        $orders[$row['order_id']]['items'][] = $row;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -50,41 +71,41 @@ if(!empty($id)) {
                     </ul>
                 </aside>
                 <div class="main-content">
-                    <div class="content-header">
-                        <h3>주문 내역</h3>
-                    </div>
-                    <div class="order-list">
-                        <div class="order-item">
-                            <div class="order-header">
-                                <span class="order-number">주문번호: 20230401001</span>
-                                <span class="order-date">2023-04-01</span>
-                                <span class="order-status status-completed">배송완료</span>
-                            </div>
-                            <div class="order-details">
-                                <div class="order-product">
-                                    <img src="images/book1.jpg" alt="도서 이미지" class="product-image">
-                                    <div class="product-info">
-                                        <h4 class="product-title">도서 제목 1</h4>
-                                        <p class="product-author">저자명</p>
-                                        <p class="product-price">15,000원</p>
-                                    </div>
-                                </div>
-                                <div class="order-actions">
-                                    <button class="action-btn primary-btn">리뷰 작성</button>
-                                    <button class="action-btn secondary-btn">주문 상세</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="content-header"><h3>주문 내역</h3></div>
+                <div class="order-list">
+                <?php foreach ($orders as $order_id => $order): ?>
+    <div class="order-item">
+        <div class="order-header">
+            <span class="order-number">주문번호: <?= $order_id ?></span>
+            <span class="order-date"><?= $order['created_at'] ?></span>
+            <span class="order-status status-completed">배송완료</span>
+        </div>
+
+        <?php foreach ($order['items'] as $item): ?>
+        <div class="order-details">
+            <div class="order-product">
+            <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="도서 이미지" class="product-image">
+            <div class="product-info">
+                    <h4 class="product-title"><?= ($item['title']) ?></h4>
+                    <p class="product-author"><?= ($item['author']) ?></p>
+                    <p class="product-price"><?= number_format($item['price']) ?>원</p>
                 </div>
             </div>
-        </div>
-        <?php else: ?>
-            <div class="mypage-content">
-                <script>alert('로그인 후 이용해주세요.');</script>
-                <script>location.href='login.php';</script>
+            <div class="order-actions">
+                <button class="action-btn primary-btn">리뷰 작성</button>
+                <button class="action-btn secondary-btn">주문 상세</button>
             </div>
+        </div>
+        <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
+        <?php else: ?>
+            <script>
+                alert('로그인 후 이용해주세요.');
+                location.href = 'login.php';
+            </script>
         <?php endif; ?>
-    </main>
+    </div>
+</main>
 </body>
-</html> 
+</html>

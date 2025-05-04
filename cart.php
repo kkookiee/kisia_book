@@ -73,7 +73,7 @@ $total_price = 0;
                     <td class="cart-product-info">
                         <img src="/images/book1.jpg" alt="도서 이미지" class="cart-thumb" />
                         <div class="cart-info-detail">
-                            <span class="cart-title">[도서] <?= htmlspecialchars($row['title']) ?></span>
+                            <span class="cart-title">[도서] <?= ($row['title']) ?></span>
                             <div class="cart-meta">
                                 <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                                 <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
