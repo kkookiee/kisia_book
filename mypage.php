@@ -14,7 +14,7 @@ if (!empty($id)) {
     $email = $user_data['email'];}
 
 $sql = "
-    SELECT o.id AS order_id, o.created_at, b.title, b.author, b.price, oi.quantity
+    SELECT o.id AS order_id, o.created_at, b.id AS book_id, b.title, b.author, b.price, oi.quantity
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
     JOIN books b ON oi.book_id = b.id
@@ -84,27 +84,31 @@ $current_order_id = null;
         <?php foreach ($order['items'] as $item): ?>
         <div class="order-details">
             <div class="order-product">
-            <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="도서 이미지" class="product-image">
-            <div class="product-info">
+            <img src="<?= $item['image_path'] ?? 'images/default.jpg' ?>" alt="도서 이미지" class="product-image">
+                       <div class="product-info">
                     <h4 class="product-title"><?= ($item['title']) ?></h4>
                     <p class="product-author"><?= ($item['author']) ?></p>
                     <p class="product-price"><?= number_format($item['price']) ?>원</p>
                 </div>
             </div>
             <div class="order-actions">
-                <button class="action-btn primary-btn">리뷰 작성</button>
-                <button class="action-btn secondary-btn">주문 상세</button>
-            </div>
+            <?php if (!empty($item['book_id'])): ?>
+             <a href="review_write.php?book_id=<?= $item['book_id'] ?>" class="action-btn primary-btn">리뷰 작성</a>
+            <?php endif; ?>            
+        </a>
+            <a href="order_detail.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 상세
+            </a>
+        </div>
         </div>
         <?php endforeach; ?>
-    </div>
-<?php endforeach; ?>
-        <?php else: ?>
-            <script>
-                alert('로그인 후 이용해주세요.');
-                location.href = 'login.php';
-            </script>
-        <?php endif; ?>
+        </div>
+            <?php endforeach; ?>
+                    <?php else: ?>
+                        <script>
+                            alert('로그인 후 이용해주세요.');
+                            location.href = 'login.php';
+                        </script>
+                    <?php endif; ?>
     </div>
 </main>
 </body>
