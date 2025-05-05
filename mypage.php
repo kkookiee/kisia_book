@@ -96,8 +96,7 @@ $current_order_id = null;
              <a href="review_write.php?book_id=<?= $item['book_id'] ?>" class="action-btn primary-btn">리뷰 작성</a>
             <?php endif; ?>            
         </a>
-            <a href="order_detail.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 상세
-            </a>
+        <a href="order_detail.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 상세</a>
             <a href="order_manage.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 변경/취소</a>
         </div>
         </div>

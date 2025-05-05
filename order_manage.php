@@ -52,7 +52,7 @@ $result = $conn->query($sql);
         <tbody>
           <?php while ($row = $result->fetch_assoc()): ?>
           <tr>
-            <td><?= htmlspecialchars($row['title']) ?></td>
+            <td><?= ($row['title']) ?></td>
             <td>
               <input type="number" name="quantity" value="<?= $row['quantity'] ?>" min="1" />
               <input type="hidden" name="item_id" value="<?= $row['item_id'] ?>">
