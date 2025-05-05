@@ -67,6 +67,7 @@ $current_order_id = null;
                         <li><a href="#"><i class="fas fa-heart"></i> 찜 목록</a></li>
                         <li><a href="#"><i class="fas fa-comment"></i> 내가 쓴 리뷰</a></li>
                         <li><a href="#"><i class="fas fa-cog"></i> 회원 정보 수정</a></li>
+                        <li><a href="withdraw.php"><i class="fas fa-user-slash"></i> 회원 탈퇴</a></li>
                         <li><a href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
                     </ul>
                 </aside>
