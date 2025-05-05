@@ -42,35 +42,39 @@ $result = $conn->query($sql);
 <body>
     <?php include 'header.php'; ?>
     <main>
-    <?php if ($result && $result->num_rows > 0): ?>
-<form method="post">
-    <table class="cart-table">
+  <div class="container">
+    <h2>주문 취소/변경</h2>
+    <form method="post">
+      <table class="cart-table">
         <thead>
-            <tr><th>도서명</th><th>수량</th><th>금액</th><th>변경</th></tr>
+          <tr><th>도서명</th><th>수량</th><th>금액</th><th>변경</th></tr>
         </thead>
         <tbody>
-            <?php while ($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><?= htmlspecialchars($row['title']) ?></td>
-                <td>
-                    <input type="number" name="quantity" value="<?= $row['quantity'] ?>" min="1">
-                    <input type="hidden" name="item_id" value="<?= $row['item_id'] ?>">
-                </td>
-                <td><?= number_format($row['price'] * $row['quantity']) ?>원</td>
-                <td><button type="submit" name="update_qty">수정</button></td>
-            </tr>
-            <?php endwhile; ?>
+          <?php while ($row = $result->fetch_assoc()): ?>
+          <tr>
+            <td><?= htmlspecialchars($row['title']) ?></td>
+            <td>
+              <input type="number" name="quantity" value="<?= $row['quantity'] ?>" min="1" />
+              <input type="hidden" name="item_id" value="<?= $row['item_id'] ?>">
+            </td>
+            <td><?= number_format($row['price'] * $row['quantity']) ?>원</td>
+            <td>
+              <button type="submit" name="update_qty" class="action-btn secondary-btn">수정</button>
+            </td>
+          </tr>
+          <?php endwhile; ?>
         </tbody>
-    </table>
-</form>
+      </table>
+    </form>
 
-<form method="post" style="margin-top:20px;">
-    <button type="submit" name="cancel_order" onclick="return confirm('정말 주문을 취소하시겠습니까?');">주문 전체 취소</button>
-</form>
-<?php else: ?>
-    <p>해당 주문이 없거나 이미 취소되었습니다.</p>
-<?php endif; ?>
-    </main>
+    <form method="post" style="margin-top: 20px;">
+      <button type="submit" name="cancel_order" class="checkout-btn"
+              onclick="return confirm('정말 주문을 취소하시겠습니까?');">
+        주문 전체 취소
+      </button>
+    </form>
+  </div>
+</main>
     <footer>
         <div class="container">
             <p>&copy; 2024 온라인 서점. All rights reserved.</p>

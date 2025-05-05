@@ -98,6 +98,7 @@ $current_order_id = null;
         </a>
             <a href="order_detail.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 상세
             </a>
+            <a href="order_manage.php?order_id=<?= $order_id ?>" class="action-btn secondary-btn">주문 변경/취소</a>
         </div>
         </div>
         <?php endforeach; ?>
