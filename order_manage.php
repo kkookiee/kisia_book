@@ -1,3 +1,35 @@
+<?php
+include 'connect.php';
+include 'session_start.php';
+
+$order_id = intval($_GET['order_id'] ?? 0);
+$user_id = $_SESSION['user_id'] ?? 0;
+
+if ($_SERVER['REQUEST_METHOD']==='POST'){
+    if (isset($_POST['update_qty'])){
+        $item_id = intval($_POST['item_id']);
+        $qty = max(1, intval($_POST['quantity']));
+        $conn->query("UPDATE order_items SET quantity = $qty WHERE id = $item_id");
+    } elseif (isset($_POST['cancel_order'])){
+        $conn->query("DELETE FROM order_items WHERE order_id = $order_id");
+        $conn->query("DELETE FROM orders WHERE id = $order_id");
+        echo"<script>alert('주문이 취소 되었습니다. '); location.href='mypage.php';</script>";
+            exit;
+    }
+}
+
+//주문 조회
+$sql = "
+    SELECT oi.id AS item_id, b.title, b.price, oi.quantity
+    FROM order_items oi
+    JOIN books b ON oi.book_id = b.id
+    JOIN orders o ON oi.order_id = o.id
+    WHERE oi.order_id = $order_id AND o.user_id = $user_id
+";
+
+$result = $conn->query($sql);
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,10 +42,34 @@
 <body>
     <?php include 'header.php'; ?>
     <main>
-        <div class="container">
-            <h2>주문 취소/변경</h2>
-            <p>주문 내역을 확인하고 취소 또는 변경할 수 있습니다.</p>
-        </div>
+    <?php if ($result && $result->num_rows > 0): ?>
+<form method="post">
+    <table class="cart-table">
+        <thead>
+            <tr><th>도서명</th><th>수량</th><th>금액</th><th>변경</th></tr>
+        </thead>
+        <tbody>
+            <?php while ($row = $result->fetch_assoc()): ?>
+            <tr>
+                <td><?= htmlspecialchars($row['title']) ?></td>
+                <td>
+                    <input type="number" name="quantity" value="<?= $row['quantity'] ?>" min="1">
+                    <input type="hidden" name="item_id" value="<?= $row['item_id'] ?>">
+                </td>
+                <td><?= number_format($row['price'] * $row['quantity']) ?>원</td>
+                <td><button type="submit" name="update_qty">수정</button></td>
+            </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
+</form>
+
+<form method="post" style="margin-top:20px;">
+    <button type="submit" name="cancel_order" onclick="return confirm('정말 주문을 취소하시겠습니까?');">주문 전체 취소</button>
+</form>
+<?php else: ?>
+    <p>해당 주문이 없거나 이미 취소되었습니다.</p>
+<?php endif; ?>
     </main>
     <footer>
         <div class="container">
