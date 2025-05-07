@@ -84,11 +84,15 @@ $total_sales = $sales_data['total_sales'] ?? 0;
       font-weight: bold;
     }
     .chart-container {
-      margin-top: 50px;
+      margin-top: 30px;
       background: #fff;
-      padding: 30px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      height: 300px; /* ✅ 고정 높이 추가 */
+    }
+    .chart-container canvas {
+      height: 100% !important; /* ✅ 캔버스를 container에 맞춤 */
     }
   </style>
 </head>
@@ -149,6 +153,7 @@ new Chart(ctx, {
         }]
     },
     options: {
+        maintainAspectRatio: false, // ✅ 비율 유지 끔
         scales: {
             y: {
                 beginAtZero: true,
