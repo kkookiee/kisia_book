@@ -1,6 +1,7 @@
 <?php
-include 'connect.php';
 include 'session_start.php';
+include 'connect.php';
+
 
 $user_id = $_SESSION['user_id'];
 
@@ -47,13 +48,13 @@ $total_price = 0;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장바구니 - KISIA_bookStore</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/cart.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'header.php'; ?>
-
+        <?php include 'header.php'; ?>
     <main>
         <div class="cart-container">
             <table class="cart-table">
@@ -110,9 +111,6 @@ $total_price = 0;
             </div>
         </div>
     </main>
-
-    <footer>
-        <p>&copy; 2025 KISIA_bookStore. All rights reserved.</p>
-    </footer>
+<?php include 'footer.php'; ?>
 </body>
 </html>

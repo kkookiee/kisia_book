@@ -5,7 +5,7 @@
     padding: 0 1rem;
 }
 
-.cart-header {
+/*.cart-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -19,7 +19,7 @@
     color: var(--secondary-color);
     font-weight: 700;
 }
-
+*/
 .cart-summary {
     display: flex;
     gap: 1rem;
@@ -254,12 +254,12 @@
 }
 
 @media (max-width: 480px) {
-    .cart-header {
+    /*.cart-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
     }
-    
+    */
     .cart-summary {
         width: 100%;
         justify-content: space-between;
