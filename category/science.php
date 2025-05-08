@@ -30,7 +30,9 @@ $result = mysqli_query($conn, $sql);
                         <div class="book-row">
                             <div class="book-number"><?php echo $num++; ?></div>
                             <div class="book-thumb">
-                                <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
+                                <a href="book_detail.php?id=<?php echo $book['id']; ?>">
+                                    <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
+                                </a>
                             </div>
                             <div class="book-info">
                                 <div class="book-title">
