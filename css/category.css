@@ -1,3 +1,203 @@
+/* 카테고리 페이지 스타일 */
+.category-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 30px;
+}
+
+/* 모든 링크의 밑줄 제거 */
+.category-container a {
+    text-decoration: none;
+}
+
+/* 오른쪽 책 목록 */
+.category-content {
+    flex: 1;
+}
+
+.category-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.book-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+    padding: 18px;
+    gap: 24px;
+}
+
+.book-thumb img {
+    width: 110px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 0px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.book-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+
+.book-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.book-meta {
+    color: #888;
+    font-size: 0.97rem;
+}
+
+.book-price {
+    color: #1976d2;
+    font-weight: bold;
+    font-size: 1.05rem;
+}
+
+.discount-price {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.original-price {
+    color: #aaa;
+    text-decoration: line-through;
+    margin-right: 6px;
+}
+
+.discount-rate {
+    color: #2376c7;
+    margin-right: 6px;
+}
+
+.point {
+    color: #1976d2;
+    font-size: 0.97rem;
+}
+
+.book-rating {
+    color: #2376c7;
+    font-size: 1.02rem;
+}
+
+.book-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.qty-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.qty-control button {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.qty-control input[type="number"] {
+    width: 36px;
+    text-align: center;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.cart-btn {
+    width: 100px;
+    padding: 6px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    background: #1976d2;
+    color: #fff;
+    cursor: pointer;
+}
+
+.buy-btn, .wish-btn {
+    width: 100%;
+    padding: 7px 0;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+.buy-btn {
+    background: #1abc9c;
+    color: #fff;
+}
+
+.wish-btn {
+    background: #fff;
+    color: #222;
+    border: 1px solid #ddd;
+}
+
+.cart-btn:hover {
+    background: #0056a3;
+}
+
+.buy-btn:hover {
+    background: #159c8a;
+}
+
+.wish-btn:hover {
+    background: #f5f5f5;
+}
+
+.no-books {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .category-container {
+        flex-direction: column;
+    }
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .book-image {
+        height: 200px;
+    }
+}
+
 .category-header {
     display: flex;
     justify-content: space-between;
@@ -31,99 +231,6 @@
 .filter-select:focus {
     outline: none;
     border-color: #0066cc;
-}
-
-.book-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
-}
-
-.book-card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-}
-
-.book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.book-image {
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-}
-
-.book-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.book-card:hover .book-image img {
-    transform: scale(1.05);
-}
-
-.book-info {
-    padding: 15px;
-}
-
-.book-info h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    color: #333;
-    line-height: 1.4;
-}
-
-.book-info .author {
-    color: #666;
-    font-size: 14px;
-    margin: 0 0 5px 0;
-}
-
-.book-info .price {
-    color: #0066cc;
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0 0 10px 0;
-}
-
-.rating-info {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 15px;
-}
-
-.rating {
-    color: #ffc107;
-    font-size: 14px;
-}
-
-.reviews {
-    color: #666;
-    font-size: 12px;
-}
-
-.cart-btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.cart-btn:hover {
-    background-color: #0052a3;
 }
 
 /* 카테고리별 색상 */
@@ -227,20 +334,12 @@
     background-color: #c0392b;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .book-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    }
-    
-    .category-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-    
-    .category-filter {
-        width: 100%;
-        flex-wrap: wrap;
-    }
+.book-number {
+    width: 32px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #1976d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 } 

@@ -1,6 +1,7 @@
 <?php
 require_once 'session_start.php';  // 이 줄을 꼭 login.php 상단에 넣기!
 require_once 'connect.php';
+require_once 'header.php';
 ?>
 
 <!DOCTYPE html>
@@ -16,20 +17,17 @@ require_once 'connect.php';
 </head>
 <body>
 
-    <?php include 'header.php'; ?>
     <?php
-    require_once 'connect.php';
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id = $_POST['id'];
+        $id = $_POST['user_id'];
         $password = $_POST['password'];
 
-        $sql = "SELECT * FROM users WHERE id='$id' AND password='$password'";
+        $sql = "SELECT * FROM users WHERE user_id='$id' AND password='$password'";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
             // ✅ 로그인 성공 시 세션에 값 저장
-            $_SESSION['id'] = $id;
+            $_SESSION['user_id'] = $id;
             $_SESSION['user_name'] = $name;
             $_SESSION['email'] = $email;
             echo "<script>alert('로그인 성공!'); window.location.href='index.php';</script>";
@@ -45,7 +43,7 @@ require_once 'connect.php';
             <form class="auth-form" method="POST" action="login.php">
                 <div class="form-group">
                     <label for="user_id">아이디</label>
-                    <input type="text" id="id" name="id" required>
+                    <input type="text" id="user_id" name="user_id" required>
                 </div>
                 <div class="form-group">
                     <label for="password">비밀번호</label>
@@ -61,10 +59,6 @@ require_once 'connect.php';
             </form>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-        </div>
-    </footer>
+    <?php require_once 'footer.php'; ?>
 </body>
 </html> 

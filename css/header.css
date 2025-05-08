@@ -1,7 +1,12 @@
+/* 헤더 특화 스타일 */
 .top-header {
-    background-color: #f8f9fa;
-    padding: 10px 0;
+    background-color: #0080ff;
+    padding: 2px 0;
     border-bottom: 1px solid #e9ecef;
+}
+/* 모든 링크의 밑줄 제거 */
+.logo a {
+    text-decoration: none;
 }
 
 .top-links {
@@ -16,40 +21,47 @@
 }
 
 .top-links a {
-    color: #666;
+    color: #ffffff;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .top-links a:hover {
     color: #3498db;
 }
 
+.welcome-text {
+    color: #333;
+    font-weight: 500;
+}
+
+/* 네비게이션 스타일 */
 .nav-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 0;
+    padding: 30px 0;
 }
 
 .logo h1 {
     margin: 0;
-    font-size: 24px;
-    color: #333;
+    font-size: 27px;
+    color: #000000;
 }
 
 .search-box {
     display: flex;
+    align-items: center;
     gap: 10px;
     flex: 1;
     max-width: 600px;
     margin: 0 20px;
 }
 
-.search-category {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.search-box form {
+    display: flex;
+    flex: 1;
+    gap: 10px;
 }
 
 .search-box input {
@@ -66,6 +78,12 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.search-category {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 .nav-right {
@@ -99,29 +117,39 @@
     color: white;
     font-size: 12px;
     padding: 2px 6px;
-    border-radius: 10px;
+    border-radius: 50%;
 }
 
+/* 카테고리 메뉴 스타일 */
 .category-menu {
-    background-color: #f8f9fa;
-    padding: 10px 0;
-    border-bottom: 1px solid #e9ecef;
+    background-color: #f5f6f7;
+    border-top: 1px solid #e9ecef;
+    border-bottom: 2px solid #0080ff;
+    padding: 1px 0;
 }
 
 .main-categories {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 100px;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0px 0;
 }
 
 .main-categories a {
-    color: #333;
+    color: #0080ff;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 3px 4px;
+    padding-top: 5px;
+    border-radius: 2px 2px 0 0;
+    display: inline-block;
+    transition: background 0.2s, color 0.2s;
 }
 
-.main-categories a:hover {
-    color: #3498db;
-} 
+.category-active {
+    background-color: #0080ff;
+    color: #fff !important;
+}

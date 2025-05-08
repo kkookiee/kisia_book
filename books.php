@@ -65,8 +65,6 @@
         </div>
     </main>
 
-    <footer>
-        <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-    </footer>
+    <?php include 'footer.php'; ?>
 </body>
 </html> 

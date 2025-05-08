@@ -33,13 +33,13 @@
                         <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
                         <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                    <div class="banner-indicators">
-                        <span class="indicator active"></span>
-                        <span class="indicator"></span>
-                        <span class="indicator"></span>
-                    </div>
                 </div>
             </section>
+            <div class="banner-tabs">
+                <button class="banner-tab active">5월의 굿즈 : 디즈니 캐릭터 텀블러</button>
+                <button class="banner-tab">한강『빛과 실』</button>
+                <button class="banner-tab">어린이날, 우리가 주인공!</button>
+            </div>
 
             <section class="best-sellers">
                 <div class="section-header">
@@ -191,7 +191,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const slides = document.querySelectorAll('.banner-slide');
-            const indicators = document.querySelectorAll('.indicator');
+            const tabs = document.querySelectorAll('.banner-tab');
             const prevBtn = document.querySelector('.prev-btn');
             const nextBtn = document.querySelector('.next-btn');
             let currentSlide = 0;
@@ -199,10 +199,9 @@
 
             function showSlide(index) {
                 slides.forEach(slide => slide.classList.remove('active'));
-                indicators.forEach(indicator => indicator.classList.remove('active'));
-                
+                tabs.forEach(tab => tab.classList.remove('active'));
                 slides[index].classList.add('active');
-                indicators[index].classList.add('active');
+                tabs[index].classList.add('active');
                 currentSlide = index;
             }
 
@@ -224,7 +223,6 @@
                 clearInterval(slideInterval);
             }
 
-            // 이벤트 리스너 추가
             prevBtn.addEventListener('click', () => {
                 stopSlideShow();
                 prevSlide();
@@ -237,8 +235,8 @@
                 startSlideShow();
             });
 
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => {
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', () => {
                     stopSlideShow();
                     showSlide(index);
                     startSlideShow();
