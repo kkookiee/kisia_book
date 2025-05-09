@@ -1,4 +1,26 @@
 <?php require_once 'session_start.php'; ?>
+<?php require_once 'connect.php'; ?>
+<?php
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$search_query = isset($_GET['search']) ? $_GET['search'] : '';
+
+$search_sql = '';
+if ($search_query) {
+    $search_sql = "WHERE inquiries.title LIKE '%$search_query%'";
+}
+
+$per_page = 5;
+$offset = ($page - 1) * $per_page;
+
+$sql = "SELECT inquiries.*, users.username FROM inquiries LEFT JOIN users ON inquiries.user_id = users.id $search_sql ORDER BY inquiries.id DESC LIMIT $per_page OFFSET $offset";
+$result = $conn->query($sql);
+$inquiries = $result->fetch_all(MYSQLI_ASSOC);
+
+$count_sql = "SELECT COUNT(*) FROM inquiries";
+$count_result = $conn->query($count_sql);
+$total_count = $count_result->fetch_assoc()['COUNT(*)'];
+$total_pages = ceil($total_count / $per_page);
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -17,7 +39,9 @@
             <div class="board-header">
                 <h2>게시판/리뷰</h2>
                 <div class="board-actions">
-                    <button class="write-btn">글쓰기</button>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="inquiry_write.php"><button class="write-btn">글쓰기</button></a>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="board-filters">
@@ -29,7 +53,7 @@
                 </select>
                 <div class="search-box">
                     <input type="text" class="search-input" placeholder="검색어를 입력하세요">
-                    <button class="search-btn">검색</button>
+                    <button class="search-btn" onclick="window.location.href='?search=' + document.querySelector('.search-input').value">검색</button>
                 </div>
             </div>
             <table class="board-table">
@@ -39,39 +63,36 @@
                         <th class="post-title">제목</th>
                         <th class="post-author">작성자</th>
                         <th class="post-date">작성일</th>
-                        <th class="post-views">조회</th>
+                        <th class="post-status">상태</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="post-number">1</td>
-                        <td class="post-title">도서 리뷰: 인생에 대한 깊은 통찰</td>
-                        <td class="post-author">홍길동</td>
-                        <td class="post-date">2023-04-01</td>
-                        <td class="post-views">42</td>
+                    <?php if ($inquiries): ?>
+                    <?php foreach ($inquiries as $inquiry): ?>
+                    <tr onclick="window.location.href='inquiry_detail.php?id=<?php echo $inquiry['id']; ?>'">
+                        <td class="post-number"><?php echo $inquiry['id']; ?></td>
+                        <td class="post-title"><?php echo $inquiry['title']; ?></td>
+                        <td class="post-author"><?php echo $inquiry['username']; ?></td>
+                        <td class="post-date"><?php echo $inquiry['created_at']; ?></td>
+                        <td class="post-status"><?php echo $inquiry['inquiry_status']; ?></td>
                     </tr>
+                    <?php endforeach; ?>
+                    <?php else: ?>
                     <tr>
-                        <td class="post-number">2</td>
-                        <td class="post-title">새로운 도서 출간 안내</td>
-                        <td class="post-author">관리자</td>
-                        <td class="post-date">2023-03-30</td>
-                        <td class="post-views">128</td>
+                        <td colspan="4" class="no-data">문의사항이 없습니다.</td>
                     </tr>
-                    <tr>
-                        <td class="post-number">3</td>
-                        <td class="post-title">도서 배송 관련 문의</td>
-                        <td class="post-author">김철수</td>
-                        <td class="post-date">2023-03-29</td>
-                        <td class="post-views">56</td>
-                    </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
             <div class="pagination">
-                <a href="#" class="page-link active">1</a>
-                <a href="#" class="page-link">2</a>
-                <a href="#" class="page-link">3</a>
-                <a href="#" class="page-link">4</a>
-                <a href="#" class="page-link">5</a>
+                <?php
+                for ($i = 1; $i <= $total_pages; $i++) {
+                    $active = $i == $page ? 'active' : '';
+                    echo "<a href='?page=$i' class='page-link $active'>$i</a>";}
+                if ($page < $total_pages) {
+                    $next_page = $page + 1;
+                    echo "<a href='?page=$next_page' class='next'><i class='fas fa-chevron-right'></i></a>";}
+                ?>
             </div>
         </div>
     </main>

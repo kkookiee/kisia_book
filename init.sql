@@ -76,6 +76,27 @@ CREATE TABLE reviews (
     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
 ); 
 
+-- 7. inquiries (문의글 테이블)
+CREATE TABLE inquiries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    inquiry_status VARCHAR(50) NOT NULL DEFAULT '답변 대기', 
+    answer TEXT,
+    answer_at DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 8. inquiries_images (문의글 이미지 테이블)
+CREATE TABLE inquiries_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inquiry_id INT NOT NULL,
+    image_path VARCHAR(255),
+    FOREIGN KEY (inquiry_id) REFERENCES inquiries(id) ON DELETE CASCADE
+);
+
 INSERT INTO books (id, title, author, price, category, description, image_path, additional_image_path) VALUES
 ('001', '소년이 온다', '한강', 13500, 'novel', '『소년이 온다』는 ‘상처의 구조에 대한 투시와 천착의 서사’를 통해 한강만이 풀어낼 수 있는 방식으로 1980년 5월을 새롭게 조명하며, 무고한 영혼들의 말을 대신 전하는 듯한 진심 어린 문장들로 5·18 이후를 살고 있는 우리에게 묵직한 질문을 던진다.가장 한국적인 서사로 세계를 사로잡은 한강 문학의 지향점을 보여주는 작품. 인간의 잔혹함과 위대함을 동시에 증언하는 이 충일한 서사는 이렇듯 시공간의 한계를 넘어 인간 역사의 보편성을 보여주며 훼손되지 말아야 할 인간성을 절박하게 복원한다.', 'images/book1.jpg', 'images/book1-1.jpg'),
 ('002', '혼모노', '성해나', 18000, 'novel', '더욱 예리해진 문제의식과 흡인력 넘치는 서사를 통해 지역, 정치, 세대 등 우리를 가르는 다양한 경계를 들여다보며 세태의 풍경을 선명하게 묘파해낸다. 특히 이번 소설집에는 지난해 끊임없이 호명되며 문단을 휩쓸었다 해도 과언이 아닐 표제작 「혼모노」를 비롯해 작가에게 2년 연속 젊은작가상을 선사해준 「길티 클럽: 호랑이 만지기」, 이 계절의 소설과 올해의 문제소설에 선정된 「스무드」 등이 수록되어 더욱 눈길을 끈다. “작가의 ‘신명’이라 불”릴(추천사, 이기호) 만큼 “질투 나는 재능”(추천사, 박정민)으로 빛나는 『혼모노』, 그토록 기다려왔던 한국문학의 미래가 바로 지금 우리 앞에 도착해 있다.', 'images/book2.jpg', 'images/book2-1.jpg'),
