@@ -1,3 +1,5 @@
+<?php include 'header.php'; ?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,31 +12,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'header.php'; ?>
     <?php
-    require_once 'connect.php';
-    
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $id = $_POST['id'];
+        $username = $_POST['username'];
         $email = $_POST['email'];
         $password = $_POST['password'];
         $password_confirm = $_POST['password_confirm'];
         $name = $_POST['name'];
-        $phone = $_POST['phone'];
-        $address = $_POST['address'];
 
         if ($password != $password_confirm) {
             echo "<script>alert('비밀번호가 일치하지 않습니다'); window.location.href='signup.php';</script>";
         } else {
-            $check_sql = "SELECT * FROM users WHERE id = '$id'"; // 중복 확인
+            $check_sql = "SELECT * FROM users WHERE username = '$username'"; // 중복 확인
             $check_result = $conn->query($check_sql);
     
             if ($check_result && $check_result->num_rows > 0) {
                 echo "<script>alert('이미 사용 중인 아이디입니다.'); window.location.href='signup.php';</script>";
             } else {
                 // 회원 가입 실행
-                $sql = "INSERT INTO users(id, email, password, name, phone, address) 
-                        VALUES('$id','$email','$password','$name','$phone','$address')";
+                $sql = "INSERT INTO users(username, email, password, name) 
+                        VALUES('$username','$email','$password','$name')";
                 
                 if($conn->query($sql) === TRUE) {
                     echo "<script>alert('회원가입 성공'); window.location.href='index.php';</script>";
@@ -50,8 +47,8 @@
             <h2>회원가입</h2>
             <form class="auth-form" method="POST" action="signup.php">
                 <div class="form-group">
-                    <label for="id">아이디</label>
-                    <input type="text" id="id" name="id" required>
+                    <label for="username">아이디</label>
+                    <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="email">이메일</label>
@@ -69,14 +66,6 @@
                     <label for="name">이름</label>
                     <input type="text" id="name" name="name" required>
                 </div>
-                <div class="form-group">
-                    <label for="phone">전화번호</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">주소</label>
-                    <input type="text" id="address" name="address" required>
-                </div>
                 <button type="submit" class="auth-button">회원가입</button>
                 <p class="auth-switch">
                     이미 계정이 있으신가요? <a href="login.php">로그인</a>
@@ -84,10 +73,6 @@
             </form>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-        </div>
-    </footer>
+    <?php include 'footer.php'; ?>
 </body>
 </html> 

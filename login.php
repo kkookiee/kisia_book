@@ -19,17 +19,24 @@ require_once 'header.php';
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id = $_POST['user_id'];
+        $username = $_POST['username'];
         $password = $_POST['password'];
 
-        $sql = "SELECT * FROM users WHERE user_id='$id' AND password='$password'";
-        $result = $conn->query($sql);
+
+        $sql = "SELECT * FROM users WHERE username=? AND password=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $username, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
             // ✅ 로그인 성공 시 세션에 값 저장
-            $_SESSION['user_id'] = $id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['email'] = $email;
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['name'] = $user['name'];
+            $_SESSION['email'] = $user['email'];
+            
             echo "<script>alert('로그인 성공!'); window.location.href='index.php';</script>";
         } else {
             echo "<script>alert('아이디 또는 비밀번호가 틀렸습니다.');</script>";
@@ -42,8 +49,8 @@ require_once 'header.php';
             <h2>로그인</h2>
             <form class="auth-form" method="POST" action="login.php">
                 <div class="form-group">
-                    <label for="user_id">아이디</label>
-                    <input type="text" id="user_id" name="user_id" required>
+                    <label for="username">아이디</label>
+                    <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">비밀번호</label>
