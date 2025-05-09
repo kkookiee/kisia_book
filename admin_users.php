@@ -8,7 +8,7 @@ if (!empty($search)) {
     $search_sql = "WHERE name LIKE '%$safe_search%' OR email LIKE '%$safe_search%'";
 }
 
-$sql = "SELECT id, name, email, created_at FROM users $search_sql ORDER BY created_at DESC";
+$sql = "SELECT id, username, name, email, created_at FROM users $search_sql ORDER BY created_at DESC";
 $result = $conn->query($sql);
 ?>
 
