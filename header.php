@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 </div>
                 <div class="right-links">
                     <?php if (!empty($user_id)): ?>
-                        <span class="welcome-text"><?= htmlspecialchars($user_id) ?>님 환영합니다!</span>
+                        <span class="welcome-text"><?= htmlspecialchars($username) ?>님 환영합니다!</span>
                         <a href="/mypage.php">마이페이지</a>
                         <a href="/logout.php">로그아웃</a>
                     <?php else: ?>

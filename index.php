@@ -1,4 +1,7 @@
-<?php require_once 'session_start.php'; ?>
+<?php 
+    require_once 'session_start.php'; 
+    require_once 'connect.php';
+?>
 
 <!DOCTYPE html>
 <html lang="ko">
