@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>주문 완료 - KISIA_bookStore</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     .complete-container {

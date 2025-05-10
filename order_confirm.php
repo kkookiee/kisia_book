@@ -1,6 +1,7 @@
 <?php
-include 'connect.php';
-include 'session_start.php';
+require 'connect.php';
+require 'session_start.php';
+require 'header.php';
 
 
 $user_id = $_SESSION['user_id'];
@@ -26,6 +27,7 @@ $total_price = 0;
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>주문 확인 - KISIA_bookStore</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
@@ -62,22 +64,49 @@ $total_price = 0;
 
       <form action="order_process.php" method="post" class="order-form">
         <h3>배송 정보 입력</h3>
-        <label>수령인</label>
-        <input type="text" name="recipient" required>
+        <div class="form-group">
+          <label for="recipient">수령인</label>
+          <input type="text" id="recipient" name="recipient" required>
+        </div>
 
-        <label>연락처</label>
-        <input type="text" name="phone" required>
+        <div class="form-group">
+          <label>휴대폰</label>
+          <div style="display:flex; gap:5px;">
+            <input type="text" name="phone1" maxlength="3" required>
+            <input type="text" name="phone2" maxlength="4" required>
+            <input type="text" name="phone3" maxlength="4" required>
+          </div>
+        </div>
 
-        <label>주소</label>
-        <input type="text" name="address" required>
+        <div class="form-group">
+          <label>배송주소</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="postcode" name="postcode" placeholder="우편번호" readonly>
+            <button type="button" onclick="execDaumPostcode()">주소 찾기</button>
+          </div>
+          <input type="text" id="roadAddress" name="road_address" placeholder="도로명 주소" readonly>
+          <input type="text" id="jibunAddress" name="jibun_address" placeholder="지번 주소" readonly>
+          <input type="text" id="detailAddress" name="detail_address" placeholder="상세 주소" required>
+        </div>
 
         <button type="submit" class="checkout-btn">주문 확정</button>
       </form>
     </div>
   </main>
-
-  <footer>
-    <p>&copy; 2025 KISIA_bookStore. All rights reserved.</p>
-  </footer>
+  <?php include 'footer.php'; ?>
 </body>
 </html>
+
+<!-- 카카오 주소 API 스크립트 -->
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+  function execDaumPostcode() {
+    new daum.Postcode({
+      oncomplete: function(data) {
+        document.getElementById('postcode').value = data.zonecode;
+        document.getElementById('roadAddress').value = data.roadAddress;
+        document.getElementById('jibunAddress').value = data.jibunAddress;
+      }
+    }).open();
+  }
+</script>

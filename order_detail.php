@@ -26,6 +26,7 @@ $total_price = 0;
   <title>주문 상세 - 온라인 서점</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/cart.css">
+  <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -71,10 +72,6 @@ $total_price = 0;
       </div>
     </div>
   </main>
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 온라인 서점. All rights reserved.</p>
-    </div>
-  </footer>
+  <?php include 'footer.php'; ?>
 </body>
 </html>

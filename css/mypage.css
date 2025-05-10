@@ -73,29 +73,60 @@
 }
 
 .sidebar-menu li {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .sidebar-menu a {
     display: flex;
     align-items: center;
-    padding: 0.8rem 1rem;
-    color: var(--secondary-color);
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #111;
+    background: none;
+    border: none;
+    padding: 0.5rem 0.2rem;
+    cursor: pointer;
     text-decoration: none;
-    border-radius: 4px;
-    transition: var(--transition);
+    transition: color 0.2s;
 }
 
-.sidebar-menu a:hover,
-.sidebar-menu a.active {
-    background: var(--primary-color);
-    color: white;
+.sidebar-menu a i {
+    font-size: 1.1rem;
 }
+
+.sidebar-menu a:hover {
+    color: var(--primary-color);
+}
+
+.sidebar-menu a.active {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
 
 .sidebar-menu i {
     margin-right: 0.8rem;
     font-size: 1.1rem;
 }
+
+.sidebar-menu button {
+    all: unset; /* 버튼 기본 스타일 제거 */
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: var(--secondary-color);
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-menu button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
 
 .main-content {
     background: #fff;
@@ -286,3 +317,87 @@
         width: 100%;
     }
 } 
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .review-item {
+    display: flex;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .review-left img.review-book-image {
+    width: 120px;
+    height: auto;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  
+  .review-right {
+    flex: 1;
+  }
+  
+  .review-book-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #222;
+  }
+  
+  .review-book-author {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 4px;
+  }
+  
+  .review-rating .star {
+    color: #f5b400;
+    font-size: 1rem;
+    margin-right: 2px;
+  }
+  
+  .review-content {
+    margin-top: 8px;
+    font-size: 1rem;
+    color: #444;
+  }
+  
+  .review-date {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #888;
+  }
+  
+  .profile-form {
+    max-width: 500px;
+    margin-top: 1rem;
+  }
+  
+  .profile-form .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .profile-form label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #444;
+  }
+  
+  .profile-form input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  .profile-form button {
+    margin-top: 1rem;
+  }
+  

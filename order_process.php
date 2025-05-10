@@ -31,7 +31,7 @@ while($row = $result->fetch_assoc()) {
     $book_id = $row["book_id"];
     $quantity = $row["quantity"];
     $price = $row["price"];
-
+    
     $total_price += $price * $quantity;
     $items[] = ["book_id"=> $book_id, "quantity"=> $quantity,"price"=> $price];
 }
@@ -49,7 +49,7 @@ foreach ($items as $item) {
     $price = $item["price"];
 
     $item_sql = "INSERT INTO order_items (order_id, book_id, quantity, price)
-                 VALUES ($order_id, $book_id, $quantity, $price)";
+                 VALUES ($order_id, '$book_id', $quantity, $price)";
     $conn->query($item_sql);
 }
 

@@ -106,7 +106,7 @@ $total_sales = $sales_data['total_sales'] ?? 0;
       <li><a href="admin_books.php"><i class="fas fa-book"></i> 도서 관리</a></li>
       <li><a href="admin_users.php"><i class="fas fa-users"></i> 회원 관리</a></li>
       <li><a href="admin_reviews.php"><i class="fas fa-comments"></i> 리뷰 관리</a></li>
-      <li><a href="admin_board.php"><i class="fas fa-headphones"></i> 고객센터</a></li>
+      <li><a href="admin_inquiries.php"><i class="fas fa-headphones"></i> 고객센터</a></li>
       <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
     </ul>
   </aside>

@@ -143,48 +143,6 @@
                 </div>
             </section>
 
-            <section class="special-offers">
-                <div class="section-header">
-                    <h2>특가 도서</h2>
-                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
-                </div>
-                <div class="book-grid">
-                    <div class="book-card">
-                        <div class="discount-badge">30%</div>
-                        <img src="images/book7.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 7</h4>
-                            <p class="author">저자명</p>
-                            <div class="price-info">
-                                <p class="original-price">30,000원</p>
-                                <p class="discount-price">21,000원</p>
-                            </div>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.8</span>
-                                <span class="reviews">(89)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                    <div class="book-card">
-                        <div class="discount-badge">20%</div>
-                        <img src="images/book8.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 8</h4>
-                            <p class="author">저자명</p>
-                            <div class="price-info">
-                                <p class="original-price">25,000원</p>
-                                <p class="discount-price">20,000원</p>
-                            </div>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.7</span>
-                                <span class="reviews">(78)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                </div>
-            </section>
         </div>
     </main>
     <?php include 'footer.php'; ?>   

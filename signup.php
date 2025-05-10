@@ -15,26 +15,25 @@
     require_once 'connect.php';
     
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $id = $_POST['id'];
+        $username = $_POST['id'];
         $email = $_POST['email'];
         $password = $_POST['password'];
         $password_confirm = $_POST['password_confirm'];
         $name = $_POST['name'];
-        $phone = $_POST['phone'];
-        $address = $_POST['address'];
 
         if ($password != $password_confirm) {
             echo "<script>alert('비밀번호가 일치하지 않습니다'); window.location.href='signup.php';</script>";
         } else {
-            $check_sql = "SELECT * FROM users WHERE id = '$id'"; // 중복 확인
+            $check_sql = "SELECT * FROM users WHERE username = '$username'"; // 중복 확인
             $check_result = $conn->query($check_sql);
     
             if ($check_result && $check_result->num_rows > 0) {
                 echo "<script>alert('이미 사용 중인 아이디입니다.'); window.location.href='signup.php';</script>";
             } else {
                 // 회원 가입 실행
-                $sql = "INSERT INTO users(id, email, password, name, phone, address) 
-                        VALUES('$id','$email','$password','$name','$phone','$address')";
+                $sql = "INSERT INTO users(username, password, name, email) 
+                VALUES('$username', '$password', '$name', '$email')";
+
                 
                 if($conn->query($sql) === TRUE) {
                     echo "<script>alert('회원가입 성공'); window.location.href='index.php';</script>";
@@ -68,14 +67,6 @@
                 <div class="form-group">
                     <label for="name">이름</label>
                     <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">전화번호</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="address">주소</label>
-                    <input type="text" id="address" name="address" required>
                 </div>
                 <button type="submit" class="auth-button">회원가입</button>
                 <p class="auth-switch">

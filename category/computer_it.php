@@ -48,16 +48,25 @@ $result = mysqli_query($conn, $sql);
                                     ?>
                                 </div>
                             </div>
-                            <div class="book-actions">
-                                <div class="qty-control">
-                                    <button>-</button>
-                                    <input type="number" value="1" min="1">
-                                    <button>+</button>
+                            <form action="../cart.php" method="POST">
+                                <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
+                                <input type = "hidden" name = "quantity" value = "1">
+                                <input type = "hidden" name = "user_id" value = "<?php echo $user_id; ?>">
+                                <input type = "hidden" name = "title" value = "<?php echo $book['title']; ?>">
+                                <input type = "hidden" name = "price" value = "<?php echo $book['price']; ?>">
+                                <input type = "hidden" name = "image_path" value = "<?php echo $book['image_path']; ?>">
+
+                                <div class="book-actions">
+                                    <div class="qty-control">
+                                        <button>-</button>
+                                        <input type="number" value="1" min="1">
+                                        <button>+</button>
+                                    </div>
+                                    <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
+                                    <button type = "submit" class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
+                                    <button type = "submit" class="buy-btn">바로구매</button>
                                 </div>
-                                <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
-                                <button class="buy-btn">바로구매</button>
-                                <button class="wish-btn">리스트에 넣기</button>
-                            </div>
+                            </form>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>

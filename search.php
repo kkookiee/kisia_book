@@ -64,7 +64,6 @@ if (!empty($search_query)) {
                                     </div>
                                     <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
                                     <button class="buy-btn">바로구매</button>
-                                    <button class="wish-btn">리스트에 넣기</button>
                                 </div>
                             </div>
                         <?php endwhile; ?>
