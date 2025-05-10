@@ -52,38 +52,53 @@
 .search-box {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     flex: 1;
     max-width: 600px;
     margin: 0 20px;
+    height: 44px;
 }
 
 .search-box form {
     display: flex;
     flex: 1;
-    gap: 10px;
+    gap: 0;
+    height: 44px;
 }
 
 .search-box input {
     flex: 1;
-    padding: 8px;
+    padding: 10px 12px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 4px 0 0 4px;
+    font-size: 15px;
+    height: 44px;
+    box-sizing: border-box;
 }
 
 .search-box button {
-    padding: 8px 15px;
+    padding: 0 18px;
     background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0 4px 4px 0;
     cursor: pointer;
+    height: 44px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .search-category {
-    padding: 8px;
+    padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 15px;
+    height: 44px;
+    background: #fff;
+    margin-right: 4px;
+    box-sizing: border-box;
 }
 
 .nav-right {
