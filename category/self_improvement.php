@@ -8,8 +8,11 @@ $sql = "SELECT * FROM books WHERE category = 'self_improvement'";
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -64,6 +67,7 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -90,6 +94,8 @@ $result = $conn->query($sql);
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -103,6 +109,9 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

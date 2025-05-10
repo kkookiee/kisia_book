@@ -21,6 +21,7 @@ require_once 'header.php';
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['user_id'];  // HTML 폼의 input name="user_id"는 사실상 username
@@ -40,6 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "<script>alert('아이디 또는 비밀번호가 틀렸습니다.');</script>";
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -120,6 +123,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

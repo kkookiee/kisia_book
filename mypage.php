@@ -6,6 +6,7 @@ require_once 'connect.php';
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 if (!empty($id)) {
     $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
     $stmt->bind_param("s", $id);
@@ -13,6 +14,17 @@ if (!empty($id)) {
     $result = $stmt->get_result();
     $user_data = $result->fetch_assoc();
     $name = $user_data['name'];
+=======
+// 로그인된 사용자의 정보를 데이터베이스에서 가져옴
+if(!empty($user_id)) {
+    $stmt = $conn->prepare("SELECT user_name, email FROM users WHERE user_id = ?");
+    $stmt->bind_param("s", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+    
+    $user_name = $user_data['user_name'];
+>>>>>>> Stashed changes
 =======
 // 로그인된 사용자의 정보를 데이터베이스에서 가져옴
 if(!empty($user_id)) {
