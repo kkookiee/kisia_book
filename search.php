@@ -38,15 +38,15 @@ if (!empty($search_query)) {
                             <div class="book-row">
                                 <div class="book-thumb">
                                     <a href="category/book_detail.php?id=<?php echo $book['id']; ?>">
-                                        <img src="<?php echo $book['image_path']; ?>" alt="<?php echo htmlspecialchars($book['title']); ?>">
+                                        <img src="<?php echo $book['image_path']; ?>" alt="<?php echo ($book['title']); ?>">
                                     </a>
                                 </div>
                                 <div class="book-info">
                                     <div class="book-title">
-                                        <a href="category/book_detail.php?id=<?php echo $book['id']; ?>"><?php echo htmlspecialchars($book['title']); ?></a>
+                                        <a href="category/book_detail.php?id=<?php echo $book['id']; ?>"><?php echo ($book['title']); ?></a>
                                     </div>
                                     <div class="book-meta">
-                                        <a href="category/book_detail.php?id=<?php echo $book['id']; ?>"><?php echo htmlspecialchars($book['author']); ?></a>
+                                        <a href="category/book_detail.php?id=<?php echo $book['id']; ?>"><?php echo ($book['author']); ?></a>
                                     </div>
                                     <div class="book-price"><?php echo number_format($book['price']); ?>원</div>
                                     <div class="book-desc">
@@ -84,17 +84,17 @@ if (!empty($search_query)) {
 </head>
 <body>
 <main class="container">
-    <h1>🔍 '<?= htmlspecialchars($search_query) ?>' 검색 결과</h2>
+    <h1>🔍 '<?= ($search_query) ?>' 검색 결과</h2>
 
     <?php if (!empty($search_query)): ?>
         <?php if ($results->num_rows > 0): ?>
             <div class="book-grid">
                 <?php while ($book = $results->fetch_assoc()): ?>
                     <div class="book-card">
-                        <img src="<?= htmlspecialchars($book['image_path']) ?>" alt="도서 이미지" class="book-image">
+                        <img src="<?= ($book['image_path']) ?>" alt="도서 이미지" class="book-image">
                         <div class="book-info">
-                            <h4><?= htmlspecialchars($book['title']) ?></h4>
-                            <p class="author"><?= htmlspecialchars($book['author']) ?></p>
+                            <h4><?= ($book['title']) ?></h4>
+                            <p class="author"><?= ($book['author']) ?></p>
                             <p class="price"><?= number_format($book['price']) ?>원</p>
                         </div>
                     </div>

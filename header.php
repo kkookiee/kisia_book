@@ -29,7 +29,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 </div>
                 <div class="right-links">
                     <?php if (!empty($user_id)): ?>
-                        <span class="welcome-text"><?= htmlspecialchars($user_id) ?>님 환영합니다!</span>
+                        <span class="welcome-text"><?= ($user_id) ?>님 환영합니다!</span>
 
                         <a href="/mypage.php">마이페이지</a>
                         <a href="/logout.php">로그아웃</a>
@@ -56,7 +56,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <option value="dvd">DVD</option>
                     </select>
                     <form action="search.php" method="GET">
-                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= htmlspecialchars($search_query ?? '') ?>">
+                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= ($search_query ?? '') ?>">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>

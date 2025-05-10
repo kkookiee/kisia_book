@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
 
                 <form class="auth-form" method="POST" action="">
-                    <input type="hidden" name="user_id" value="<?= htmlspecialchars($id) ?>">
+                    <input type="hidden" name="user_id" value="<?= ($id) ?>">
                     <div class="form-group">
                         <label for="new_password">새 비밀번호</label>
                         <input type="password" id="new_password" name="new_password" required>

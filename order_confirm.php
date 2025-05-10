@@ -50,7 +50,7 @@ $total_price = 0;
             $total_price += $item_total;
           ?>
           <tr>
-            <td class="cart-product-info"><?= htmlspecialchars($row['title']) ?></td>
+            <td class="cart-product-info"><?= ($row['title']) ?></td>
             <td><?= $row['quantity'] ?></td>
             <td><?= number_format($item_total) ?>원</td>
           </tr>

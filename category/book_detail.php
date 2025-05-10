@@ -105,7 +105,7 @@ require_once '../header.php';
                                 <span class="review-date"><?php echo date('Y-m-d', strtotime($review['created_at'])); ?></span>
                             </div>
                             <div class="review-content">
-                                <?php echo nl2br(htmlspecialchars($review['content'])); ?>
+                                <?php echo nl2br(($review['content'])); ?>
                             </div>
                         </div>
                     </div>
