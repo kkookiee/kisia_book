@@ -5,6 +5,7 @@ require_once '../header.php';
 // 경제/경영 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'economy'";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 
 // 에러 체크 추가
@@ -15,6 +16,8 @@ if (!$result) {
 // 디버깅을 위한 데이터 출력
 echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->";
 =======
+=======
+>>>>>>> Stashed changes
 $result = $conn->query($sql);
 >>>>>>> Stashed changes
 ?>
@@ -37,7 +40,11 @@ $result = $conn->query($sql);
             <h1>경제/경영</h1>
             <div class="book-list">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <?php if ($result->num_rows > 0): ?>
+=======
+            <?php if ($result->num_rows > 0): ?>
+>>>>>>> Stashed changes
 =======
             <?php if ($result->num_rows > 0): ?>
 >>>>>>> Stashed changes
@@ -64,6 +71,7 @@ $result = $conn->query($sql);
                                 </div>
                             </div>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -84,6 +92,8 @@ $result = $conn->query($sql);
                                 </div>
                             </form>
 =======
+=======
+>>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -94,6 +104,9 @@ $result = $conn->query($sql);
                                 <button class="buy-btn">바로구매</button>
                                 <button class="wish-btn">리스트에 넣기</button>
                             </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                         </div>
                     <?php endwhile; ?>

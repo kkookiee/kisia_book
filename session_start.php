@@ -11,8 +11,12 @@ if (!isset($_SESSION['user_id'])) {
     // header("Location: login.php");
     // exit;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 */
+=======
+}*/
+>>>>>>> Stashed changes
 =======
 }*/
 >>>>>>> Stashed changes

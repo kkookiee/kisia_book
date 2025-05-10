@@ -5,8 +5,11 @@ require_once '../header.php';
 // IT/모바일 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'computer_it'";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 =======
+=======
+>>>>>>> Stashed changes
 $result = $conn->query($sql);
 >>>>>>> Stashed changes
 ?>
@@ -24,6 +27,10 @@ $result = $conn->query($sql);
 </head>
 <body>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -32,7 +39,11 @@ $result = $conn->query($sql);
             <h1>IT/모바일</h1>
             <div class="book-list">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <?php if ($result->num_rows > 0): ?>
+=======
+            <?php if ($result->num_rows > 0): ?>
+>>>>>>> Stashed changes
 =======
             <?php if ($result->num_rows > 0): ?>
 >>>>>>> Stashed changes
@@ -42,6 +53,7 @@ $result = $conn->query($sql);
                             <div class="book-number"><?php echo $num++; ?></div>
                             <div class="book-thumb">
                                 <a href="book_detail.php?id=<?php echo $book['id']; ?>">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                                     <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
                                 </a>
@@ -53,6 +65,8 @@ $result = $conn->query($sql);
                                 <div class="book-meta">
                                     <a href="book_detail.php?id=<?php echo $book['id']; ?>"><?php echo $book['author']; ?></a>
 =======
+=======
+>>>>>>> Stashed changes
                                 <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
                             </div>
                             <div class="book-info">
@@ -61,6 +75,9 @@ $result = $conn->query($sql);
                                 </div>
                                 <div class="book-meta">
                                     <a href = "book_detail.php?id=<?php echo $book['id']; ?>"><?php echo $book['author']; ?></a>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                                 </div>
                                 <div class="book-price"><?php echo number_format($book['price']); ?>원</div>
@@ -71,6 +88,7 @@ $result = $conn->query($sql);
                                     ?>
                                 </div>
                             </div>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
@@ -92,6 +110,8 @@ $result = $conn->query($sql);
                                 </div>
                             </form>
 =======
+=======
+>>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -102,6 +122,9 @@ $result = $conn->query($sql);
                                 <button class="buy-btn">바로구매</button>
                                 <button class="wish-btn">리스트에 넣기</button>
                             </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                         </div>
                     <?php endwhile; ?>

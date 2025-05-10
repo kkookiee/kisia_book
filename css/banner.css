@@ -7,7 +7,11 @@
     height: 300px;
     overflow: hidden;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     margin-bottom: 0px;
+=======
+    margin-bottom: 20px;
+>>>>>>> Stashed changes
 =======
     margin-bottom: 20px;
 >>>>>>> Stashed changes
@@ -116,6 +120,7 @@
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 /* 배너 하단 그라데이션 효과 추가 */
 .banner-slide::after {
     content: '';
@@ -130,6 +135,8 @@
 
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 .banner-tabs {
     display: flex;
     justify-content: center;
@@ -141,8 +148,11 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     min-width: 100%;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 }
@@ -159,7 +169,10 @@
     cursor: pointer;
     border-right: 1px solid #e5e5e5;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     height: 35px;
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     transition: background 0.18s, color 0.18s, font-weight 0.18s;
@@ -207,7 +220,11 @@
         border-radius: 8px 8px 0 0;
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
 =======
 }
 >>>>>>> Stashed changes

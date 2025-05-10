@@ -169,6 +169,9 @@ $total_price = 0;
     </main>
 
     <?php include 'footer.php'; ?>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 </body>
 </html>
