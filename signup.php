@@ -1,3 +1,8 @@
+<?php
+require_once 'header.php';
+require_once 'connect.php';
+?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -10,10 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'header.php'; ?>
     <?php
-    require_once 'connect.php';
-    
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $username = $_POST['id'];
         $email = $_POST['email'];
@@ -75,10 +77,6 @@
             </form>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-        </div>
-    </footer>
+    <?php require_once 'footer.php'; ?>
 </body>
 </html> 

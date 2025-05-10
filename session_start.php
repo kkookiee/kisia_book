@@ -10,12 +10,15 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['email'] = 'test@example.com'; // 옵션
     // header("Location: login.php");
     // exit;
+<<<<<<< Updated upstream
 }
 */
+=======
+}*/
+>>>>>>> Stashed changes
 
 // 세션 데이터 변수로 할당
-$user_id   = $_SESSION['user_id'];
+$user_id   = $_SESSION['user_id'] ?? '';
 $user_name = $_SESSION['user_name'] ?? '';
 $email     = $_SESSION['email'] ?? '';
-$id        = $user_id; // header.php 호환을 위해 추가
 ?>

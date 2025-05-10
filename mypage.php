@@ -2,6 +2,7 @@
 require_once 'session_start.php';
 require_once 'connect.php';
 
+<<<<<<< Updated upstream
 if (!empty($id)) {
     $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
     $stmt->bind_param("s", $id);
@@ -9,6 +10,17 @@ if (!empty($id)) {
     $result = $stmt->get_result();
     $user_data = $result->fetch_assoc();
     $name = $user_data['name'];
+=======
+// 로그인된 사용자의 정보를 데이터베이스에서 가져옴
+if(!empty($user_id)) {
+    $stmt = $conn->prepare("SELECT user_name, email FROM users WHERE user_id = ?");
+    $stmt->bind_param("s", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_data = $result->fetch_assoc();
+    
+    $user_name = $user_data['user_name'];
+>>>>>>> Stashed changes
     $email = $user_data['email'];
 }
 
@@ -64,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+<<<<<<< Updated upstream
 <?php include 'header.php'; ?>
 <main>
     <div class="mypage-container">
@@ -73,6 +86,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                 <div class="user-info">
                     <div class="user-avatar">
                         <i class="fas fa-user"></i>
+=======
+    <?php include 'header.php'; ?>
+    <main>
+        <div class="mypage-container">
+            <?php
+            if(!empty($user_id)): ?>
+            <div class="mypage-content">
+                <aside class="sidebar">
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="user-name"><?= ($user_name)?></h3>
+                        <p class="user-email"><?= ($email)?></p>
+                    </div>
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active"><i class="fas fa-shopping-bag"></i> 주문 내역</a></li>
+                        <li><a href="#"><i class="fas fa-heart"></i> 찜 목록</a></li>
+                        <li><a href="#"><i class="fas fa-comment"></i> 내가 쓴 리뷰</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> 회원 정보 수정</a></li>
+                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                    </ul>
+                </aside>
+                <div class="main-content">
+                    <div class="content-header">
+                        <h3>주문 내역</h3>
+>>>>>>> Stashed changes
                     </div>
                     <h3 class="user-name"><?= ($name) ?></h3>
                     <p class="user-email"><?= ($email) ?></p>
@@ -190,6 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                 </div>
             </div>
         </div>
+<<<<<<< Updated upstream
     <?php else: ?>
         <script>
             alert('로그인 후 이용해주세요.');
@@ -204,6 +245,16 @@ function showTab(tabId) {
     document.getElementById(tabId).style.display = 'block';
 }
 </script>
+=======
+        <?php else: ?>
+            <div class="mypage-content">
+                <script>alert('로그인 후 이용해주세요.');</script>
+                <script>location.href='login.php';</script>
+            </div>
+        <?php endif; ?>
+        <?php include 'footer.php'; ?>
+    </main>
+>>>>>>> Stashed changes
 </body>
 </html>
 <?php include 'footer.php'; ?>

@@ -16,6 +16,8 @@ services:
       MYSQL_DATABASE: book_store
       MYSQL_USER: user
       MYSQL_PASSWORD: user
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_general_ci
     ports:
       - "3307:3306"
     volumes:

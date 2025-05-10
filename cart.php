@@ -161,8 +161,14 @@ $total_price = 0;
                 <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
             </form>
         </div>
+<<<<<<< Updated upstream
     </div>
 </main>
 <?php include 'footer.php'; ?>
+=======
+    </main>
+
+    <?php include 'footer.php'; ?>
+>>>>>>> Stashed changes
 </body>
 </html>

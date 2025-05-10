@@ -4,6 +4,7 @@ require_once '../header.php';
 
 // 경제/경영 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'economy'";
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 
 // 에러 체크 추가
@@ -13,6 +14,9 @@ if (!$result) {
 
 // 디버깅을 위한 데이터 출력
 echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->";
+=======
+$result = $conn->query($sql);
+>>>>>>> Stashed changes
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +36,11 @@ echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->"
         <div class="category-content">
             <h1>경제/경영</h1>
             <div class="book-list">
+<<<<<<< Updated upstream
                 <?php if ($result->num_rows > 0): ?>
+=======
+            <?php if ($result->num_rows > 0): ?>
+>>>>>>> Stashed changes
                     <?php $num = 1; ?>
                     <?php while($book = $result->fetch_assoc()): ?>
                         <div class="book-row">
@@ -55,6 +63,7 @@ echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->"
                                     ?>
                                 </div>
                             </div>
+<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -74,6 +83,18 @@ echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->"
                                     <button type = "submit" class="buy-btn">바로구매</button>
                                 </div>
                             </form>
+=======
+                            <div class="book-actions">
+                                <div class="qty-control">
+                                    <button>-</button>
+                                    <input type="number" value="1" min="1">
+                                    <button>+</button>
+                                </div>
+                                <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
+                                <button class="buy-btn">바로구매</button>
+                                <button class="wish-btn">리스트에 넣기</button>
+                            </div>
+>>>>>>> Stashed changes
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>

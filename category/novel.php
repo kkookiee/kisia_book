@@ -4,8 +4,12 @@ require_once '../header.php';
 
 // 소설 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'novel'";
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 
+=======
+$result = $conn->query($sql);
+>>>>>>> Stashed changes
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +55,7 @@ $result = mysqli_query($conn, $sql);
                                     ?>
                                 </div>
                             </div>
+<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -70,6 +75,16 @@ $result = mysqli_query($conn, $sql);
                                     <button type = "submit" class="buy-btn">바로구매</button>
                                 </div>
                             </form>
+=======
+                            <div class="book-actions">
+                                <div class="qty-control">
+                                    <button>-</button>
+                                    <input type="number" value="1" min="1">
+                                    <button>+</button>
+                                </div>
+                                <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
+                            </div>
+>>>>>>> Stashed changes
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>

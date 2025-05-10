@@ -45,6 +45,7 @@ require_once '../header.php';
             <div class="book-detail-tabs">
                 <button class="tab-btn active" data-tab="description">상세 설명</button>
                 <button class="tab-btn" data-tab="reviews">리뷰</button>
+<<<<<<< Updated upstream
             </div>  
             
             <div class="tab-content description-tab active">
@@ -151,6 +152,40 @@ require_once '../header.php';
     }
 
     </script>
+=======
+                <div class="tab-content active" id=" add-book-image">
+                    <img src="../<?php echo $book['additional_image_path']; ?>" alt="도서 이미지">
+                </div>
+                <div class="tab-content" id="reviews">
+                    <p>리뷰</p>
+                    <div class="review-form">
+                        <textarea placeholder="리뷰를 작성해주세요"></textarea>
+                        <button class="action-button cart-button">리뷰 등록</button>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="reviews-section">
+                <h2>리뷰</h2>
+                <div class="review-form">
+                    <textarea placeholder="리뷰를 작성해주세요"></textarea>
+                    <button class="action-button cart-button">리뷰 등록</button>
+                </div>
+                <div class="review-list">
+                    <div class="review-item">
+                        <div class="review-header">
+                            <span class="review-author">홍길동</span>
+                            <span class="review-date">2024-04-29</span>
+                        </div>
+                        <div class="review-content">
+                            매우 좋은 책이었습니다. 많은 도움이 되었습니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+    </main>
+>>>>>>> Stashed changes
 
     <?php include '../footer.php'; ?>
 </body>
