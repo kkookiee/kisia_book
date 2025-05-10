@@ -453,3 +453,20 @@
 .checkout-btn:hover {
   background-color: #218838;
 }
+
+.cart-delete-btn {
+    background: #2376c7;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+}
+.cart-delete-btn:hover {
+    background: #195a99;
+    color: #fff;
+}
