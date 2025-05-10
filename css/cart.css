@@ -426,17 +426,19 @@
 }
 
 .address-group button {
-  padding: 8px 12px;
-  margin-top: 5px;
-  background-color: #0078ff;
+  padding: 8px 16px;
+  background-color: #2376c7;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s;
 }
 
 .address-group button:hover {
-  background-color: #005fcc;
+  background-color: #195a99;
 }
 
 .checkout-btn {

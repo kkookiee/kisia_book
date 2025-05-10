@@ -41,6 +41,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 30px 0;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.logo {
+    flex-shrink: 0;
 }
 
 .logo h1 {
@@ -50,11 +56,11 @@
 }
 
 .search-box {
+    min-width: 220px;
+    flex: 1 1 320px;
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: 1;
-    max-width: 600px;
     margin: 0 20px;
     height: 44px;
 }
@@ -102,6 +108,9 @@
 }
 
 .nav-right {
+    flex-shrink: 0;
+    min-width: 180px;
+    justify-content: flex-end;
     display: flex;
     gap: 20px;
 }
@@ -167,4 +176,22 @@
 .category-active {
     background-color: #0080ff;
     color: #fff !important;
+}
+
+@media (max-width: 900px) {
+    .nav-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .search-box {
+        margin: 10px 0;
+        width: 100%;
+        max-width: 100%;
+    }
+    .nav-right {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 8px;
+    }
 }
