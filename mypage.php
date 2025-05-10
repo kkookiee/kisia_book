@@ -1,5 +1,5 @@
 <?php 
-require_once 'session_start.php';
+require_once 'session_start.php'; 
 require_once 'connect.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -47,6 +47,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 온라인 서점</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ✅ css 링크 추가 -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/mypage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
 
 <?php require_once 'header.php'; ?>
 
@@ -102,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                         <img src="<?= $review['image_path'] ?>" width="50">
                         <a href="book_detail.php?id=<?= $review['book_id'] ?>"><?= $review['title'] ?></a>
                         <p><?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?></p>
-                        <p><?= htmlspecialchars($review['content']) ?></p>
+                        <p><?= ($review['content']) ?></p>
                         <p><?= $review['created_at'] ?></p>
                     </div>
                 <?php endwhile; ?>
@@ -128,3 +142,5 @@ function showTab(tabId) {
 </script>
 
 <?php require_once 'footer.php'; ?>
+</body>
+</html>
