@@ -126,7 +126,7 @@ $total_price = 0;
                 <td class="cart-product-info">
                     <img src="<?= $row['image_path'] ?>" alt="도서 이미지" class="cart-thumb" />
                     <div class="cart-info-detail">
-                        <span class="cart-title">[도서] <?= htmlspecialchars($row['title']) ?></span>
+                        <span class="cart-title">[도서] <?= ($row['title']) ?></span>
                         <div class="cart-meta">
                             <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                             <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
@@ -152,35 +152,20 @@ $total_price = 0;
             </tbody>
         </table>
 
-        <div class="cart-summary">
-            <div class="summary-item total">
-                <span>총 결제 금액</span>
-                <span><?= number_format($total_price) ?>원</span>
+            <div class="cart-summary">
+                <div class="summary-item total">
+                    <span>총 결제 금액</span>
+                    <span><?= number_format($total_price) ?>원</span>
+                </div>
+                <form action="order_confirm.php" method="post">
+                    <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
+                </form>
             </div>
-            <form action="order_confirm.php" method="post">
-                <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
-            </form>
         </div>
-<<<<<<< Updated upstream
-    </div>
-</main>
-<?php include 'footer.php'; ?>
-=======
     </main>
 
-    <?php include 'footer.php'; ?>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+    <footer>
+        <p>&copy; 2025 KISIA_bookStore. All rights reserved.</p>
+    </footer>
 </body>
 </html>

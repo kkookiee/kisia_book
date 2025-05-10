@@ -4,23 +4,8 @@ require_once '../header.php';
 
 // 자기계발 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'self_improvement'";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 $result = $conn->query($sql);
->>>>>>> Stashed changes
 ?>
 
 <!DOCTYPE html>
@@ -63,11 +48,6 @@ $result = $conn->query($sql);
                                     ?>
                                 </div>
                             </div>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -87,15 +67,6 @@ $result = $conn->query($sql);
                                     <button type = "submit" class="buy-btn">바로구매</button>
                                 </div>
                             </form>
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -106,19 +77,6 @@ $result = $conn->query($sql);
                                 <button class="buy-btn">바로구매</button>
                                 <button class="wish-btn">리스트에 넣기</button>
                             </div>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>

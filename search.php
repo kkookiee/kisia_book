@@ -19,11 +19,6 @@ if (!empty($search_query)) {
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>검색 결과 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
@@ -83,15 +78,6 @@ if (!empty($search_query)) {
     </div>
 
     <?php include 'footer.php'; ?>
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     <title>검색 결과 - 온라인 서점</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/header.css">
@@ -123,18 +109,5 @@ if (!empty($search_query)) {
 </main>
 
 <?php include 'footer.php'; ?>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 </body>
 </html>
