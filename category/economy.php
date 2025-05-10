@@ -7,6 +7,7 @@ $sql = "SELECT * FROM books WHERE category = 'economy'";
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 
 // 에러 체크 추가
@@ -17,6 +18,8 @@ if (!$result) {
 // 디버깅을 위한 데이터 출력
 echo "<!-- Debug: Number of rows: " . ($result ? $result->num_rows : 0) . " -->";
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -45,7 +48,11 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <?php if ($result->num_rows > 0): ?>
+=======
+            <?php if ($result->num_rows > 0): ?>
+>>>>>>> Stashed changes
 =======
             <?php if ($result->num_rows > 0): ?>
 >>>>>>> Stashed changes
@@ -80,6 +87,7 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                             <form action="../cart.php" method="POST">
                                 <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
                                 <input type = "hidden" name = "quantity" value = "1">
@@ -104,6 +112,8 @@ $result = $conn->query($sql);
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -116,6 +126,9 @@ $result = $conn->query($sql);
                             </div>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

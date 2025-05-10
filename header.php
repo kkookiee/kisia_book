@@ -33,8 +33,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======

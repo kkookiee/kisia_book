@@ -7,8 +7,11 @@ $sql = "SELECT * FROM books WHERE category = 'computer_it'";
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 $result = mysqli_query($conn, $sql);
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -32,6 +35,10 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -48,7 +55,11 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <?php if ($result->num_rows > 0): ?>
+=======
+            <?php if ($result->num_rows > 0): ?>
+>>>>>>> Stashed changes
 =======
             <?php if ($result->num_rows > 0): ?>
 >>>>>>> Stashed changes
@@ -67,6 +78,7 @@ $result = $conn->query($sql);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                     <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
                                 </a>
                             </div>
@@ -81,6 +93,8 @@ $result = $conn->query($sql);
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                                 <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
                             </div>
                             <div class="book-info">
@@ -91,6 +105,9 @@ $result = $conn->query($sql);
                                     <a href = "book_detail.php?id=<?php echo $book['id']; ?>"><?php echo $book['author']; ?></a>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -105,6 +122,7 @@ $result = $conn->query($sql);
                                     ?>
                                 </div>
                             </div>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
@@ -132,6 +150,8 @@ $result = $conn->query($sql);
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                             <div class="book-actions">
                                 <div class="qty-control">
                                     <button>-</button>
@@ -144,6 +164,9 @@ $result = $conn->query($sql);
                             </div>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
