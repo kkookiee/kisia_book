@@ -32,8 +32,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <span class="welcome-text"><?= htmlspecialchars($user_id) ?>님 환영합니다!</span>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                         <a href="/mypage.php">마이페이지</a>

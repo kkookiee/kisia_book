@@ -47,6 +47,7 @@ require_once '../header.php';
                 <button class="tab-btn" data-tab="reviews">리뷰</button>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             </div>  
             
             <div class="tab-content description-tab active">
@@ -156,6 +157,8 @@ require_once '../header.php';
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
                 <div class="tab-content active" id=" add-book-image">
                     <img src="../<?php echo $book['additional_image_path']; ?>" alt="도서 이미지">
                 </div>
@@ -189,6 +192,9 @@ require_once '../header.php';
         </div>-->
     </main>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
