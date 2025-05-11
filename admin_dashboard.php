@@ -1,7 +1,12 @@
 <?php
 include 'connect.php';
 
-// 전체 수치 가져오기
+// 🚨 Security Misconfiguration: 모든 SQL 에러 노출
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+// 🚨 Broken Access Control: 세션 확인 없음
+// 원래는 if (!isset($_SESSION['admin'])) { header('Location: login.php'); }
+
 $book_result = $conn->query("SELECT COUNT(*) AS total_books FROM books");
 $book_data = $book_result->fetch_assoc();
 $total_books = $book_data['total_books'];
@@ -22,79 +27,11 @@ $total_sales = $sales_data['total_sales'] ?? 0;
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>관리자 대시보드</title>
+  <title>관리자 대시보드 (취약)</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- 🚨 Vulnerable Component: CDN으로 chart.js 최신 X 버전 사용 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Pretendard', sans-serif;
-      background: #f5f7fa;
-    }
-    .admin-container {
-      display: flex;
-    }
-    .sidebar {
-      width: 240px;
-      background-color: #2d3748;
-      color: #fff;
-      padding: 20px;
-      height: 100vh;
-    }
-    .sidebar h2 {
-      font-size: 24px;
-      margin-bottom: 30px;
-    }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar ul li {
-      margin-bottom: 20px;
-    }
-    .sidebar ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 16px;
-    }
-    .main-content {
-      flex: 1;
-      padding: 40px;
-    }
-    .card-container {
-      display: flex;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .card {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      flex: 1;
-      text-align: center;
-    }
-    .card h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .card span {
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .chart-container {
-      margin-top: 30px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      height: 300px; /* ✅ 고정 높이 추가 */
-    }
-    .chart-container canvas {
-      height: 100% !important; /* ✅ 캔버스를 container에 맞춤 */
-    }
-  </style>
 </head>
 <body>
 <div class="admin-container">
@@ -111,26 +48,14 @@ $total_sales = $sales_data['total_sales'] ?? 0;
     </ul>
   </aside>
   <main class="main-content">
-    <h1>관리자 대시보드</h1>
-    <p>총괄 현황 및 시스템 관리</p>
+    <h1>관리자 대시보드 (접근제어 없음)</h1>
+    <p>총괄 현황 및 시스템 관리 (모든 사용자 접근 가능)</p>
 
     <div class="card-container">
-      <div class="card">
-        <h3>총 도서 수</h3>
-        <span><?= $total_books ?>권</span>
-      </div>
-      <div class="card">
-        <h3>총 회원 수</h3>
-        <span><?= $total_users ?>명</span>
-      </div>
-      <div class="card">
-        <h3>총 주문 수</h3>
-        <span><?= $total_orders ?>건</span>
-      </div>
-      <div class="card">
-        <h3>총 매출액</h3>
-        <span><?= number_format($total_sales) ?>원</span>
-      </div>
+      <div class="card"><h3>총 도서 수</h3><span><?= $total_books ?>권</span></div>
+      <div class="card"><h3>총 회원 수</h3><span><?= $total_users ?>명</span></div>
+      <div class="card"><h3>총 주문 수</h3><span><?= $total_orders ?>건</span></div>
+      <div class="card"><h3>총 매출액</h3><span><?= number_format($total_sales) ?>원</span></div>
     </div>
 
     <div class="chart-container">
@@ -153,14 +78,9 @@ new Chart(ctx, {
         }]
     },
     options: {
-        maintainAspectRatio: false, // ✅ 비율 유지 끔
+        maintainAspectRatio: false,
         scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                  stepSize: 1
-                }
-            }
+            y: { beginAtZero: true, ticks: { stepSize: 1 } }
         },
         plugins: {
             tooltip: {

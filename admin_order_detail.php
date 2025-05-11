@@ -1,16 +1,20 @@
 <?php
 include 'connect.php';
 
+// 🚨 Security Misconfiguration: 에러 노출
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 $order_id = $_GET['id'] ?? 0;
 
-// 주문 정보
+// 🚨 Broken Access Control: 세션 체크 없음
+// 🚨 SQL Injection 가능
 $order_sql = "SELECT o.*, u.username FROM orders o
               JOIN users u ON o.user_id = u.id
               WHERE o.id = $order_id";
 $order_result = $conn->query($order_sql);
 $order = $order_result->fetch_assoc();
 
-// 주문 상세 정보
+// 🚨 SQL Injection 가능
 $items_sql = "SELECT oi.*, b.title FROM order_items oi
               JOIN books b ON oi.book_id = b.id
               WHERE oi.order_id = $order_id";
@@ -32,10 +36,10 @@ $items_result = $conn->query($items_sql);
 
     <section class="order-info">
       <p><strong>주문 ID:</strong> <?= $order['id'] ?></p>
-      <p><strong>주문자:</strong> <?= ($order['username']) ?></p>
-      <p><strong>수령인:</strong> <?= ($order['recipient']) ?></p>
-      <p><strong>연락처:</strong> <?= ($order['phone']) ?></p>
-      <p><strong>주소:</strong> <?= ($order['address']) ?></p>
+      <p><strong>주문자:</strong> <?= $order['username'] ?></p>
+      <p><strong>수령인:</strong> <?= $order['recipient'] ?></p> <!-- 🚨 XSS 가능 -->
+      <p><strong>연락처:</strong> <?= $order['phone'] ?></p> <!-- 🚨 XSS 가능 -->
+      <p><strong>주소:</strong> <?= $order['address'] ?></p> <!-- 🚨 XSS 가능 -->
       <p><strong>총 금액:</strong> <?= number_format($order['total_price']) ?>원</p>
       <p><strong>주문일:</strong> <?= $order['created_at'] ?></p>
     </section>
@@ -52,7 +56,7 @@ $items_result = $conn->query($items_sql);
       <tbody>
         <?php while($item = $items_result->fetch_assoc()): ?>
         <tr>
-          <td><?= ($item['title']) ?></td>
+          <td><?= $item['title'] ?></td>
           <td><?= $item['quantity'] ?></td>
           <td><?= number_format($item['price']) ?>원</td>
         </tr>

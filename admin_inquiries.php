@@ -1,6 +1,12 @@
 <?php
 include 'connect.php';
 
+// 🚨 Security Misconfiguration: 모든 SQL 에러 노출
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+// 🚨 Broken Access Control: 세션 체크 제거
+// 원래는 if (!isset($_SESSION['admin'])) { header('Location: login.php'); exit; }
+
 $sql = "SELECT i.*, u.username 
         FROM inquiries i
         JOIN users u ON i.user_id = u.id
@@ -39,8 +45,8 @@ $result = $conn->query($sql);
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
           <td><?= $row['id'] ?></td>
-          <td><?= ($row['username']) ?></td>
-          <td><?= ($row['title']) ?></td>
+          <td><?= $row['username'] ?></td>
+          <td><?= $row['title'] ?></td>
           <td>
             <span class="status-badge <?= $row['inquiry_status'] === '답변완료' ? 'status-completed' : 'status-pending' ?>">
               <?= $row['inquiry_status'] ?>

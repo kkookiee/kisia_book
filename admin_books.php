@@ -5,8 +5,8 @@ include 'connect.php';
 $search = $_GET['search'] ?? '';
 $sql = "SELECT * FROM books";
 if ($search) {
-    $safe = $conn->real_escape_string($search);
-    $sql .= " WHERE title LIKE '%$safe%' OR category LIKE '%$safe%'";
+    // 🚨 보호 제거: 사용자 입력을 그대로 쿼리에 삽입
+    $sql .= " WHERE title LIKE '%$search%' OR category LIKE '%$search%'";
 }
 $result = $conn->query($sql);
 ?>

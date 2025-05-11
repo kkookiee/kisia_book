@@ -1,6 +1,10 @@
 <?php
 include 'connect.php';
 
+// 🚨 Security Misconfiguration: SQL 에러 노출
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
+// 🚨 Broken Access Control: 세션 체크 없음
 $sql = "SELECT o.*, u.username 
         FROM orders o 
         JOIN users u ON o.user_id = u.id 
@@ -41,10 +45,10 @@ $result = $conn->query($sql);
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
           <td><?= $row['id'] ?></td>
-          <td><?= ($row['username']) ?></td>
-          <td><?= ($row['recipient']) ?></td>
-          <td><?= ($row['phone']) ?></td>
-          <td><?= ($row['address']) ?></td>
+          <td><?= $row['username'] ?></td>
+          <td><?= $row['recipient'] ?></td> <!-- 🚨 XSS 가능 -->
+          <td><?= $row['phone'] ?></td> <!-- 🚨 XSS 가능 -->
+          <td><?= $row['address'] ?></td> <!-- 🚨 XSS 가능 -->
           <td><?= number_format($row['total_price']) ?>원</td>
           <td><?= $row['created_at'] ?></td>
           <td>
