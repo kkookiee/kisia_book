@@ -5,8 +5,6 @@ require_once '../header.php';
 // 소설 도서 목록 조회
 $sql = "SELECT * FROM books WHERE category = 'novel'";
 $result = mysqli_query($conn, $sql);
-
-$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -52,33 +50,32 @@ $result = $conn->query($sql);
                                     ?>
                                 </div>
                             </div>
-                            <form action="../cart.php" method="POST">
-                                <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
-                                <input type = "hidden" name = "quantity" value = "1">
-                                <input type = "hidden" name = "user_id" value = "<?php echo $user_id; ?>">
-                                <input type = "hidden" name = "title" value = "<?php echo $book['title']; ?>">
-                                <input type = "hidden" name = "price" value = "<?php echo $book['price']; ?>">
-                                <input type = "hidden" name = "image_path" value = "<?php echo $book['image_path']; ?>">
+                            <form id="bookActionForm" method="POST">
+                                <!-- 공통 도서 정보 -->
+                                <input type="hidden" name="book_id" value="<?php echo $book['id']; ?>">
+                                <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+                                <input type="hidden" name="title" value="<?php echo $book['title']; ?>">
+                                <input type="hidden" name="price" value="<?php echo $book['price']; ?>">
+                                <input type="hidden" name="image_path" value="<?php echo $book['image_path']; ?>">
+                                <input type="hidden" name="quantity" id="quantityInput" value="1">
 
                                 <div class="book-actions">
+                                    <!-- 수량 조절 UI -->
                                     <div class="qty-control">
-                                        <button>-</button>
-                                        <input type="number" value="1" min="1">
-                                        <button>+</button>
+                                    <button type="button" onclick="updateQuantity(-1)">-</button>
+                                    <input type="number" id="quantityDisplay" value="1" min="1" readonly>
+                                    <button type="button" onclick="updateQuantity(1)">+</button>
                                     </div>
-                                    <input type = "hidden" name = "book_id" value = "<?php echo $book['id']; ?>">
-                                    <button type = "submit" class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
-                                    <button type = "submit" class="buy-btn">바로구매</button>
+
+                                    <!-- 장바구니 버튼은 기본 액션 (form action은 cart.php) -->
+                                    <button type="submit" class="cart-btn" formaction="../cart.php">카트에 넣기</button>
+
+                                    <!-- 바로구매 버튼은 JS로 order_confirm.php로 이동 -->
+                                    <button type="button" class="buy-btn" onclick="submitDirectPurchase()">바로 구매</button>
                                 </div>
-                            </form>
-                            <div class="book-actions">
-                                <div class="qty-control">
-                                    <button>-</button>
-                                    <input type="number" value="1" min="1">
-                                    <button>+</button>
-                                </div>
-                                <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
-                            </div>
+                                </form>
+
+
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
@@ -91,3 +88,21 @@ $result = $conn->query($sql);
     <?php require_once '../footer.php'; ?>
 </body>
 </html> 
+
+<script>
+    function updateQuantity(change) {
+    const quantityInput = document.getElementById('quantityInput');
+    const quantityDisplay = document.getElementById('quantityDisplay');
+    let current = parseInt(quantityInput.value);
+    current = isNaN(current) ? 1 : current + change;
+    if (current < 1) current = 1;
+    quantityInput.value = current;
+    quantityDisplay.value = current;
+    }
+
+    function submitDirectPurchase() {
+    const form = document.getElementById('bookActionForm');
+    form.action = '../order_confirm.php';
+    form.submit();
+    }
+</script>

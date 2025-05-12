@@ -1,4 +1,27 @@
-<?php require_once 'session_start.php'; ?>
+<?php 
+require_once 'session_start.php';
+require_once 'connect.php';
+
+// 카테고리별 최신 도서 1권씩 (MySQL 8+)
+$sqlBest = "
+    SELECT *
+    FROM (
+        SELECT *,
+               ROW_NUMBER() OVER (PARTITION BY category ORDER BY created_at ASC) AS rn
+        FROM books
+        WHERE id LIKE '%1'
+    ) AS ranked
+    WHERE rn = 1
+";
+
+
+$bestResult = mysqli_query($conn, $sqlBest);
+
+
+// 신간 도서 5권 (최신순)
+$sqlNew = "SELECT * FROM books ORDER BY created_at DESC LIMIT 5";
+$newBooks = mysqli_query($conn, $sqlNew);
+?>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -12,203 +35,139 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <?php include 'header.php'; ?>   
- 
-    <main>
-        <div class="container">
-            <section class="main-banner">
-                <div class="banner-slider">
-                    <div class="banner-container">
-                        <div class="banner-slide active">
-                            <img src="images/banner1.jpg?<?php echo time(); ?>" alt="메인 배너 1" class="banner-image">
-                        </div>
-                        <div class="banner-slide">
-                            <img src="images/banner2.jpg?<?php echo time(); ?>" alt="메인 배너 2" class="banner-image">
-                        </div>
-                        <div class="banner-slide">
-                            <img src="images/banner3.jpg?<?php echo time(); ?>" alt="메인 배너 3" class="banner-image">
-                        </div>
+<?php include 'header.php'; ?>   
+
+<main>
+    <div class="container">
+        <!-- 메인 배너 -->
+        <section class="main-banner">
+            <div class="banner-slider">
+                <div class="banner-container">
+                    <div class="banner-slide active">
+                        <img src="images/banner1.jpg?<?php echo time(); ?>" alt="메인 배너 1" class="banner-image">
                     </div>
-                    <div class="banner-controls">
-                        <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
-                        <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+                    <div class="banner-slide">
+                        <img src="images/banner2.jpg?<?php echo time(); ?>" alt="메인 배너 2" class="banner-image">
+                    </div>
+                    <div class="banner-slide">
+                        <img src="images/banner3.jpg?<?php echo time(); ?>" alt="메인 배너 3" class="banner-image">
                     </div>
                 </div>
-            </section>
-            <div class="banner-tabs">
-                <button class="banner-tab active">5월의 굿즈 : 디즈니 캐릭터 텀블러</button>
-                <button class="banner-tab">한강『빛과 실』</button>
-                <button class="banner-tab">어린이날, 우리가 주인공!</button>
+                <div class="banner-controls">
+                    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
+        </section>
 
-            <section class="best-sellers">
-                <div class="section-header">
-                    <h2>베스트셀러</h2>
-                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
-                </div>
-                <div class="book-grid">
-                    <div class="book-card">
-                        <div class="book-rank">1</div>
-                        <img src="images/book1.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 1</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">15,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.5</span>
-                                <span class="reviews">(120)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                    <div class="book-card">
-                        <div class="book-rank">2</div>
-                        <img src="images/book2.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 2</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">20,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.3</span>
-                                <span class="reviews">(98)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                    <div class="book-card">
-                        <div class="book-rank">3</div>
-                        <img src="images/book3.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 3</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">18,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.7</span>
-                                <span class="reviews">(156)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                </div>
-            </section>
-
-            <section class="new-releases">
-                <div class="section-header">
-                    <h2>신간 도서</h2>
-                    <a href="#" class="more-link">더보기 <i class="fas fa-chevron-right"></i></a>
-                </div>
-                <div class="book-grid">
-                    <div class="book-card">
-                        <div class="new-badge">NEW</div>
-                        <img src="images/book4.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 4</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">22,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.2</span>
-                                <span class="reviews">(45)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                    <div class="book-card">
-                        <div class="new-badge">NEW</div>
-                        <img src="images/book5.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 5</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">19,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.4</span>
-                                <span class="reviews">(67)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                    <div class="book-card">
-                        <div class="new-badge">NEW</div>
-                        <img src="images/book6.jpg" alt="도서 이미지" class="book-image">
-                        <div class="book-info">
-                            <h4>도서 제목 6</h4>
-                            <p class="author">저자명</p>
-                            <p class="price">25,000원</p>
-                            <div class="rating-info">
-                                <span class="rating">★ 4.6</span>
-                                <span class="reviews">(89)</span>
-                            </div>
-                        </div>
-                        <button class="cart-btn">장바구니 담기</button>
-                    </div>
-                </div>
-            </section>
-
+        <div class="banner-tabs">
+            <button class="banner-tab active">헤세의 철학을 확장하다</button>
+            <button class="banner-tab">한강『빛과 실』</button>
+            <button class="banner-tab">수능 대비 실전 모의고사</button>
         </div>
-    </main>
-    <?php include 'footer.php'; ?>   
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const slides = document.querySelectorAll('.banner-slide');
-            const tabs = document.querySelectorAll('.banner-tab');
-            const prevBtn = document.querySelector('.prev-btn');
-            const nextBtn = document.querySelector('.next-btn');
-            let currentSlide = 0;
-            let slideInterval;
 
-            function showSlide(index) {
-                slides.forEach(slide => slide.classList.remove('active'));
-                tabs.forEach(tab => tab.classList.remove('active'));
-                slides[index].classList.add('active');
-                tabs[index].classList.add('active');
-                currentSlide = index;
-            }
+        <!-- 카테고리별 최신 도서 1권씩 -->
+        <section class="best-sellers">
+            <div class="section-header"><h2>카테고리별 베스트셀러</h2></div>
+            <div class="book-grid">
+                <?php while($book = mysqli_fetch_assoc($bestResult)): ?>
+                    <div class="book-card">
+                        <img src="<?= $book['image_path'] ?>" class="book-image">
+                        <div class="book-info">
+                            <h4><?= $book['title'] ?></h4>
+                            <p class="author"><?= $book['author'] ?></p>
+                            <p class="price"><?= number_format($book['price']) ?>원</p>
+                            <p class="category">[<?= $book['category'] ?>]</p>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </section>
 
-            function nextSlide() {
-                currentSlide = (currentSlide + 1) % slides.length;
-                showSlide(currentSlide);
-            }
+        <!-- 최신 등록된 신간 5권 -->
+        <section class="new-releases">
+            <div class="section-header"><h2>신간 도서</h2></div>
+            <div class="book-grid">
+                <?php while($book = mysqli_fetch_assoc($newBooks)): ?>
+                    <div class="book-card">
+                        <div class="new-badge">NEW</div>
+                        <img src="<?= $book['image_path'] ?>" class="book-image">
+                        <div class="book-info">
+                            <h4><?= $book['title'] ?></h4>
+                            <p class="author"><?= $book['author'] ?></p>
+                            <p class="price"><?= number_format($book['price']) ?>원</p>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </section>
 
-            function prevSlide() {
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                showSlide(currentSlide);
-            }
+    </div>
+</main>
 
-            function startSlideShow() {
-                slideInterval = setInterval(nextSlide, 5000);
-            }
+<?php include 'footer.php'; ?>   
 
-            function stopSlideShow() {
-                clearInterval(slideInterval);
-            }
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.banner-slide');
+        const tabs = document.querySelectorAll('.banner-tab');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentSlide = 0;
+        let slideInterval;
 
-            prevBtn.addEventListener('click', () => {
-                stopSlideShow();
-                prevSlide();
-                startSlideShow();
-            });
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            slides[index].classList.add('active');
+            tabs[index].classList.add('active');
+            currentSlide = index;
+        }
 
-            nextBtn.addEventListener('click', () => {
-                stopSlideShow();
-                nextSlide();
-                startSlideShow();
-            });
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
 
-            tabs.forEach((tab, index) => {
-                tab.addEventListener('click', () => {
-                    stopSlideShow();
-                    showSlide(index);
-                    startSlideShow();
-                });
-            });
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        }
 
-            // 마우스가 배너 위에 있을 때 자동 슬라이드 중지
-            const banner = document.querySelector('.banner-slider');
-            banner.addEventListener('mouseenter', stopSlideShow);
-            banner.addEventListener('mouseleave', startSlideShow);
+        function startSlideShow() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
 
-            // 초기 슬라이드 쇼 시작
+        function stopSlideShow() {
+            clearInterval(slideInterval);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            stopSlideShow();
+            prevSlide();
             startSlideShow();
         });
-    </script>
+
+        nextBtn.addEventListener('click', () => {
+            stopSlideShow();
+            nextSlide();
+            startSlideShow();
+        });
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                stopSlideShow();
+                showSlide(index);
+                startSlideShow();
+            });
+        });
+
+        const banner = document.querySelector('.banner-slider');
+        banner.addEventListener('mouseenter', stopSlideShow);
+        banner.addEventListener('mouseleave', startSlideShow);
+
+        startSlideShow();
+    });
+</script>
 </body>
-</html> 
+</html>

@@ -1,5 +1,4 @@
 <?php
-include 'header.php';
 require_once 'connect.php';
 
 require 'PHPMailer/src/PHPMailer.php';

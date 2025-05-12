@@ -29,6 +29,7 @@ $total_sales = $sales_data['total_sales'] ?? 0;
   <meta charset="UTF-8">
   <title>관리자 대시보드 (취약)</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <!-- 🚨 Vulnerable Component: CDN으로 chart.js 최신 X 버전 사용 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

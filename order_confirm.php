@@ -3,6 +3,11 @@ require 'connect.php';
 require 'session_start.php';
 require 'header.php';
 
+if (!isset($_POST['book_id'])) {
+  // 장바구니 기반 주문
+  header('Location: order_confirm_cart.php');
+  exit;
+}
 
 $user_id = $_SESSION['user_id'];
 
@@ -50,7 +55,7 @@ $total_price = 0;
             $total_price += $item_total;
           ?>
           <tr>
-            <td class="cart-product-info"><?= ($row['title']) ?></td>
+            <td class="cart-product-info"><?= htmlspecialchars($row['title']) ?></td>
             <td><?= $row['quantity'] ?></td>
             <td><?= number_format($item_total) ?>원</td>
           </tr>
