@@ -65,7 +65,6 @@ $result = $conn->query($sql);
                                 </div>
                                 <button type="submit" class="cart-btn" data-id="<?= $book['id'] ?>">카트에 넣기</button>
                                 <button type="submit" class="buy-btn">바로구매</button>
-                                <button type="button" class="wish-btn">리스트에 넣기</button>
                             </div>
                         </form>
                     </div>

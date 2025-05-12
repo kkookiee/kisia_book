@@ -25,13 +25,15 @@ $result = $conn->query($sql);
         <div class="category-content">
             <h1>자기계발</h1>
             <div class="book-list">
-            <?php if ($result->num_rows > 0): ?>
+                 <?php if ($result->num_rows > 0): ?>
                     <?php $num = 1; ?>
                     <?php while($book = $result->fetch_assoc()): ?>
                         <div class="book-row">
                             <div class="book-number"><?php echo $num++; ?></div>
                             <div class="book-thumb">
-                                <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
+                                <a href="book_detail.php?id=<?php echo $book['id']; ?>">
+                                    <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo $book['title']; ?>">
+                                </a>
                             </div>
                             <div class="book-info">
                                 <div class="book-title">
@@ -40,6 +42,7 @@ $result = $conn->query($sql);
                                 <div class="book-meta">
                                     <a href = "book_detail.php?id=<?php echo $book['id']; ?>"><?php echo $book['author']; ?></a>
                                 </div>
+
                                 <div class="book-price"><?php echo number_format($book['price']); ?>원</div>
                                 <div class="book-desc">
                                     <?php
@@ -67,20 +70,10 @@ $result = $conn->query($sql);
                                     <button type = "submit" class="buy-btn">바로구매</button>
                                 </div>
                             </form>
-                            <div class="book-actions">
-                                <div class="qty-control">
-                                    <button>-</button>
-                                    <input type="number" value="1" min="1">
-                                    <button>+</button>
-                                </div>
-                                <button class="cart-btn" data-id="<?php echo $book['id']; ?>">카트에 넣기</button>
-                                <button class="buy-btn">바로구매</button>
-                                <button class="wish-btn">리스트에 넣기</button>
-                            </div>
                         </div>
                     <?php endwhile; ?>
                 <?php else: ?>
-                    <p class="no-books">등록된 자기계발 도서가 없습니다.</p>
+                    <p class="no-books">등록된 도서가 없습니다.</p>
                 <?php endif; ?>
             </div>
         </div>

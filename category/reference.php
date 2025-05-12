@@ -26,11 +26,11 @@ $result = $conn->query($sql);
             <?php if ($result->num_rows > 0): ?>
                 <?php while($book = $result->fetch_assoc()): ?>
                     <div class="book-card">
-                        <img src="../<?php echo htmlspecialchars($book['image_path']); ?>" alt="<?php echo htmlspecialchars($book['title']); ?>">
-                        <h3><?php echo htmlspecialchars($book['title']); ?></h3>
-                        <p class="author"><?php echo htmlspecialchars($book['author']); ?></p>
+                        <img src="../<?php echo $book['image_path']; ?>" alt="<?php echo htmlspecialchars($book['title']); ?>">
+                        <h3><?php echo $book['title']; ?></h3>
+                        <p class="author"><?php echo $book['author']; ?></p>
                         <p class="price"><?php echo number_format($book['price']); ?>원</p>
-                        <p class="description"><?php echo htmlspecialchars($book['description']); ?></p>
+                        <p class="description"><?php echo $book['description']; ?></p>
                     </div>
                 <?php endwhile; ?>
             <?php else: ?>

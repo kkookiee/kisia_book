@@ -51,7 +51,7 @@ $images = $result_images->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
                 <div class="post-view-content">
-                    <?php echo nl2br(htmlspecialchars($inquiry['content'])); ?>
+                    <?php echo nl2br($inquiry['content']); ?>
                 </div>
                 <?php if ($images): ?>
                 <div class="post-view-images">
