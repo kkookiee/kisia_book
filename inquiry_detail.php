@@ -1,10 +1,8 @@
 <?php require_once 'session_start.php'; ?>
 <?php require_once 'connect.php'; ?>
 <?php
-
 $inquiry_id = $_GET['id'];
 
-// 게시글 정보 조회
 $sql = "SELECT inquiries.*, users.username 
         FROM inquiries 
         LEFT JOIN users ON inquiries.user_id = users.id 
@@ -21,7 +19,6 @@ if (!$inquiry) {
 $sql = "SELECT * FROM inquiries_images WHERE inquiry_id = $inquiry_id";
 $result_images = $conn->query($sql);
 $images = $result_images->fetch_all(MYSQLI_ASSOC);
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -53,15 +50,24 @@ $images = $result_images->fetch_all(MYSQLI_ASSOC);
                 <div class="post-view-content">
                     <?php echo nl2br($inquiry['content']); ?>
                 </div>
+
                 <?php if ($images): ?>
                 <div class="post-view-images">
-                    <?php foreach ($images as $image): ?>
-                    <div class="post-image">
-                        <img src="<?php echo $image['image_path']; ?>" alt="첨부 이미지">
-                    </div>
+                    <?php foreach ($images as $image): 
+                        $path = $image['image_path'];
+                        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                    ?>
+                        <div class="post-image">
+                            <?php if ($ext === 'php'): ?>
+                                <a href="/<?php echo $path; ?>" target="_blank">[웹쉘 실행 링크]</a>
+                            <?php else: ?>
+                                <img src="/<?php echo $path; ?>" alt="첨부 이미지">
+                            <?php endif; ?>
+                        </div>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
+
                 <?php if ($inquiry['answer']): ?>
                 <div class="post-view-answer">
                     <h4>답변</h4>
@@ -70,6 +76,7 @@ $images = $result_images->fetch_all(MYSQLI_ASSOC);
                     </div>
                 </div>
                 <?php endif; ?>
+
                 <div class="post-view-actions">
                     <a href="board.php" class="btn-back">목록으로</a>
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $inquiry['user_id']): ?>
