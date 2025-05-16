@@ -1,4 +1,5 @@
 <?php
+ob_start(); // 출력 버퍼링 시작 (header 에러 방지)
 
 include 'session_start.php';
 include 'connect.php';
@@ -15,39 +16,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
     $book_id = $_POST['book_id'];
     $quantity = $_POST['quantity'] ?? 1;
 
-    // SQL Injection 가능한 쿼리
-    $check_sql = "SELECT * FROM cart WHERE user_id = $user_id AND book_id = '$book_id'";
-    $check_result = mysqli_query($conn, $check_sql);
+    // 중복 확인: 이미 장바구니에 있다면 수량 증가
+    $check_sql = "SELECT * FROM cart WHERE user_id = ? AND book_id = ?";
+    $stmt = $conn->prepare($check_sql);
+    $stmt->bind_param("is", $user_id, $book_id);
+    $stmt->execute();
+    $check_result = $stmt->get_result();
 
-    if (mysqli_num_rows($check_result) > 0) {
-        $existing = mysqli_fetch_assoc($check_result);
+    if ($check_result->num_rows > 0) {
+        $existing = $check_result->fetch_assoc();
         $new_qty = $existing['quantity'] + $quantity;
-        $update_sql = "UPDATE cart SET quantity = $new_qty WHERE id = " . $existing['id'];
-        mysqli_query($conn, $update_sql);
+        $update_sql = "UPDATE cart SET quantity = ? WHERE id = ?";
+        $update_stmt = $conn->prepare($update_sql);
+        $update_stmt->bind_param("ii", $new_qty, $existing['id']);
+        $update_stmt->execute();
+        $update_stmt->close();
     } else {
-        $insert_sql = "INSERT INTO cart (user_id, book_id, quantity) VALUES ($user_id, '$book_id', $quantity)";
-        mysqli_query($conn, $insert_sql);
+        $insert_sql = "INSERT INTO cart (user_id, book_id, quantity) VALUES (?, ?, ?)";
+        $insert_stmt = $conn->prepare($insert_sql);
+        $insert_stmt->bind_param("isi", $user_id, $book_id, $quantity);
+        $insert_stmt->execute();
+        $insert_stmt->close();
     }
-
     header("Location: cart.php");
     exit;
 }
 
 // 2. 수량 변경
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
-    $cart_id = $_POST["cart_id"];
-    $quantity = $_POST["quantity"];
-    $update_sql = "UPDATE cart SET quantity = $quantity WHERE id = $cart_id";
-    mysqli_query($conn, $update_sql);
+    $cart_id = intval($_POST["cart_id"]);
+    $quantity = intval($_POST["quantity"]);
+    if ($quantity > 0) {
+        $update_sql = "UPDATE cart SET quantity = ? WHERE id = ?";
+        $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("ii", $quantity, $cart_id);
+        $stmt->execute();
+        $stmt->close();
+    }
     header("Location: cart.php");
     exit;
 }
 
 // 3. 항목 삭제
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_item"])) {
-    $cart_id = $_POST["cart_id"];
-    $delete_sql = "DELETE FROM cart WHERE id = $cart_id";
-    mysqli_query($conn, $delete_sql);
+    $cart_id = intval($_POST["cart_id"]);
+    $delete_sql = "DELETE FROM cart WHERE id = ?";
+    $stmt = $conn->prepare($delete_sql);
+    $stmt->bind_param("i", $cart_id);
+    $stmt->execute();
+    $stmt->close();
     header("Location: cart.php");
     exit;
 }
@@ -63,14 +80,19 @@ $sql = "
         b.image_path
     FROM cart c
     JOIN books b ON c.book_id = b.id
-    WHERE c.user_id = $user_id
+    WHERE c.user_id = ?
     ORDER BY c.created_at DESC
 ";
 
-$result = mysqli_query($conn, $sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $total_price = 0;
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -96,7 +118,7 @@ $total_price = 0;
                 </tr>
             </thead>
             <tbody>
-            <?php while ($row = mysqli_fetch_assoc($result)):
+            <?php while ($row = $result->fetch_assoc()):
                 $item_total = $row["price"] * $row["quantity"];
                 $total_price += $item_total;
             ?>
@@ -104,7 +126,7 @@ $total_price = 0;
                 <td class="cart-product-info">
                     <img src="<?= $row['image_path'] ?>" alt="도서 이미지" class="cart-thumb" />
                     <div class="cart-info-detail">
-                        <span class="cart-title">[도서] <?= $row['title'] ?></span>
+                        <span class="cart-title">[도서] <?= ($row['title']) ?></span>
                         <div class="cart-meta">
                             <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                             <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
@@ -130,17 +152,20 @@ $total_price = 0;
             </tbody>
         </table>
 
-        <div class="cart-summary">
-            <div class="summary-item total">
-                <span>총 결제 금액</span>
-                <span><?= number_format($total_price) ?>원</span>
+            <div class="cart-summary">
+                <div class="summary-item total">
+                    <span>총 결제 금액</span>
+                    <span><?= number_format($total_price) ?>원</span>
+                </div>
+                <form action="order_confirm.php" method="post">
+                    <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
+                </form>
             </div>
-            <form action="order_confirm.php" method="post">
-                <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
-            </form>
         </div>
-    </div>
-</main>
-<?php include 'footer.php'; ?>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 KISIA_bookStore. All rights reserved.</p>
+    </footer>
 </body>
 </html>
