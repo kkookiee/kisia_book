@@ -6,7 +6,7 @@
     <li><a href="admin_books.php"><i class="fas fa-book"></i> <span>도서 관리</span></a></li>
     <li><a href="admin_users.php"><i class="fas fa-users"></i> <span>회원 관리</span></a></li>
     <li><a href="admin_reviews.php"><i class="fas fa-comments"></i> <span>리뷰 관리</span></a></li>
-    <li><a href="admin_inquiries.php"><i class="fas fa-headphones"></i> <span>고객센터</span></a></li>
+    <li><a href="admin_inquiries.php"><i class="fas fa-headphones"></i> <span>게시판 관리</span></a></li>
     <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>로그아웃</span></a></li>
   </ul>
 </aside>
