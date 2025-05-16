@@ -31,10 +31,11 @@ require_once '../header.php';
                     <h1 class="book-title"><?php echo ($book['title']); ?></h1>
                     <p class="book-author"><?php echo ($book['author']);?></p>
                     <p class="book-price"><?php echo number_format($book['price']);?>원</p>
-                    <div class="book-actions">
-                        <button class="action-button cart-button">장바구니에 담기</button>
-                        <button class="action-button wishlist-button">위시리스트에 추가</button>
-                    </div>
+                    <form method="post" action="../cart.php" style="display:inline;">
+                        <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
+                        <button type="submit" class="action-button cart-button">장바구니에 담기</button>
+                    </form>
+
                     <div class="book-description">
                         <h3>도서 소개</h3>
                         <p><?php echo $book['description'];?></p>
@@ -99,7 +100,7 @@ require_once '../header.php';
                                 <span class="review-date"><?php echo date('Y-m-d', strtotime($review['created_at'])); ?></span>
                             </div>
                             <div class="review-content">
-                                <?php echo nl2br(htmlspecialchars($review['content'])); ?>
+                                <?php echo nl2br($review['content']); ?>
                             </div>
                         </div>
                         <div class="review-content">

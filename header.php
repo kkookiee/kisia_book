@@ -1,22 +1,34 @@
 <?php 
 require_once 'session_start.php'; 
 require_once 'connect.php';
-#echo '현재 client 문자셋: ' . $conn->character_set_name();
+
+$user_id = $_SESSION['user_id'] ?? null;
+
+// 장바구니 수량 계산
+$cart_count = 0;
+if ($user_id) {
+    $count_sql = "SELECT SUM(quantity) as total_items FROM cart WHERE user_id = $user_id";
+    $result = $conn->query($count_sql);
+    if ($result && $row = $result->fetch_assoc()) {
+        $cart_count = $row['total_items'] ?? 0;
+    }
+}
 
 $search_query = $_POST['search_query'] ?? '';
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
-    $sql = "SELECT * FROM books WHERE title LIKE '%$search_query%' OR author LIKE '%$search_query%'";
-
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($search_query)) {
+    $escaped_query = $conn->real_escape_string($search_query);
+    $sql = "SELECT * FROM books WHERE title LIKE '%$escaped_query%' OR author LIKE '%$escaped_query%'";
     $result = $conn->query($sql);
 
-    if($result->num_rows == 0){
+    if ($result->num_rows == 0) {
         echo '<script>alert("검색 결과가 없습니다.");</script>';
-    }else{
-        echo "<script>window.location.href='search.php?query=$search_query';</script>";
+    } else {
+        echo "<script>window.location.href='search.php?query=" . urlencode($search_query) . "';</script>";
     }
 }
 ?>
+
 <header>
     <div class="top-header">
         <div class="container">
@@ -29,9 +41,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 </div>
                 <div class="right-links">
                     <?php if (!empty($user_id)): ?>
-                        <span class="welcome-text"><?= htmlspecialchars($user_id) ?>님 환영합니다!</span>
+                        <span class="welcome-text"><?= $user_id ?>님 환영합니다!</span>
 
-                        <a href="/mypage.php">마이페이지</a>
                         <a href="/logout.php">로그아웃</a>
                     <?php else: ?>
                         <a href="/login.php">로그인</a>
@@ -55,17 +66,22 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <option value="music">음반</option>
                         <option value="dvd">DVD</option>
                     </select>
-                    <form action="search.php" method="GET">
-                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= htmlspecialchars($search_query ?? '') ?>">
+                    <form action="/search.php" method="GET">
+                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= $search_query ?? '' ?>">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
                 <div class="nav-right">
-                    <a href="/cart.php" class="nav-icon-link">
-                        <i class="fas fa-shopping-cart"></i>
+                <a href="/cart.php" class="nav-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <?php if ($cart_count > 0): ?>
+                        <span class="cart-count"><?= $cart_count ?></span>
+                    <?php else: ?>
                         <span class="cart-count">0</span>
-                        <span class="nav-text">장바구니</span>
-                    </a>
+                    <?php endif; ?>
+                    <span class="nav-text">장바구니</span>
+                </a>
+
                     <a href="/mypage.php" class="nav-icon-link">
                         <i class="fas fa-user"></i>
                         <span class="nav-text">마이페이지</span>
@@ -84,7 +100,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                     <li><a href="/category/self_improvement.php">자기계발</a></li>
                     <li><a href="/category/science.php">과학/기술</a></li>
                     <li><a href="/category/computer_it.php">컴퓨터/IT</a></li>
-                    <li><a href="/category/reference.php">참고서</a></li>
+                    <li><a href="/category/children.php">어린이</a></li>
                 </ul>
             </div>
         </div>

@@ -2,64 +2,84 @@
 include 'connect.php';
 include 'session_start.php';
 
+$user_id = $_SESSION['user_id'] ?? null;
+if (!$user_id) {
+    echo "<script>alert('로그인이 필요합니다.'); location.href='login.php';</script>";
+    exit;
+}
 
-$user_id = $_SESSION['user_id'];
-
-//post로 전달받은 배송 정보
+// 배송 정보
 $recipient = $_POST['recipient'];
-$phone = $_POST['phone'];
-$address = $_POST['address'];
+$phone = $_POST['phone1'] . '-' . $_POST['phone2'] . '-' . $_POST['phone3'];
+$postcode = $_POST['postcode'];
+$road = $_POST['road_address'];
+$detail = $_POST['detail_address'];
+$address = "($postcode) $road $detail";
 
-// 장바구니 조회
-$sql = "
-    SELECT c.*, b.title, b.price
+$items = [];
+$total_price = 0;
+
+// 1. 장바구니 도서 불러오기
+$cart_sql = "
+    SELECT c.book_id, c.quantity, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
     WHERE c.user_id = $user_id
 ";
+$cart_result = mysqli_query($conn, $cart_sql);
+while ($row = mysqli_fetch_assoc($cart_result)) {
+    $book_id = $row['book_id'];
+    $quantity = $row['quantity'];
+    $price = $row['price'];
 
-$result = $conn->query($sql);
-if($result->num_rows === 0) {
-    echo"장바구니가 비어있습니다.";
-    exit;
-}
-$total_price = 0;
-$items = [];
-
-// $result를 가져온 뒤 데이터를 반복문으로 $items에 저장
-while($row = $result->fetch_assoc()) {
-    $book_id = $row["book_id"];
-    $quantity = $row["quantity"];
-    $price = $row["price"];
-    
+    $items[$book_id] = [
+        'quantity' => $quantity,
+        'price' => $price
+    ];
     $total_price += $price * $quantity;
-    $items[] = ["book_id"=> $book_id, "quantity"=> $quantity,"price"=> $price];
 }
 
+// 2. 바로 구매 도서가 있을 경우 추가
+if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_POST['quantity'])) {
+    $book_id = $_POST['book_id'];
+    $price = floatval($_POST['price']);
+    $quantity = intval($_POST['quantity']);
 
-$orders_sql = "INSERT INTO orders(user_id, recipient, phone, address, total_price, created_at)
-              VALUES($user_id, '$recipient', '$phone', '$address', $total_price, NOW())";
-$conn->query($orders_sql);
-$order_id = $conn->insert_id;
-
-// order_items 테이블에 INSERT
-foreach ($items as $item) {
-    $book_id = $item["book_id"];
-    $quantity = $item["quantity"];
-    $price = $item["price"];
-
-    $item_sql = "INSERT INTO order_items (order_id, book_id, quantity, price)
-                 VALUES ($order_id, '$book_id', $quantity, $price)";
-    $conn->query($item_sql);
+    if (isset($items[$book_id])) {
+        $items[$book_id]['quantity'] += $quantity;
+    } else {
+        $items[$book_id] = [
+            'quantity' => $quantity,
+            'price' => $price
+        ];
+    }
+    $total_price += $price * $quantity;
 }
 
+// 3. 주문 저장
+$order_sql = "
+    INSERT INTO orders (user_id, recipient, phone, address, total_price, created_at, status)
+    VALUES ('$user_id', '$recipient', '$phone', '$address', '$total_price', NOW(), 'pending')
+";
+mysqli_query($conn, $order_sql);
+$order_id = mysqli_insert_id($conn);
 
-// 장바구니 비우기
+// 4. 주문 상세 저장
+foreach ($items as $book_id => $info) {
+    $quantity = $info['quantity'];
+    $price = $info['price'];
+    $item_sql = "
+        INSERT INTO order_items (order_id, book_id, quantity, price)
+        VALUES ('$order_id', '$book_id', '$quantity', '$price')
+    ";
+    mysqli_query($conn, $item_sql);
+}
+
+// 5. 장바구니 비우기
 $delete_cart_sql = "DELETE FROM cart WHERE user_id = $user_id";
-$conn->query($delete_cart_sql);
+mysqli_query($conn, $delete_cart_sql);
 
-// 완료 메시지 및 리디렉션
-// 주문이 성공적으로 완료되어 리디렉션 되면 html 실행하지 않음
-echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php';</script>";
+// 6. 완료 메시지
+echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?order_id=$order_id';</script>";
 exit;
 ?>

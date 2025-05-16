@@ -1,9 +1,19 @@
 FROM php:8.1-apache
-# 필요한 PHP 확장 설치
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-# 필요한 경우 mod_rewrite 같은 apache 모듈도 활성화
+# PHP 확장 설치
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd mysqli \
+    && docker-php-ext-enable mysqli
+
+# Apache 모듈 활성화
 RUN a2enmod rewrite
 
+# 소스 복사
 COPY . /var/www/html
+
+# 포트 노출
 EXPOSE 80

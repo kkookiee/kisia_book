@@ -1,9 +1,7 @@
 <?php
 require_once 'connect.php';
-
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-require 'PHPMailer/src/Exception.php';
+require 'vendor/autoload.php';
+require 'header.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -18,7 +16,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['email'])) {
     if($result->num_rows > 0) {
 
         $mail = new PHPMailer(true);    
-        $user_id = $result->fetch_assoc()['user_id'];
+        $user_id = $result->fetch_assoc()['id'];
+
 
         try {
             $mail->isSMTP(); // SMTP 방식으로 메일 전송
