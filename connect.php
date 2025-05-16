@@ -1,5 +1,5 @@
 <?php
-$host = 'kisia_book_db_1';
+$host = 'db';
 $db = 'book_store';
 $user = 'user';
 $pass = 'user';
@@ -10,5 +10,4 @@ $conn->set_charset("utf8mb4");
 if($conn->connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
-
 ?>

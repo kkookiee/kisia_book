@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   web:
     build: .
@@ -7,9 +9,11 @@ services:
       - .:/var/www/html
     depends_on:
       - db
+    networks:
+      - app-network
 
   db: 
-    image : mysql:8.0
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -21,6 +25,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -34,6 +40,12 @@ services:
       PMA_PASSWORD: root
     depends_on:
       - db
+    networks:
+      - app-network
 
 volumes:
   db_data:
+
+networks:
+  app-network:
+    driver: bridge
