@@ -11,19 +11,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
     $result = $conn->query($sql);
 
-if ($result && $result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    $_SESSION['user_id'] = $user['id'];          // 로그인 체크에 필수
-    $_SESSION['user_name'] = $user['name'];      // 일관성 유지
-    $_SESSION['email'] = $user['email'];
-
-    echo "<script>alert('로그인 성공!'); window.location.href='index.php';</script>";
-}
+    if ($result && $result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $_SESSION['user_id'] = $user['id'];          // 로그인 체크에 필수
+        $_SESSION['user_name'] = $user['name'];      // 일관성 유지
+        $_SESSION['email'] = $user['email'];
 
         echo "<script>alert('로그인 성공!'); window.location.href='index.php';</script>";
     } else {
-        echo "<script>alert('아이디 또는 비밀번호가 틀렸습니다.');</script>";
+            echo "<script>alert('아이디 또는 비밀번호가 틀렸습니다.');</script>";
     }
+}
 ?>
 
 <!DOCTYPE html>

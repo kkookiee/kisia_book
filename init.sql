@@ -15,6 +15,7 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+
 -- 📘 2. books (도서 테이블 - 사용자 제공 init 기준)
 CREATE TABLE books (
     id VARCHAR(50) NOT NULL PRIMARY KEY,
@@ -98,6 +99,11 @@ CREATE TABLE inquiries_images (
     image_path VARCHAR(255),
     FOREIGN KEY (inquiry_id) REFERENCES inquiries(id) ON DELETE CASCADE
 );
+
+INSERT INTO users (username, password, name, email) 
+VALUES
+( 'admin', 'admin', '관리자계정', 'admin@admin.com'),
+('test', 'test', '테스트계정', 'test@test.com');
 
 INSERT INTO books (id, title, author, price, category, description, image_path, additional_image_path) VALUES
 ('001', '소년이 온다', '한강', 13500, 'novel', '『소년이 온다』는 ‘상처의 구조에 대한 투시와 천착의 서사’를 통해 한강만이 풀어낼 수 있는 방식으로 1980년 5월을 새롭게 조명하며, 무고한 영혼들의 말을 대신 전하는 듯한 진심 어린 문장들로 5·18 이후를 살고 있는 우리에게 묵직한 질문을 던진다.가장 한국적인 서사로 세계를 사로잡은 한강 문학의 지향점을 보여주는 작품. 인간의 잔혹함과 위대함을 동시에 증언하는 이 충일한 서사는 이렇듯 시공간의 한계를 넘어 인간 역사의 보편성을 보여주며 훼손되지 말아야 할 인간성을 절박하게 복원한다.', 'images/book1.jpg', 'images/book1-1.jpg'),
