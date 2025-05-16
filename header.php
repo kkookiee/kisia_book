@@ -4,12 +4,24 @@ require_once 'connect.php';
 #echo '현재 client 문자셋: ' . $conn->character_set_name();
 
 $user_id = $_SESSION['user_id'] ?? null;
-
-// 장바구니 수량 계산
+$user_name = '';
 $cart_count = 0;
+
+// 사용자 이름 조회
 if ($user_id) {
-    $count_sql = "SELECT SUM(quantity) as total_items FROM cart WHERE user_id = ?";
-    $stmt = $conn->prepare($count_sql);
+    $stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($name);
+    if ($stmt->fetch()) {
+        $user_name = $name;
+    }
+    $stmt->close();
+}
+
+// 장바구니 수량 계산 (보안 방식)
+if ($user_id) {
+    $stmt = $conn->prepare("SELECT SUM(quantity) as total_items FROM cart WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($total_items);
@@ -46,7 +58,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 </div>
                 <div class="right-links">
                     <?php if (!empty($user_id)): ?>
-                        <span class="welcome-text"><?= $user_id ?>님 환영합니다!</span>
+                        <span class="welcome-text"><?= $user_name ?>님 환영합니다!</span>
 
                         <a href="/logout.php">로그아웃</a>
                     <?php else: ?>
