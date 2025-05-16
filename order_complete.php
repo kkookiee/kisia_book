@@ -15,7 +15,7 @@ $token = $order_id;
 $conn->query("UPDATE orders SET token = '$token', status = 'pending' WHERE id = $order_id");
 
 // 3. QR코드 URL 생성
-$qr_url = "kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
+$qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
 ?>
 
 <!DOCTYPE html>
