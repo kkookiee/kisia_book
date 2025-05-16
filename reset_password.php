@@ -13,9 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($password !== $confirm_password) {
         $error = "비밀번호가 일치하지 않습니다.";
     } else {
-        $sql = "UPDATE users SET password = '$password' WHERE id = $user_id";
-        if (mysqli_query($conn, $sql)) {
-            if (mysqli_affected_rows($conn) > 0) {
+        // 평문으로 저장
+        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt->bind_param("si", $password, $user_id);
+
+        if ($stmt->execute()) {
+            if ($stmt->affected_rows > 0) {
                 $success = "비밀번호가 성공적으로 변경되었습니다.";
             } else {
                 $error = "존재하지 않는 사용자입니다.";
@@ -23,9 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = "비밀번호 변경 중 오류가 발생했습니다.";
         }
+        $stmt->close();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ko">

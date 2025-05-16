@@ -1,34 +1,39 @@
 <?php 
 require_once 'session_start.php'; 
 require_once 'connect.php';
+#echo '현재 client 문자셋: ' . $conn->character_set_name();
 
 $user_id = $_SESSION['user_id'] ?? null;
 
 // 장바구니 수량 계산
 $cart_count = 0;
 if ($user_id) {
-    $count_sql = "SELECT SUM(quantity) as total_items FROM cart WHERE user_id = $user_id";
-    $result = $conn->query($count_sql);
-    if ($result && $row = $result->fetch_assoc()) {
-        $cart_count = $row['total_items'] ?? 0;
-    }
+    $count_sql = "SELECT SUM(quantity) as total_items FROM cart WHERE user_id = ?";
+    $stmt = $conn->prepare($count_sql);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($total_items);
+    $stmt->fetch();
+    $cart_count = $total_items ?? 0;
+    $stmt->close();
 }
+
 
 $search_query = $_POST['search_query'] ?? '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($search_query)) {
-    $escaped_query = $conn->real_escape_string($search_query);
-    $sql = "SELECT * FROM books WHERE title LIKE '%$escaped_query%' OR author LIKE '%$escaped_query%'";
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
+    $sql = "SELECT * FROM books WHERE title LIKE '%$search_query%' OR author LIKE '%$search_query%'";
+
     $result = $conn->query($sql);
 
-    if ($result->num_rows == 0) {
+    if($result->num_rows == 0){
         echo '<script>alert("검색 결과가 없습니다.");</script>';
-    } else {
-        echo "<script>window.location.href='search.php?query=" . urlencode($search_query) . "';</script>";
+    }else{
+        echo "<script>window.location.href='search.php?query=$search_query';</script>";
     }
 }
 ?>
-
 <header>
     <div class="top-header">
         <div class="container">
