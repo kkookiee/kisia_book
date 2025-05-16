@@ -1,5 +1,5 @@
 <?php
-$host = 'db';
+$host = 'kisia_book_db_1';
 $db = 'book_store';
 $user = 'user';
 $pass = 'user';
