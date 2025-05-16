@@ -65,7 +65,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <a href="/login.php">로그인</a>
                         <a href="/signup.php">회원가입</a>
                     <?php endif; ?>
-                    <a href="#">고객센터</a>
+                    <a href="#" onclick="alert('준비중입니다');>고객센터</a>
                 </div>
             </div>
         </div>
