@@ -161,7 +161,7 @@ $total_price = 0;
                     </form>
                 </td>
             </tr>
-            <!-- <?php endwhile; ?> -->
+            <?php endwhile; ?>
             </tbody>
         </table>
 
