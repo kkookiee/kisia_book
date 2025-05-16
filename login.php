@@ -24,7 +24,6 @@ if ($result && $result->num_rows > 0) {
     } else {
         echo "<script>alert('아이디 또는 비밀번호가 틀렸습니다.');</script>";
     }
-}
 ?>
 
 <!DOCTYPE html>
