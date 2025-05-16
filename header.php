@@ -65,7 +65,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <a href="/login.php">로그인</a>
                         <a href="/signup.php">회원가입</a>
                     <?php endif; ?>
-                    <a href="#" onclick="alert('준비중입니다');>고객센터</a>
+                    <a href="#" onclick="alert('준비중입니다'); return false;">고객센터</a>
                 </div>
             </div>
         </div>
@@ -105,7 +105,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                     </a>
                     <a href="/board.php" class="nav-icon-link">
                         <i class="fas fa-comments"></i>
-                        <span class="nav-text">게시판/리뷰</span>
+                        <span class="nav-text">문의사항</span>
                     </a>
                 </div>
             </div>

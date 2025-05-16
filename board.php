@@ -37,7 +37,7 @@ $total_pages = ceil($total_count / $per_page);
     <main>
         <div class="board-container">
             <div class="board-header">
-                <h2>게시판/리뷰</h2>
+                <h2>문의사항</h2>
                 <div class="board-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <a href="inquiry_write.php"><button class="write-btn">글쓰기</button></a>
