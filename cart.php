@@ -1,10 +1,7 @@
 <?php
-ob_start();
 
 include 'session_start.php';
 include 'connect.php';
-
-$buy_now = isset($_POST['buy_now']) && $_POST['buy_now'] == '1';
 
 $user_id = $_SESSION['user_id'] ?? null;
 
@@ -13,29 +10,23 @@ if (!$user_id) {
     exit;
 }
 
-// 1. 장바구니 추가 또는 바로 구매 처리
+// 1. 장바구니 추가
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset($_POST['cart_id'])) {
     $book_id = $_POST['book_id'];
     $quantity = $_POST['quantity'] ?? 1;
 
-    // 중복 확인
+    // SQL Injection 가능한 쿼리
     $check_sql = "SELECT * FROM cart WHERE user_id = $user_id AND book_id = '$book_id'";
-    $check_result = $conn->query($check_sql);
+    $check_result = mysqli_query($conn, $check_sql);
 
-    if ($check_result->num_rows > 0) {
-        $existing = $check_result->fetch_assoc();
+    if (mysqli_num_rows($check_result) > 0) {
+        $existing = mysqli_fetch_assoc($check_result);
         $new_qty = $existing['quantity'] + $quantity;
-
         $update_sql = "UPDATE cart SET quantity = $new_qty WHERE id = " . $existing['id'];
-        $conn->query($update_sql);
+        mysqli_query($conn, $update_sql);
     } else {
         $insert_sql = "INSERT INTO cart (user_id, book_id, quantity) VALUES ($user_id, '$book_id', $quantity)";
-        $conn->query($insert_sql);
-    }
-
-    if ($buy_now) {
-        header("Location: order_confirm.php");
-        exit;
+        mysqli_query($conn, $insert_sql);
     }
 
     header("Location: cart.php");
@@ -44,21 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
 
 // 2. 수량 변경
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
-    $cart_id = intval($_POST["cart_id"]);
-    $quantity = intval($_POST["quantity"]);
-    if ($quantity > 0) {
-        $update_sql = "UPDATE cart SET quantity = $quantity WHERE id = $cart_id";
-        $conn->query($update_sql);
-    }
+    $cart_id = $_POST["cart_id"];
+    $quantity = $_POST["quantity"];
+    $update_sql = "UPDATE cart SET quantity = $quantity WHERE id = $cart_id";
+    mysqli_query($conn, $update_sql);
     header("Location: cart.php");
     exit;
 }
 
 // 3. 항목 삭제
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_item"])) {
-    $cart_id = intval($_POST["cart_id"]);
+    $cart_id = $_POST["cart_id"];
     $delete_sql = "DELETE FROM cart WHERE id = $cart_id";
-    $conn->query($delete_sql);
+    mysqli_query($conn, $delete_sql);
     header("Location: cart.php");
     exit;
 }
@@ -78,7 +67,7 @@ $sql = "
     ORDER BY c.created_at DESC
 ";
 
-$result = $conn->query($sql);
+$result = mysqli_query($conn, $sql);
 
 $total_price = 0;
 ?>
@@ -107,7 +96,7 @@ $total_price = 0;
                 </tr>
             </thead>
             <tbody>
-            <?php while ($row = $result->fetch_assoc()):
+            <?php while ($row = mysqli_fetch_assoc($result)):
                 $item_total = $row["price"] * $row["quantity"];
                 $total_price += $item_total;
             ?>
@@ -115,7 +104,7 @@ $total_price = 0;
                 <td class="cart-product-info">
                     <img src="<?= $row['image_path'] ?>" alt="도서 이미지" class="cart-thumb" />
                     <div class="cart-info-detail">
-                        <span class="cart-title">[도서] <?= ($row['title']) ?></span>
+                        <span class="cart-title">[도서] <?= $row['title'] ?></span>
                         <div class="cart-meta">
                             <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                             <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
@@ -141,18 +130,17 @@ $total_price = 0;
             </tbody>
         </table>
 
-            <div class="cart-summary">
-                <div class="summary-item total">
-                    <span>총 결제 금액</span>
-                    <span><?= number_format($total_price) ?>원</span>
-                </div>
-                <form action="order_confirm.php" method="post">
-                    <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
-                </form>
+        <div class="cart-summary">
+            <div class="summary-item total">
+                <span>총 결제 금액</span>
+                <span><?= number_format($total_price) ?>원</span>
             </div>
+            <form action="order_confirm.php" method="post">
+                <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
+            </form>
         </div>
-    </main>
-
-    <?php require_once 'footer.php'; ?>
+    </div>
+</main>
+<?php include 'footer.php'; ?>
 </body>
 </html>
