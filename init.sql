@@ -48,7 +48,7 @@ CREATE TABLE orders (
     phone VARCHAR(20),
     address VARCHAR(255) NOT NULL,
     total_price INT NOT NULL,
-    status ENUM('pending', 'paid') DEFAULT 'pending',
+    status ENUM('pending', 'paid', 'cancel') DEFAULT 'pending',
     token VARCHAR(255) UNIQUE NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
