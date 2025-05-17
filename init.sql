@@ -8,7 +8,7 @@ USE book_store;
 -- 📦 1. users (회원 테이블)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100),
@@ -69,7 +69,7 @@ CREATE TABLE order_items (
 CREATE TABLE reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    username VARCHAR(255) NOT NULL,
     book_id VARCHAR(50) NOT NULL,
     content TEXT NOT NULL,
     rating INT CHECK (rating BETWEEN 1 AND 5),
