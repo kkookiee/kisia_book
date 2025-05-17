@@ -66,7 +66,7 @@ $images = $result_images->fetch_all(MYSQLI_ASSOC);
                                     <i class="fa fa-file"></i> <?php echo $filename; ?>
                                 </a>
                             <?php else: ?>
-                                <a href="/<?php echo $path; ?>" target="_blank">
+                                <a href="/<?php echo $path; ?>" download>
                                     <i class="fa fa-file-image"></i> <?php echo $filename; ?>
                                 </a>
                             <?php endif; ?>
