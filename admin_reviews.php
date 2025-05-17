@@ -70,7 +70,7 @@ $result = $conn->query($sql);
           </td>
           <td>
             <div class="btn-group">
-              <a href="admin_review_edit.php?id=<?= $row['id'] ?>" class="btn">수정</a>
+              <!--<a href="admin_review_edit.php?id=<?= $row['id'] ?>" class="btn">수정</a> 수정하기 코드 없음 -->
               <a href="admin_review_delete.php?id=<?= $row['id'] ?>" class="btn delete-link" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
             </div>
           </td>
