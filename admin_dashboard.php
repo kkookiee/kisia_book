@@ -41,6 +41,7 @@ $total_sales = $sales_data['total_sales'] ?? 0;
     <ul>
       <li><a href="admin_dashboard.php"><i class="fas fa-home"></i> 대시보드</a></li>
       <li><a href="admin_orders.php"><i class="fas fa-file-alt"></i> 주문 관리</a></li>
+      <li><a href="admin_payments.php"><i class="fas fa-file-alt"></i> 결제 관리</a></li>
       <li><a href="admin_books.php"><i class="fas fa-book"></i> 도서 관리</a></li>
       <li><a href="admin_users.php"><i class="fas fa-users"></i> 회원 관리</a></li>
       <li><a href="admin_reviews.php"><i class="fas fa-comments"></i> 리뷰 관리</a></li>
