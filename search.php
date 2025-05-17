@@ -7,11 +7,8 @@ $search_query = $_GET['search_query'] ?? '';
 $results = [];
 
 if (!empty($search_query)) {
-    $stmt = $conn->prepare("SELECT * FROM books WHERE title LIKE ? OR author LIKE ?");
-    $like_query = "%" . $search_query . "%";
-    $stmt->bind_param("ss", $like_query, $like_query);
-    $stmt->execute();
-    $results = $stmt->get_result();
+  $sql = "SELECT * FROM books WHERE title LIKE '%$search_query%' OR author LIKE '%$search_query%'";
+  $results = $conn->query($sql);
 }
 ?>
 

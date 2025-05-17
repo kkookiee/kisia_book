@@ -24,24 +24,28 @@ $cart_sql = "
     SELECT c.book_id, c.quantity, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
-    WHERE c.user_id = ?
+    WHERE c.user_id = $user_id
 ";
-$cart_stmt = $conn->prepare($cart_sql);
-$cart_stmt->bind_param("i", $user_id);
-$cart_stmt->execute();
-$cart_result = $cart_stmt->get_result();
 
-while ($row = $cart_result->fetch_assoc()) {
-    $book_id = $row['book_id'];
-    $quantity = $row['quantity'];
-    $price = $row['price'];
+$cart_result = $conn->query($cart_sql);
 
-    $items[$book_id] = [
-        'quantity' => $quantity,
-        'price' => $price
-    ];
-    $total_price += $price * $quantity;
+$items = [];
+$total_price = 0;
+
+if ($cart_result) {
+    while ($row = $cart_result->fetch_assoc()) {
+        $book_id = $row['book_id'];
+        $quantity = $row['quantity'];
+        $price = $row['price'];
+
+        $items[$book_id] = [
+            'quantity' => $quantity,
+            'price' => $price
+        ];
+        $total_price += $price * $quantity;
+    }
 }
+
 
 // 2. 바로 구매 도서가 있을 경우 추가
 if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_POST['quantity'])) {
@@ -61,30 +65,30 @@ if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_P
     }
     $total_price += $price * $quantity;
 }
-
 // 3. 주문 저장
-$order_sql = "INSERT INTO orders (user_id, recipient, phone, address, total_price, created_at, status)
-              VALUES (?, ?, ?, ?, ?, NOW(), 'pending')";
-$order_stmt = $conn->prepare($order_sql);
-$order_stmt->bind_param("isssd", $user_id, $recipient, $phone, $address, $total_price);
-$order_stmt->execute();
+$order_sql = "
+    INSERT INTO orders (user_id, recipient, phone, address, total_price, created_at, status)
+    VALUES ($user_id, '$recipient', '$phone', '$address', $total_price, NOW(), 'pending')
+";
+$conn->query($order_sql);
 $order_id = $conn->insert_id;
 
 // 4. 주문 상세 저장
-$item_sql = "INSERT INTO order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)";
-$item_stmt = $conn->prepare($item_sql);
 foreach ($items as $book_id => $info) {
     $quantity = $info['quantity'];
     $price = $info['price'];
-    $item_stmt->bind_param("isii", $order_id, $book_id, $quantity, $price);  // book_id는 string
-    $item_stmt->execute();
+
+    $item_sql = "
+        INSERT INTO order_items (order_id, book_id, quantity, price)
+        VALUES ($order_id, '$book_id', $quantity, $price)
+    ";
+    $conn->query($item_sql);
 }
 
-// 5. 장바구니 비우기 (바로 구매 도서가 있더라도 전체 비움)
-$delete_cart_sql = "DELETE FROM cart WHERE user_id = ?";
-$delete_stmt = $conn->prepare($delete_cart_sql);
-$delete_stmt->bind_param("i", $user_id);
-$delete_stmt->execute();
+// 5. 장바구니 비우기
+$delete_cart_sql = "DELETE FROM cart WHERE user_id = $user_id";
+$conn->query($delete_cart_sql);
+
 
 // 6. 완료 메시지
 echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?order_id=$order_id';</script>";

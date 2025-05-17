@@ -6,6 +6,7 @@ require 'header.php';
 
 $user_id = $_SESSION['user_id'];
 
+
 // 장바구니 조회
 $sql = "
     SELECT c.*, b.title, b.price

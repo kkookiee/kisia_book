@@ -20,70 +20,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
     $book_id = $_POST['book_id'];
     $quantity = $_POST['quantity'] ?? 1;
 
-    // 중복 확인
-    $check_sql = "SELECT * FROM cart WHERE user_id = ? AND book_id = ?";
-    $stmt = $conn->prepare($check_sql);
-    $stmt->bind_param("is", $user_id, $book_id);
-    $stmt->execute();
-    $check_result = $stmt->get_result();
+    // 중복 확인 (취약하게)
+    $check_sql = "SELECT * FROM cart WHERE user_id = $user_id AND book_id = '$book_id'";
+    $check_result = $conn->query($check_sql);
 
     if ($check_result->num_rows > 0) {
         $existing = $check_result->fetch_assoc();
         $new_qty = $existing['quantity'] + $quantity;
 
-        $update_sql = "UPDATE cart SET quantity = ? WHERE id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("ii", $new_qty, $existing['id']);
-        $update_stmt->execute();
-        $update_stmt->close();
+        $update_sql = "UPDATE cart SET quantity = $new_qty WHERE id = {$existing['id']}";
+        $conn->query($update_sql);
     } else {
-        $insert_sql = "INSERT INTO cart (user_id, book_id, quantity) VALUES (?, ?, ?)";
-        $insert_stmt = $conn->prepare($insert_sql);
-        $insert_stmt->bind_param("isi", $user_id, $book_id, $quantity);
-        $insert_stmt->execute();
-        $insert_stmt->close();
+        $insert_sql = "INSERT INTO cart (user_id, book_id, quantity) VALUES ($user_id, '$book_id', $quantity)";
+        $conn->query($insert_sql);
     }
 
-    // ✅ 바로 구매일 경우 주문 페이지로 이동
+    // 바로 구매인 경우
     if ($buy_now) {
-        header("Location: order_confirm.php");
+        header("Location: order_confirm.php?book_id=$book_id&quantity=$quantity"); // 따로 넘김
         exit;
     }
 
-    // 일반 카트 추가 후 다시 카트로
     header("Location: cart.php");
     exit;
 }
 
-
-// 2. 수량 변경
+// 2. 수량 변경 (취약하게)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
-    $cart_id = intval($_POST["cart_id"]);
-    $quantity = intval($_POST["quantity"]);
+    $cart_id = $_POST["cart_id"];
+    $quantity = $_POST["quantity"];
     if ($quantity > 0) {
-        $update_sql = "UPDATE cart SET quantity = ? WHERE id = ?";
-        $stmt = $conn->prepare($update_sql);
-        $stmt->bind_param("ii", $quantity, $cart_id);
-        $stmt->execute();
-        $stmt->close();
+        $update_sql = "UPDATE cart SET quantity = $quantity WHERE id = $cart_id";
+        $conn->query($update_sql);
     }
     header("Location: cart.php");
     exit;
 }
 
-// 3. 항목 삭제
+// 3. 항목 삭제 (취약하게)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_item"])) {
-    $cart_id = intval($_POST["cart_id"]);
-    $delete_sql = "DELETE FROM cart WHERE id = ?";
-    $stmt = $conn->prepare($delete_sql);
-    $stmt->bind_param("i", $cart_id);
-    $stmt->execute();
-    $stmt->close();
+    $cart_id = $_POST["cart_id"];
+    $delete_sql = "DELETE FROM cart WHERE id = $cart_id";
+    $conn->query($delete_sql);
     header("Location: cart.php");
     exit;
 }
 
-// 4. 장바구니 조회
+// 4. 장바구니 조회 (취약하게)
 $sql = "
     SELECT 
         c.id AS cart_id,
@@ -94,14 +77,10 @@ $sql = "
         b.image_path
     FROM cart c
     JOIN books b ON c.book_id = b.id
-    WHERE c.user_id = ?
+    WHERE c.user_id = $user_id
     ORDER BY c.created_at DESC
 ";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$result = $conn->query($sql);
 
 $total_price = 0;
 ?>
