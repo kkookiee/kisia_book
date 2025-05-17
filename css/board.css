@@ -446,3 +446,40 @@ input[type="file"].form-input:hover {
 .post-title a:hover {
     color: var(--primary-color);
 }
+
+.attached-files {
+    margin-top: 20px;
+}
+
+.attached-files h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.attached-file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.attached-file-list li {
+    margin-bottom: 5px;
+}
+
+.attached-file-list a {
+    display: inline-block;
+    padding: 6px 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.attached-file-list a i {
+    margin-right: 6px;
+    color: #555;
+}
