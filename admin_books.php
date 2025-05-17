@@ -31,7 +31,7 @@ $result = $conn->query($sql);
         <input type="text" name="search" placeholder="도서명 또는 카테고리 검색" value="<?= ($search) ?>" style="padding: 8px; width: 250px; border-radius: 6px; border: 1px solid #ccc;">
         <button type="submit" class="btn" style="margin-left: 8px;">검색</button>
       </form>
-      <a href="admin_book_add.php" class="btn">+ 도서 등록</a>
+      <a href="admin_book_add.php" class="btn">+ 도서 등록(미구현)</a>
     </div>
 
     <table class="admin-table">

@@ -3,7 +3,7 @@ include 'connect.php';
 include 'admin_sidebar.php';
 
 // 결제 완료된 주문만 조회
-$sql = "SELECT * FROM orders WHERE status = 'paid' ORDER BY paid_at DESC";
+$sql = "SELECT * FROM orders WHERE status = 'paid' ORDER BY created_at DESC"; // paid_at → created_at
 $result = mysqli_query($conn, $sql);
 ?>
 
@@ -12,8 +12,9 @@ $result = mysqli_query($conn, $sql);
 <head>
   <meta charset="UTF-8">
   <title>결제 관리</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <div class="admin-container">

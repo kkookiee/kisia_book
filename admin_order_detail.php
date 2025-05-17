@@ -1,69 +1,53 @@
 <?php
 include 'connect.php';
+include 'admin_sidebar.php';
 
-// 🚨 Security Misconfiguration: 에러 노출
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+$order_id = $_GET['id'] ?? null;
+if (!$order_id) {
+  die("잘못된 접근입니다.");
+}
 
-$order_id = $_GET['id'] ?? 0;
+$sql = "SELECT * FROM orders WHERE id = $order_id";
+$result = mysqli_query($conn, $sql);
+$order = mysqli_fetch_assoc($result);
 
-// 🚨 Broken Access Control: 세션 체크 없음
-// 🚨 SQL Injection 가능
-$order_sql = "SELECT o.*, u.username FROM orders o
-              JOIN users u ON o.user_id = u.id
-              WHERE o.id = $order_id";
-$order_result = $conn->query($order_sql);
-$order = $order_result->fetch_assoc();
+if (!$order) {
+  die("해당 주문을 찾을 수 없습니다.");
+}
 
-// 🚨 SQL Injection 가능
-$items_sql = "SELECT oi.*, b.title FROM order_items oi
-              JOIN books b ON oi.book_id = b.id
-              WHERE oi.order_id = $order_id";
-$items_result = $conn->query($items_sql);
+if (isset($_POST['cancel_order'])) {
+  $sql = "UPDATE orders SET status = 'cancel' WHERE id = $order_id";
+  mysqli_query($conn, $sql);
+  echo "<script>alert('주문이 취소되었습니다.'); location.href='admin_order_detail.php?id=$order_id';</script>";
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>주문 상세</title>
-  <link rel="stylesheet" href="css/admin.css">
+  <title>주문 상세 - 주문 #<?= ($order_id) ?></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
-<div class="admin-container">
-  <?php include 'admin_sidebar.php'; ?>
-  <main class="main-content">
-    <h1>주문 상세 정보</h1>
+  <div class="admin-container">
+    <main class="main-content">
+      <h1>주문 상세 정보</h1>
+      <table class="admin-table">
+        <tr><th>주문번호</th><td><?= $order['id'] ?></td></tr>
+        <tr><th>사용자 ID</th><td><?= $order['user_id'] ?></td></tr>
+        <tr><th>주문 금액</th><td><?= number_format($order['total_price']) ?>원</td></tr>
+        <tr><th>주문 상태</th><td><?= $order['status'] ?></td></tr>
+        <tr><th>토큰</th><td><?= $order['token'] ?? '-' ?></td></tr>
+      </table>
 
-    <section class="order-info">
-      <p><strong>주문 ID:</strong> <?= $order['id'] ?></p>
-      <p><strong>주문자:</strong> <?= $order['username'] ?></p>
-      <p><strong>수령인:</strong> <?= $order['recipient'] ?></p> <!-- 🚨 XSS 가능 -->
-      <p><strong>연락처:</strong> <?= $order['phone'] ?></p> <!-- 🚨 XSS 가능 -->
-      <p><strong>주소:</strong> <?= $order['address'] ?></p> <!-- 🚨 XSS 가능 -->
-      <p><strong>총 금액:</strong> <?= number_format($order['total_price']) ?>원</p>
-      <p><strong>주문일:</strong> <?= $order['created_at'] ?></p>
-    </section>
+      <form method="POST" onsubmit="return confirm('정말 주문을 취소하시겠습니까?');">
+        <button type="submit" name="cancel_order" value="1" class="btn delete-link">❌ 주문 취소</button>
+      </form>
 
-    <h2>주문 도서 목록</h2>
-    <table class="admin-table">
-      <thead>
-        <tr>
-          <th>도서 제목</th>
-          <th>수량</th>
-          <th>가격</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while($item = $items_result->fetch_assoc()): ?>
-        <tr>
-          <td><?= $item['title'] ?></td>
-          <td><?= $item['quantity'] ?></td>
-          <td><?= number_format($item['price']) ?>원</td>
-        </tr>
-        <?php endwhile; ?>
-      </tbody>
-    </table>
-  </main>
-</div>
+      <a href="admin_orders.php" class="btn">← 주문 목록</a>
+    </main>
+  </div>
 </body>
 </html>
