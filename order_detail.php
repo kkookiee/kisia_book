@@ -85,6 +85,7 @@ $total_price = 0;
       </div>
     <?php endif; ?>
 
+        
         <form method="post" onsubmit="return confirm('정말 주문을 취소하시겠습니까?');">
           <input type="hidden" name="cancel_order" value="1">
           <button type="submit" class="cancel-btn">주문 전체 취소</button>
@@ -133,6 +134,7 @@ $total_price = 0;
   <?php include 'footer.php'; ?>
 </body>
 </html>
+
 
 <script>
   function showQR() {
