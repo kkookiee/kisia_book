@@ -79,9 +79,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 <div class="search-box">
                     <select class="search-category">
                         <option value="all">전체</option>
-                        <option value="book">도서</option>
-                        <option value="music">음반</option>
-                        <option value="dvd">DVD</option>
                     </select>
                     <form action="/search.php" method="GET">
                         <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= $search_query ?? '' ?>">

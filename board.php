@@ -47,9 +47,9 @@ $total_pages = ceil($total_count / $per_page);
             <div class="board-filters">
                 <select class="filter-select">
                     <option value="all">전체</option>
-                    <option value="notice">공지사항</option>
+                    <!--<option value="notice">공지사항</option>
                     <option value="review">도서 리뷰</option>
-                    <option value="qna">Q&A</option>
+                    <option value="qna">Q&A</option>!-->
                 </select>
                 <div class="search-box">
                     <input type="text" class="search-input" placeholder="검색어를 입력하세요">
