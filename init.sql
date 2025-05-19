@@ -41,9 +41,11 @@ CREATE TABLE cart (
 );
 
 -- 📦 4. orders (주문 테이블)
+-- 📦 4. orders (주문 테이블)
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
+    order_seq INT NOT NULL,  -- ✅ 회원별 주문번호
     recipient VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     address VARCHAR(255) NOT NULL,
@@ -51,7 +53,8 @@ CREATE TABLE orders (
     status ENUM('pending', 'paid', 'cancel') DEFAULT 'pending',
     token VARCHAR(255) UNIQUE NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY uq_user_order_seq (user_id, order_seq)  -- ✅ 회원별 중복 방지
 );
 
 

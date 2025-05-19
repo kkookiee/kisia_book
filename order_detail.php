@@ -5,19 +5,18 @@ include 'session_start.php';
 $token = $_GET['token'] ?? '';
 $token = $conn->real_escape_string($token);
 
-// "user_id-order_id" 형식으로 파싱
 if (!str_contains($token, '-')) {
     echo "<script>alert('유효하지 않은 접근입니다.'); history.back();</script>";
     exit;
 }
 
-list($token_user_id, $token_order_id) = explode('-', $token);
+list($token_user_id, $token_order_seq) = explode('-', $token);
 
-// 주문 상태 및 배송지 조회
+// 주문 조회
 $order_sql = "
     SELECT id, status, address
     FROM orders
-    WHERE id = $token_order_id AND user_id = $token_user_id
+    WHERE user_id = $token_user_id AND order_seq = $token_order_seq
 ";
 $order_result = $conn->query($order_sql);
 
@@ -31,7 +30,7 @@ if ($order_result && $order_result->num_rows > 0) {
     exit;
 }
 
-// 주문 취소 처리
+// 주문 취소
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     $conn->query("DELETE FROM order_items WHERE order_id = $order_id");
     $conn->query("DELETE FROM orders WHERE id = $order_id");
@@ -85,8 +84,7 @@ $total_price = 0;
 
         <div id="qr-box" style="display: none; margin-top: 20px;">
           <?php
-            $qr_token = $token;
-            $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$qr_token";
+            $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
           ?>
           <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
           <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
@@ -160,4 +158,3 @@ $total_price = 0;
     }, 3000);
   }
 </script>
-
