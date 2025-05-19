@@ -19,18 +19,23 @@ $email = $user['email'];
 
 // 주문 내역 조회
 $order_sql = "
-    SELECT o.id AS order_id, o.created_at, b.id AS book_id, b.title, b.author, b.price, b.image_path, oi.quantity
+    SELECT o.id AS order_id, o.order_seq, o.token, o.created_at,
+           b.id AS book_id, b.title, b.author, b.price, b.image_path, oi.quantity
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
     JOIN books b ON oi.book_id = b.id
     WHERE o.user_id = $user_id
     ORDER BY o.created_at DESC
 ";
+
 $order_result = $conn->query($order_sql);
 $orders = [];
 while ($row = $order_result->fetch_assoc()) {
     $orders[$row['order_id']]['created_at'] = $row['created_at'];
+    $orders[$row['order_id']]['order_seq'] = $row['order_seq'];  // ✅ 추가
+    $orders[$row['order_id']]['token'] = $row['token'];
     $orders[$row['order_id']]['items'][] = $row;
+
 }
 
 // 회원정보 수정
@@ -107,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                     <?php foreach ($orders as $order_id => $order): ?>
                         <div class="order-item">
                             <div class="order-header">
-                                <span class="order-number">주문번호: <?= $order_id ?></span>
+                                <span class="order-number">주문번호: <?= $order['order_seq'] ?></span>
                                 <span class="order-date"><?= $order['created_at'] ?></span>
                             </div>
                             <div class="order-details">
@@ -125,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                                 <?php endforeach; ?>
                             </div>
                             <div class="order-actions" style="text-align:right; margin-top:10px;">
-                               <a href="order_detail.php?order_id=<?= $order_id ?>" class="detail-btn">상세 보기</a>
+                                <a href="order_detail.php?token=<?= $order['token'] ?>">상세보기</a>
                             </div>
                         </div>
                     <?php endforeach; ?>

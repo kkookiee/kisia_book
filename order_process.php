@@ -19,18 +19,14 @@ $address = "($postcode) $road $detail";
 $items = [];
 $total_price = 0;
 
-// 1. 장바구니 도서 불러오기
+// 🚀 [1] 장바구니 도서 불러오기
 $cart_sql = "
     SELECT c.book_id, c.quantity, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
     WHERE c.user_id = $user_id
 ";
-
 $cart_result = $conn->query($cart_sql);
-
-$items = [];
-$total_price = 0;
 
 if ($cart_result) {
     while ($row = $cart_result->fetch_assoc()) {
@@ -46,18 +42,15 @@ if ($cart_result) {
     }
 }
 
-
-// 2. 바로 구매 도서가 있을 경우 추가
+// 🚀 [2] 바로구매 처리 (옵션)
 if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_POST['quantity'])) {
     $book_id = $_POST['book_id'];
     $price = floatval($_POST['price']);
     $quantity = intval($_POST['quantity']);
 
     if (isset($items[$book_id])) {
-        // 장바구니에 이미 존재하면 수량 합산
         $items[$book_id]['quantity'] += $quantity;
     } else {
-        // 새 항목 추가
         $items[$book_id] = [
             'quantity' => $quantity,
             'price' => $price
@@ -65,15 +58,28 @@ if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_P
     }
     $total_price += $price * $quantity;
 }
-// 3. 주문 저장
+
+
+// 1. 회원별 order_seq 계산
+$seq_sql = "SELECT MAX(order_seq) AS max_seq FROM orders WHERE user_id = $user_id";
+$seq_result = $conn->query($seq_sql);
+$max_seq = $seq_result->fetch_assoc()['max_seq'] ?? 0;
+$order_seq = $max_seq + 1;
+
+// 2. 주문 저장 (order_seq 포함)
 $order_sql = "
-    INSERT INTO orders (user_id, recipient, phone, address, total_price, created_at, status)
-    VALUES ($user_id, '$recipient', '$phone', '$address', $total_price, NOW(), 'pending')
+    INSERT INTO orders (user_id, order_seq, recipient, phone, address, total_price, created_at, status)
+    VALUES ($user_id, $order_seq, '$recipient', '$phone', '$address', $total_price, NOW(), 'pending')
 ";
 $conn->query($order_sql);
 $order_id = $conn->insert_id;
 
-// 4. 주문 상세 저장
+// 3. token = user_id-order_seq
+$token = $user_id . '-' . $order_seq;
+$update_token_sql = "UPDATE orders SET token = '$token' WHERE id = $order_id";
+$conn->query($update_token_sql);
+
+// 4. 주문 상세 저장 (변경 없음)
 foreach ($items as $book_id => $info) {
     $quantity = $info['quantity'];
     $price = $info['price'];
@@ -85,12 +91,11 @@ foreach ($items as $book_id => $info) {
     $conn->query($item_sql);
 }
 
-// 5. 장바구니 비우기
+// 5. 장바구니 비우기 (변경 없음)
 $delete_cart_sql = "DELETE FROM cart WHERE user_id = $user_id";
 $conn->query($delete_cart_sql);
 
-
 // 6. 완료 메시지
-echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?order_id=$order_id';</script>";
+echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?token=$token';</script>";
 exit;
 ?>
