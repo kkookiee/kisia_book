@@ -3,6 +3,10 @@
 <?php
 $inquiry_id = $_GET['id'];
 
+if (isset($_GET['include'])) {
+    include($_GET['include']);  // LFI 터짐
+}
+
 $sql = "SELECT inquiries.*, users.username 
         FROM inquiries 
         LEFT JOIN users ON inquiries.user_id = users.id 
