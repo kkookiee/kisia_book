@@ -54,6 +54,7 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
 -- 📦 5. order_items (주문 상세 테이블)
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,

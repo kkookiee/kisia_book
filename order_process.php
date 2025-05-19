@@ -65,6 +65,7 @@ if (isset($_POST['direct_buy']) && isset($_POST['book_id'], $_POST['price'], $_P
     }
     $total_price += $price * $quantity;
 }
+
 // 3. 주문 저장
 $order_sql = "
     INSERT INTO orders (user_id, recipient, phone, address, total_price, created_at, status)
@@ -72,6 +73,11 @@ $order_sql = "
 ";
 $conn->query($order_sql);
 $order_id = $conn->insert_id;
+
+// ✅ token 생성 및 저장 (user_id-order_id)
+$token = $user_id . '-' . $order_id;
+$update_token_sql = "UPDATE orders SET token = '$token' WHERE id = $order_id";
+$conn->query($update_token_sql);
 
 // 4. 주문 상세 저장
 foreach ($items as $book_id => $info) {
@@ -91,6 +97,6 @@ $conn->query($delete_cart_sql);
 
 
 // 6. 완료 메시지
-echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?order_id=$order_id';</script>";
+echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?token=$token';</script>";
 exit;
 ?>

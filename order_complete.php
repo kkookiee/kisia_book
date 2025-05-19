@@ -3,21 +3,17 @@ require_once 'connect.php';
 session_start();
 require_once 'header.php';
 
-// 1. 주문 ID 가져오기
-$order_id = $_GET['order_id'] ?? null;
+// 1. token 가져오기
+$token = $_GET['token'] ?? null;
 
-if (!$order_id) {
+if (!$token) {
   die('잘못된 접근입니다.');
 }
 
-// 2. QR용 token 생성 & 저장
-$token = $order_id;
-$conn->query("UPDATE orders SET token = '$token', status = 'pending' WHERE id = $order_id");
-
-// 3. QR코드 URL 생성
+// 2. QR URL 생성
 $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

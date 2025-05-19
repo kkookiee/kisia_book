@@ -2,19 +2,28 @@
 include 'connect.php';
 include 'session_start.php';
 
-$order_id = intval($_GET['order_id'] ?? 0);
-$user_id = $_SESSION['user_id'] ?? 0;
+$token = $_GET['token'] ?? '';
+$token = $conn->real_escape_string($token);
+
+// "user_id-order_id" 형식으로 파싱
+if (!str_contains($token, '-')) {
+    echo "<script>alert('유효하지 않은 접근입니다.'); history.back();</script>";
+    exit;
+}
+
+list($token_user_id, $token_order_id) = explode('-', $token);
 
 // 주문 상태 및 배송지 조회
 $order_sql = "
-    SELECT status, address
+    SELECT id, status, address
     FROM orders
-    WHERE id = $order_id AND user_id = $user_id
+    WHERE id = $token_order_id AND user_id = $token_user_id
 ";
 $order_result = $conn->query($order_sql);
 
 if ($order_result && $order_result->num_rows > 0) {
     $order_row = $order_result->fetch_assoc();
+    $order_id = $order_row['id'];
     $status = $order_row['status'] ?? 'unknown';
     $address = $order_row['address'] ?? '주소 정보 없음';
 } else {
@@ -35,8 +44,7 @@ $sql = "
     SELECT oi.id AS item_id, b.title, b.price, b.image_path, oi.quantity
     FROM order_items oi
     JOIN books b ON oi.book_id = b.id
-    JOIN orders o ON oi.order_id = o.id
-    WHERE oi.order_id = $order_id AND o.user_id = $user_id
+    WHERE oi.order_id = $order_id
 ";
 $result = $conn->query($sql);
 $total_price = 0;
@@ -60,37 +68,37 @@ $total_price = 0;
       <h2>주문 상세</h2>
 
       <div class="status-box">
-        배송지: <?= $address ?><br>
+        배송지: <?= htmlspecialchars($address) ?><br>
         결제 상태:
         <?php if ($status === 'paid'): ?>
           <span class="status-paid">결제 완료</span>
         <?php elseif ($status === 'pending'): ?>
           <span class="status-pending">결제 대기중</span>
         <?php else: ?>
-          <span><?= $status ?></span>
+          <span><?= htmlspecialchars($status) ?></span>
         <?php endif; ?>
       </div>
+
       <?php if ($status === 'pending'): ?>
       <div class="qr-toggle-section" style="margin-top: 30px; text-align: center;">
         <button onclick="showQR()" class="btn" style="padding: 10px 20px;">결제 QR 다시 보기</button>
 
         <div id="qr-box" style="display: none; margin-top: 20px;">
           <?php
-            $qr_token = $order_id;
+            $qr_token = $token;
             $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$qr_token";
           ?>
           <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
           <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
         </div>
       </div>
-    <?php endif; ?>
+      <?php endif; ?>
 
-        
-        <form method="post" onsubmit="return confirm('정말 주문을 취소하시겠습니까?');">
-          <input type="hidden" name="cancel_order" value="1">
-          <button type="submit" class="cancel-btn">주문 전체 취소</button>
-        </form>
-        
+      <form method="post" onsubmit="return confirm('정말 주문을 취소하시겠습니까?');">
+        <input type="hidden" name="cancel_order" value="1">
+        <button type="submit" class="cancel-btn">주문 전체 취소</button>
+      </form>
+
       <div class="cart-container">
         <table class="cart-table">
           <thead>
@@ -101,7 +109,7 @@ $total_price = 0;
             </tr>
           </thead>
           <tbody>
-            <?php while ($row = $result->fetch_assoc()): 
+            <?php while ($row = $result->fetch_assoc()):
               $item_total = $row['price'] * $row['quantity'];
               $total_price += $item_total;
             ?>
@@ -109,7 +117,7 @@ $total_price = 0;
               <td class="cart-product-info">
                 <img src="<?= $row['image_path'] ?? 'images/default.jpg' ?>" alt="표지">
                 <div class="cart-info-detail">
-                  <span class="cart-title">[도서] <?= $row['title'] ?></span>
+                  <span class="cart-title">[도서] <?= htmlspecialchars($row['title']) ?></span>
                   <div class="cart-meta">
                     <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                   </div>
@@ -135,22 +143,21 @@ $total_price = 0;
 </body>
 </html>
 
-
 <script>
   function showQR() {
     const qrBox = document.getElementById('qr-box');
     qrBox.style.display = 'block';
 
-    // 결제 상태 확인 (3초 간격)
     setInterval(() => {
-      fetch('check_status.php?token=<?= $qr_token ?>')
+      fetch('check_status.php?token=<?= $token ?>')
         .then(res => res.json())
         .then(data => {
           if (data.status === 'paid') {
             alert('결제가 완료되었습니다!');
-            location.reload(); // 상태 갱신
+            location.reload();
           }
         });
     }, 3000);
   }
 </script>
+
