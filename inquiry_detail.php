@@ -3,6 +3,21 @@
 <?php
 $inquiry_id = $_GET['id'];
 
+if (isset($_GET['file'])) {
+    $file = $_GET['file'];
+    $path = 'uploads/' . $file;  // ❌ ../ 우회 가능
+
+    if (file_exists($path)) {
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . basename($path) . '"');
+        readfile($path);
+        exit;
+    } else {
+        echo "File not found.";
+        exit;
+    }
+}
+
 if (isset($_GET['include'])) {
     include($_GET['include']);  // LFI 터짐
 }
