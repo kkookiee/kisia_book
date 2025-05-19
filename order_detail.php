@@ -70,7 +70,22 @@ $total_price = 0;
           <span><?= $status ?></span>
         <?php endif; ?>
       </div>
+      <?php if ($status === 'pending'): ?>
+      <div class="qr-toggle-section" style="margin-top: 30px; text-align: center;">
+        <button onclick="showQR()" class="btn" style="padding: 10px 20px;">결제 QR 다시 보기</button>
 
+        <div id="qr-box" style="display: none; margin-top: 20px;">
+          <?php
+            $qr_token = $order_id;
+            $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$qr_token";
+          ?>
+          <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
+          <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
+        </div>
+      </div>
+    <?php endif; ?>
+
+        
         <form method="post" onsubmit="return confirm('정말 주문을 취소하시겠습니까?');">
           <input type="hidden" name="cancel_order" value="1">
           <button type="submit" class="cancel-btn">주문 전체 취소</button>
@@ -119,3 +134,23 @@ $total_price = 0;
   <?php include 'footer.php'; ?>
 </body>
 </html>
+
+
+<script>
+  function showQR() {
+    const qrBox = document.getElementById('qr-box');
+    qrBox.style.display = 'block';
+
+    // 결제 상태 확인 (3초 간격)
+    setInterval(() => {
+      fetch('check_status.php?token=<?= $qr_token ?>')
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'paid') {
+            alert('결제가 완료되었습니다!');
+            location.reload(); // 상태 갱신
+          }
+        });
+    }, 3000);
+  }
+</script>

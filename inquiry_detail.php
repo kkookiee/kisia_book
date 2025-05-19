@@ -56,21 +56,30 @@ $images = $result_images->fetch_all(MYSQLI_ASSOC);
                 </div>
 
                 <?php if ($images): ?>
-                <div class="post-view-images">
-                    <?php foreach ($images as $image): 
-                        $path = $image['image_path'];
-                        $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-                    ?>
-                        <div class="post-image">
+                <div class="attached-files">
+                    <h4><i class="fa fa-paperclip"></i> 첨부 파일</h4>
+                    <ul class="attached-file-list">
+                        <?php foreach ($images as $image): 
+                            $path = $image['image_path'];
+                            $filename = basename($path);
+                            $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                        ?>
+                        <li>
                             <?php if ($ext === 'php'): ?>
-                                <a href="/<?php echo $path; ?>" target="_blank">[웹쉘 실행 링크]</a>
+                                <a href="/<?php echo $path; ?>" target="_blank">
+                                    <i class="fa fa-file"></i> <?php echo $filename; ?>
+                                </a>
                             <?php else: ?>
-                                <img src="/<?php echo $path; ?>" alt="첨부 이미지">
+                                <a href="/<?php echo $path; ?>" download>
+                                    <i class="fa fa-file-image"></i> <?php echo $filename; ?>
+                                </a>
                             <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
                 <?php endif; ?>
+
 
                 <?php if ($inquiry['answer']): ?>
                 <div class="post-view-answer">

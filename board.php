@@ -37,7 +37,7 @@ $total_pages = ceil($total_count / $per_page);
     <main>
         <div class="board-container">
             <div class="board-header">
-                <h2>게시판/리뷰</h2>
+                <h2>문의사항</h2>
                 <div class="board-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <a href="inquiry_write.php"><button class="write-btn">글쓰기</button></a>
@@ -47,9 +47,9 @@ $total_pages = ceil($total_count / $per_page);
             <div class="board-filters">
                 <select class="filter-select">
                     <option value="all">전체</option>
-                    <option value="notice">공지사항</option>
+                    <!--<option value="notice">공지사항</option>
                     <option value="review">도서 리뷰</option>
-                    <option value="qna">Q&A</option>
+                    <option value="qna">Q&A</option>!-->
                 </select>
                 <div class="search-box">
                     <input type="text" class="search-input" placeholder="검색어를 입력하세요">

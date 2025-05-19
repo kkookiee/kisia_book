@@ -75,10 +75,6 @@ $result = $conn->query($sql);
     </form>
   </div>
 </main>
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 온라인 서점. All rights reserved.</p>
-        </div>
-    </footer>
+<?php include 'footer.php' ?>
 </body>
 </html> 

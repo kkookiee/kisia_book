@@ -86,9 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <?php endforeach; ?>
                     </div>
-                    <div class="image-actions">
-                        <input type="checkbox" class="select-btn" name="deleteImage" onclick="deleteImage()">기존 이미지 삭제
-                    </div>
                 </div>
                 <?php endif; ?>
                 <div class="form-group">
