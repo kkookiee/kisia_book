@@ -39,7 +39,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['email'])) {
             $mail->Body = '
                 <h3>비밀번호 재설정 안내</h3>
                 <p>아래 링크를 클릭하여 새 비밀번호를 설정하세요:</p>
-                <a href="http://localhost:8080/reset_password.php?user_id=' . $user_id . '">비밀번호 재설정하기</a>
+                <a href="http://kisia-book.koreacentral.cloudapp.azure.com:8080/reset_password.php?user_id=' . $user_id . '">비밀번호 재설정하기</a>
             ';
 
             $mail->send();
