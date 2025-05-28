@@ -30,21 +30,26 @@ if ($user_id) {
     $stmt->close();
 }
 
+//search_input 사용자가 입력한 원래 값 "자바"
+//search_query SQL에서 부분 검색하려고 %를 붙인 값 "%자바%"
 
-$search_query = $_POST['search_query'] ?? '';
+$search_input = $_POST['search_query'] ?? ''; // 원본 검색어
+$search_query = "%" . $search_input . "%";    // LIKE용 검색어
 
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($search_input)) {
+    $sql = "SELECT * FROM books WHERE title LIKE ? OR author LIKE ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ss', $search_query, $search_query);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
-    $sql = "SELECT * FROM books WHERE title LIKE '%$search_query%' OR author LIKE '%$search_query%'";
-
-    $result = $conn->query($sql);
-
-    if($result->num_rows == 0){
+    if ($result->num_rows == 0) {
         echo '<script>alert("검색 결과가 없습니다.");</script>';
-    }else{
-        echo "<script>window.location.href='search.php?query=$search_query';</script>";
+    } else {
+        echo "<script>window.location.href='search.php?query=" . urlencode($search_input) . "';</script>";
     }
 }
+
 ?>
 <header>
     <div class="top-header">
@@ -58,8 +63,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                 </div>
                 <div class="right-links">
                     <?php if (!empty($user_id)): ?>
-                        <span class="welcome-text"><?= $user_name ?>님 환영합니다!</span>
-
+                        <span class="welcome-text"><?= htmlspecialchars($user_name, ENT_QUOTES, 'UTF-8') ?>님 환영합니다!</span>
                         <a href="/logout.php">로그아웃</a>
                     <?php else: ?>
                         <a href="/login.php">로그인</a>
@@ -81,7 +85,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['search_query'])){
                         <option value="all">전체</option>
                     </select>
                     <form action="/search.php" method="GET">
-                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= $search_query ?? '' ?>">
+                        <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= htmlspecialchars($_GET['search_query'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>

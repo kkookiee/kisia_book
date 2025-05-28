@@ -8,47 +8,60 @@ use PHPMailer\PHPMailer\Exception;
 
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['email'])) {
-    $user_email = $_POST['email'];
-    $sql = "SELECT * FROM users WHERE email = '$user_email'";
+    $user_email = trim($_POST['email']);
+    
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $user_email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    $result = $conn->query($sql);
+    if ($row = $result->fetch_assoc()) {
+        $user_id = $row['id'];
 
-    if($result->num_rows > 0) {
+        // ✅ 토큰 생성 및 저장
+        $token = bin2hex(random_bytes(32));
+        $expiry = date('Y-m-d H:i:s', time() + 600); // 10분분 후 만료
+        $update = $conn->prepare("UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?");
+        $update->bind_param("ssi", $token, $expiry, $user_id);
+        $update->execute();
 
-        $mail = new PHPMailer(true);    
-        $user_id = $result->fetch_assoc()['id'];
-
-
+        // ✅ PHPMailer
+        $mail = new PHPMailer(true);
         try {
-            $mail->isSMTP(); // SMTP 방식으로 메일 전송
-            $mail->Host = 'smtp.gmail.com'; // 메일 서버 주소
-            $mail->SMTPAuth = true; // SMTP 로그인 인증 사용
-            $mail->Username = 'projectkisia@gmail.com'; // 보내는 메일 주소
-            $mail->Password = 'ahla bkdy edxg akud'; // 앱 비밀번호
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // TLS 보안 사용
-            $mail->Port = 587; // 포트 번호
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+
+            $mail->Username = 'projectkisia@gmail.com';
+            $mail->Password = 'ahla bkdy edxg akud';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
 
             $mail->setFrom('projectkisia@gmail.com', 'kisia project');
             $mail->addAddress($user_email);
-
             $mail->isHTML(true);
             $mail->Subject = '=?UTF-8?B?' . base64_encode('비밀번호 재설정 링크') . '?=';
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'base64';
 
-            $mail->Body = '
+            // ✅ 안전한 링크 전송
+            $link = "http://localhost:8080/reset_password.php?token=$token";
+            $mail->Body = "
                 <h3>비밀번호 재설정 안내</h3>
-                <p>아래 링크를 클릭하여 새 비밀번호를 설정하세요:</p>
-                <a href="http://kisia-book.koreacentral.cloudapp.azure.com:8080/reset_password.php?user_id=' . $user_id . '">비밀번호 재설정하기</a>
-            ';
+                <p>아래 링크를 클릭하여 새 비밀번호를 설정하세요 (10분 내 유효)</p>
+                <a href='$link'>비밀번호 재설정하기</a>
+            ";
 
             $mail->send();
-            echo '<script>alert("메일이 성공적으로 전송되었습니다.");</script>';
+            echo "<script>alert('메일이 성공적으로 전송되었습니다.');</script>";
         } catch (Exception $e) {
             echo '<script>alert("메일 전송 실패: ' . addslashes($mail->ErrorInfo) . '");</script>';
+
+            // 에러 로깅만 하고 사용자에겐 자세히 알리지 않음
+            error_log('Mailer Error: ' . $mail->ErrorInfo);
         }
     } else {
-        echo '<script>alert("존재하지 않는 이메일입니다.");</script>';
+        echo "<script>alert('존재하지 않는 이메일입니다.');</script>";
     }
 }
 ?>
