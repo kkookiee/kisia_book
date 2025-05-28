@@ -2,56 +2,56 @@
 require_once '../connect.php';
 require_once '../header.php';
 
-// IT/모바일 도서 목록 조회
-$sql = "SELECT * FROM books WHERE category = 'computer_it'";
-$result = $conn->query($sql);
+// ✅ SQL Injection 방지: Prepared Statement
+$stmt = $conn->prepare("SELECT id, title, author, price, description, image_path FROM books WHERE category = ?");
+$category = 'computer_it';
+$stmt->bind_param("s", $category);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT/모바일 - 온라인 서점</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/category.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT/모바일 - 온라인 서점</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <link rel="stylesheet" href="../css/category.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
 <div class="category-container">
-    <div class="category-content">
-        <h1>IT/모바일</h1>
-        <div class="book-list">
-        <?php if ($result->num_rows > 0): ?>
-            <?php $num = 1; ?>
-            <?php while($book = $result->fetch_assoc()): ?>
-            <div class="book-row">
+  <div class="category-content">
+    <h1>IT/모바일</h1>
+    <div class="book-list">
+      <?php if ($result->num_rows > 0): ?>
+        <?php $num = 1; ?>
+        <?php while ($book = $result->fetch_assoc()): ?>
+          <div class="book-row">
             <div class="book-number"><?= $num++ ?></div>
             <div class="book-thumb">
-              <a href="book_detail.php?id=<?= $book['id'] ?>">
-                <img src="../<?= $book['image_path'] ?>" alt="<?= $book['title'] ?>">
+              <a href="book_detail.php?id=<?= urlencode($book['id']) ?>">
+                <img src="../<?= htmlspecialchars($book['image_path']) ?>" alt="<?= htmlspecialchars($book['title']) ?>">
               </a>
             </div>
             <div class="book-info">
               <div class="book-title">
-                <a href="book_detail.php?id=<?= $book['id'] ?>"><?= $book['title'] ?></a>
+                <a href="book_detail.php?id=<?= urlencode($book['id']) ?>"><?= htmlspecialchars($book['title']) ?></a>
               </div>
               <div class="book-meta">
-                <a href="book_detail.php?id=<?= $book['id'] ?>"><?= $book['author'] ?></a>
+                <a href="book_detail.php?id=<?= urlencode($book['id']) ?>"><?= htmlspecialchars($book['author']) ?></a>
               </div>
-              <div class="book-price"><?= number_format($book['price']) ?>원</div>
+              <div class="book-price"><?= number_format((int)$book['price']) ?>원</div>
               <div class="book-desc">
-                <?= mb_strimwidth(strip_tags($book['description']), 0, 220, '...') ?>
+                <?= htmlspecialchars(mb_strimwidth(strip_tags($book['description']), 0, 220, '...')) ?>
               </div>
             </div>
 
-            <form method="POST" class="book-action-form">
-              <input type="hidden" name="book_id" value="<?= $book['id'] ?>">
-              <input type="hidden" name="title" value="<?= $book['title'] ?>">
-              <input type="hidden" name="price" value="<?= $book['price'] ?>">
-              <input type="hidden" name="image_path" value="<?= $book['image_path'] ?>">
+            <form method="POST" class="book-action-form" action="../cart.php">
+              <input type="hidden" name="book_id" value="<?= htmlspecialchars($book['id']) ?>">
               <input type="hidden" name="quantity" class="quantity-input" value="1">
 
               <div class="book-actions">
@@ -61,8 +61,8 @@ $result = $conn->query($sql);
                   <button type="button" onclick="updateQuantity(this, 1)">+</button>
                 </div>
 
-                <button type="submit" class="cart-btn" formaction="../cart.php">카트에 넣기</button>
-                <button type="submit" class="buy-btn" formaction="../cart.php" name="buy_now" value="1">바로 구매</button>
+                <button type="submit" class="cart-btn">카트에 넣기</button>
+                <button type="submit" class="buy-btn" name="buy_now" value="1">바로 구매</button>
               </div>
             </form>
           </div>
@@ -89,18 +89,4 @@ function updateQuantity(button, delta) {
   quantityInput.value = current;
   quantityDisplay.value = current;
 }
-
-function submitDirectPurchase(button) {
-  const form = button.closest('.book-action-form');
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'direct_buy';
-  input.value = '1';
-  form.appendChild(input);
-
-  form.action = '../order_process.php';
-  form.method = 'POST';
-  form.submit();
-}
-
 </script>
