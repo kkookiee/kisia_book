@@ -1,38 +1,38 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-// 🚨 Security Misconfiguration: 모든 SQL 에러 노출
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// ✅ 관리자 인증 확인
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
+}
 
-// 🚨 Broken Access Control: 세션 확인 없음
-// 원래는 if (!isset($_SESSION['admin'])) { header('Location: login.php'); }
+// ✅ 오류 출력 제거 (운영 환경 기준)
+mysqli_report(MYSQLI_REPORT_OFF);
 
+// ✅ 통계 조회
 $book_result = $conn->query("SELECT COUNT(*) AS total_books FROM books");
-$book_data = $book_result->fetch_assoc();
-$total_books = $book_data['total_books'];
+$total_books = $book_result->fetch_assoc()['total_books'];
 
 $user_result = $conn->query("SELECT COUNT(*) AS total_users FROM users");
-$user_data = $user_result->fetch_assoc();
-$total_users = $user_data['total_users'];
+$total_users = $user_result->fetch_assoc()['total_users'];
 
 $order_result = $conn->query("SELECT COUNT(*) AS total_orders FROM orders");
-$order_data = $order_result->fetch_assoc();
-$total_orders = $order_data['total_orders'];
+$total_orders = $order_result->fetch_assoc()['total_orders'];
 
 $sales_result = $conn->query("SELECT SUM(total_price) AS total_sales FROM orders");
-$sales_data = $sales_result->fetch_assoc();
-$total_sales = $sales_data['total_sales'] ?? 0;
+$total_sales = $sales_result->fetch_assoc()['total_sales'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>관리자 대시보드 (취약)</title>
+  <title>관리자 대시보드</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <!-- 🚨 Vulnerable Component: CDN으로 chart.js 최신 X 버전 사용 -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ✅ 안정적인 chart.js 버전 명시 (예: 4.4.1 고정) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 <div class="admin-container">
@@ -50,13 +50,13 @@ $total_sales = $sales_data['total_sales'] ?? 0;
     </ul>
   </aside>
   <main class="main-content">
-    <h1>관리자 대시보드 (접근제어 없음)</h1>
-    <p>총괄 현황 및 시스템 관리 (모든 사용자 접근 가능)</p>
+    <h1>관리자 대시보드</h1>
+    <p>관리자 전용 통계 페이지입니다.</p>
 
     <div class="card-container">
-      <div class="card"><h3>총 도서 수</h3><span><?= $total_books ?>권</span></div>
-      <div class="card"><h3>총 회원 수</h3><span><?= $total_users ?>명</span></div>
-      <div class="card"><h3>총 주문 수</h3><span><?= $total_orders ?>건</span></div>
+      <div class="card"><h3>총 도서 수</h3><span><?= htmlspecialchars($total_books) ?>권</span></div>
+      <div class="card"><h3>총 회원 수</h3><span><?= htmlspecialchars($total_users) ?>명</span></div>
+      <div class="card"><h3>총 주문 수</h3><span><?= htmlspecialchars($total_orders) ?>건</span></div>
       <div class="card"><h3>총 매출액</h3><span><?= number_format($total_sales) ?>원</span></div>
     </div>
 
@@ -91,7 +91,7 @@ new Chart(ctx, {
                         let label = ctx.label;
                         let value = ctx.raw;
                         if (label === '매출액') return value + '만 원';
-                        return value + '건';
+                        return value + (label.includes('수') ? '건' : '');
                     }
                 }
             }

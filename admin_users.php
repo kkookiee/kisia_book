@@ -1,20 +1,27 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-// 🚨 Security Misconfiguration: SQL 에러 노출
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-// 🚨 Broken Access Control: 세션 체크 없음
-
-$search = $_GET['q'] ?? '';
-$search_sql = '';
-if (!empty($search)) {
-    // 🚨 SQL Injection 가능: real_escape_string 제거
-    $search_sql = "WHERE name LIKE '%$search%' OR email LIKE '%$search%'";
+// ✅ 관리자 인증 확인
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
 }
 
-$sql = "SELECT id, username, name, email, created_at FROM users $search_sql ORDER BY created_at DESC";
-$result = $conn->query($sql);
+// ✅ 검색어 처리
+$search = trim($_GET['q'] ?? '');
+$search_param = '%' . $search . '%';
+
+// ✅ SQL 준비
+if ($search) {
+    $stmt = $conn->prepare("SELECT id, username, name, email, created_at FROM users WHERE name LIKE ? OR email LIKE ? ORDER BY created_at DESC");
+    $stmt->bind_param("ss", $search_param, $search_param);
+} else {
+    $stmt = $conn->prepare("SELECT id, username, name, email, created_at FROM users ORDER BY created_at DESC");
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -33,7 +40,8 @@ $result = $conn->query($sql);
     <p>전체 회원 목록을 확인하고 관리할 수 있습니다.</p>
 
     <form method="get" class="search-form">
-      <input type="text" name="q" placeholder="이름 또는 이메일 검색" value="<?= $search ?>">
+      <input type="text" name="q" placeholder="이름 또는 이메일 검색"
+             value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>">
       <button type="submit">검색</button>
     </form>
 
@@ -51,14 +59,15 @@ $result = $conn->query($sql);
       <tbody>
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-          <td><?= $row['id'] ?></td>
-          <td><?= $row['username'] ?></td> <!-- 🚨 XSS 가능 -->
-          <td><?= $row['name'] ?></td> <!-- 🚨 XSS 가능 -->
-          <td><?= $row['email'] ?></td> <!-- 🚨 XSS 가능 -->
-          <td><?= $row['created_at'] ?></td>
+          <td><?= htmlspecialchars($row['id']) ?></td>
+          <td><?= htmlspecialchars($row['username']) ?></td>
+          <td><?= htmlspecialchars($row['name']) ?></td>
+          <td><?= htmlspecialchars($row['email']) ?></td>
+          <td><?= htmlspecialchars($row['created_at']) ?></td>
           <td>
             <a href="admin_user_edit.php?id=<?= $row['id'] ?>" class="btn">수정</a>
-            <a href="admin_user_delete.php?id=<?= $row['id'] ?>" class="btn delete-link" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+            <a href="admin_user_delete.php?id=<?= $row['id'] ?>" class="btn delete-link"
+               onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
           </td>
         </tr>
         <?php endwhile; ?>

@@ -1,10 +1,18 @@
 <?php
-include 'connect.php';
-include 'admin_sidebar.php';
+session_start();
+require_once 'connect.php';
+require_once 'admin_sidebar.php';
 
-// 결제 완료된 주문만 조회
-$sql = "SELECT * FROM orders WHERE status = 'paid' ORDER BY created_at DESC"; // paid_at → created_at
-$result = mysqli_query($conn, $sql);
+// ✅ 관리자 권한 확인
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+  http_response_code(403);
+  exit('접근 권한이 없습니다.');
+}
+
+// ✅ Prepared Statement 사용
+$stmt = $conn->prepare("SELECT * FROM orders WHERE status = 'paid' ORDER BY created_at DESC");
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -32,14 +40,14 @@ $result = mysqli_query($conn, $sql);
           </tr>
         </thead>
         <tbody>
-          <?php while ($row = mysqli_fetch_assoc($result)): ?>
+          <?php while ($row = $result->fetch_assoc()): ?>
             <tr>
-              <td><?= ($row['id']) ?></td>
-              <td><?= ($row['user_id']) ?></td>
+              <td><?= htmlspecialchars($row['id']) ?></td>
+              <td><?= htmlspecialchars($row['user_id']) ?></td>
               <td><?= number_format($row['total_price']) ?>원</td>
-              <td><?= $row['paid_at'] ?? '정보 없음' ?></td>
-              <td><?= $row['token'] ?? '-' ?></td>
-              <td><a href="admin_payment_detail.php?id=<?= $row['id'] ?>">보기</a></td>
+              <td><?= htmlspecialchars($row['paid_at'] ?? '정보 없음') ?></td>
+              <td><?= htmlspecialchars($row['token'] ?? '-') ?></td>
+              <td><a href="admin_payment_detail.php?id=<?= urlencode($row['id']) ?>" class="btn">보기</a></td>
             </tr>
           <?php endwhile; ?>
         </tbody>

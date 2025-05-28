@@ -1,17 +1,27 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-// 🚨 Security Misconfiguration: 에러 노출
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-$review_id = $_GET['id'] ?? 0;
-
-if ($review_id > 0) {
-    // 🚨 SQL Injection 가능 + CSRF 가능 (GET 요청으로 삭제)
-    $sql = "DELETE FROM reviews WHERE id = $review_id";
-    $conn->query($sql);
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
 }
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('허용되지 않는 요청 방식입니다.');
+}
+
+$review_id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+if (!$review_id) {
+    http_response_code(400);
+    exit('잘못된 요청입니다.');
+}
+
+$stmt = $conn->prepare("DELETE FROM reviews WHERE id = ?");
+$stmt->bind_param("i", $review_id);
+$stmt->execute();
+$stmt->close();
 
 header("Location: admin_reviews.php");
 exit;
-?>

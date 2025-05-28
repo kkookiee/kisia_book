@@ -1,17 +1,21 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-// 🚨 Security Misconfiguration: 모든 SQL 에러 노출
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// ✅ 관리자 인증 확인
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
+}
 
-// 🚨 Broken Access Control: 세션 체크 제거
-// 원래는 if (!isset($_SESSION['admin'])) { header('Location: login.php'); exit; }
+// ✅ 운영 환경용 에러 출력 제거
+mysqli_report(MYSQLI_REPORT_OFF);
 
+// ✅ 문의 목록 조회
 $sql = "SELECT i.*, u.username 
         FROM inquiries i
         JOIN users u ON i.user_id = u.id
         ORDER BY i.created_at DESC";
-
 $result = $conn->query($sql);
 ?>
 
@@ -44,18 +48,21 @@ $result = $conn->query($sql);
       <tbody>
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-          <td><?= $row['id'] ?></td>
-          <td><?= $row['username'] ?></td>
-          <td><?= $row['title'] ?></td>
+          <td><?= htmlspecialchars($row['id'], ENT_QUOTES, 'UTF-8') ?></td>
+          <td><?= htmlspecialchars($row['username'], ENT_QUOTES, 'UTF-8') ?></td>
+          <td><?= htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') ?></td>
           <td>
             <span class="status-badge <?= $row['inquiry_status'] === '답변완료' ? 'status-completed' : 'status-pending' ?>">
-              <?= $row['inquiry_status'] ?>
+              <?= htmlspecialchars($row['inquiry_status'], ENT_QUOTES, 'UTF-8') ?>
             </span>
           </td>
-          <td><?= $row['created_at'] ?></td>
-          <td>
-            <a href="admin_inquiry_reply.php?id=<?= $row['id'] ?>" class="btn">답변</a>
-            <a href="admin_inquiry_delete.php?id=<?= $row['id'] ?>" class="btn delete-link" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</a>
+          <td><?= htmlspecialchars($row['created_at'], ENT_QUOTES, 'UTF-8') ?></td>
+          <td style="display: flex; gap: 5px;">
+            <a href="admin_inquiry_reply.php?id=<?= urlencode($row['id']) ?>" class="btn">답변</a>
+            <form method="POST" action="admin_inquiry_delete.php" onsubmit="return confirm('정말 삭제하시겠습니까?')">
+              <input type="hidden" name="id" value="<?= htmlspecialchars($row['id']) ?>">
+              <button type="submit" class="btn">삭제</button>
+            </form>
           </td>
         </tr>
         <?php endwhile; ?>

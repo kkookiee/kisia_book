@@ -1,14 +1,25 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-// 검색 기능
-$search = $_GET['search'] ?? '';
-$sql = "SELECT * FROM books";
-if ($search) {
-    // 🚨 보호 제거: 사용자 입력을 그대로 쿼리에 삽입
-    $sql .= " WHERE title LIKE '%$search%' OR category LIKE '%$search%'";
+// ✅ 관리자 권한 확인
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
 }
-$result = $conn->query($sql);
+
+$search = trim($_GET['search'] ?? '');
+$search_param = "%{$search}%";
+
+// ✅ Prepared Statement로 검색 처리
+if ($search) {
+    $stmt = $conn->prepare("SELECT * FROM books WHERE title LIKE ? OR category LIKE ?");
+    $stmt->bind_param("ss", $search_param, $search_param);
+} else {
+    $stmt = $conn->prepare("SELECT * FROM books");
+}
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -28,10 +39,12 @@ $result = $conn->query($sql);
 
     <div class="admin-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <form method="get" class="search-form" style="display: flex;">
-        <input type="text" name="search" placeholder="도서명 또는 카테고리 검색" value="<?= ($search) ?>" style="padding: 8px; width: 250px; border-radius: 6px; border: 1px solid #ccc;">
+        <input type="text" name="search" placeholder="도서명 또는 카테고리 검색"
+          value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>"
+          style="padding: 8px; width: 250px; border-radius: 6px; border: 1px solid #ccc;">
         <button type="submit" class="btn" style="margin-left: 8px;">검색</button>
       </form>
-      <a href="admin_book_add.php" class="btn">+ 도서 등록(미구현)</a>
+<a href="#" onclick="alert('도서 등록 기능은 아직 구현되지 않았습니다.'); return false;" class="btn">+ 도서 등록</a>
     </div>
 
     <table class="admin-table">
@@ -48,14 +61,18 @@ $result = $conn->query($sql);
       <tbody>
         <?php while ($row = $result->fetch_assoc()): ?>
         <tr>
-          <td><?= $row['id'] ?></td>
-          <td><?= ($row['title']) ?></td>
-          <td><?= ($row['author']) ?></td>
+          <td><?= htmlspecialchars($row['id']) ?></td>
+          <td><?= htmlspecialchars($row['title']) ?></td>
+          <td><?= htmlspecialchars($row['author']) ?></td>
           <td><?= number_format($row['price']) ?>원</td>
-          <td><?= ($row['category']) ?></td>
-          <td>
-            <a href="admin_book_edit.php?id=<?= $row['id'] ?>" class="btn">수정</a>
-            <a href="admin_book_delete.php?id=<?= $row['id'] ?>" class="btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+          <td><?= htmlspecialchars($row['category']) ?></td>
+          <td style="display: flex; gap: 5px;">
+            <a href="admin_book_edit.php?id=<?= urlencode($row['id']) ?>" class="btn">수정</a>
+            <!-- ✅ POST 방식 삭제 -->
+            <form action="admin_book_delete.php" method="POST" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+              <input type="hidden" name="id" value="<?= $row['id'] ?>">
+              <button type="submit" class="btn">삭제</button>
+            </form>
           </td>
         </tr>
         <?php endwhile; ?>

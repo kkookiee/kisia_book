@@ -1,56 +1,67 @@
 <?php
-include 'connect.php';
+session_start();
+require_once 'connect.php';
 
-$id = $_GET['id'] ?? '';
-if (!$id) {
-    die("잘못된 접근입니다.");
+// ✅ 관리자 체크
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    http_response_code(403);
+    exit('접근 권한이 없습니다.');
 }
 
-// 🚨 취약하게 변경: 직접 사용자 입력을 쿼리에 넣음 (SQL Injection 가능)
-$sql = "SELECT * FROM books WHERE id = $id";
-$result = $conn->query($sql);
+// ✅ GET 파라미터 유효성 검사
+$id = $_GET['id'] ?? '';
+if (!$id) {
+    http_response_code(400);
+    exit('잘못된 요청입니다.');
+}
+
+// ✅ Prepared Statement를 통한 SQL 실행 (SQL Injection 방지)
+$stmt = $conn->prepare("SELECT * FROM books WHERE id = ?");
+$stmt->bind_param("s", $id); // 문자열 ID에 맞게 수정
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    die("도서를 찾을 수 없습니다.");
+    http_response_code(404);
+    exit('도서를 찾을 수 없습니다.');
 }
 
 $book = $result->fetch_assoc();
-$title = $book['title'];
-$author = $book['author'];
-$price = $book['price'];
-$category = $book['category'];
+$stmt->close();
+
+// ✅ 출력 시 XSS 방지
+$title = htmlspecialchars($book['title'], ENT_QUOTES, 'UTF-8');
+$author = htmlspecialchars($book['author'], ENT_QUOTES, 'UTF-8');
+$price = htmlspecialchars($book['price'], ENT_QUOTES, 'UTF-8');
+$category = htmlspecialchars($book['category'], ENT_QUOTES, 'UTF-8');
 ?>
 
+<!-- ✅ 수정 폼 HTML -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>도서 수정</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/admin.css">
+    <meta charset="UTF-8">
+    <title>도서 수정</title>
 </head>
 <body>
-  <div class="admin-container">
-    <?php include 'admin_sidebar.php'; ?>
-    <main class="main-content">
-      <form method="post" class="edit-form">
-        <h1>도서 수정</h1>
+    <h2>도서 정보 수정</h2>
+    <form action="admin_book_update.php" method="POST">
+  <input type="hidden" name="id" value="<?= $book['id'] ?>">
+  
+  <label for="title">제목:</label>
+  <input type="text" name="title" value="<?= htmlspecialchars($book['title']) ?>" required>
 
-        <label for="title">제목</label>
-        <input type="text" name="title" id="title" value="<?= $title ?>">
+  <label for="author">저자:</label>
+  <input type="text" name="author" value="<?= htmlspecialchars($book['author']) ?>" required>
 
-        <label for="author">저자</label>
-        <input type="text" name="author" id="author" value="<?= $author ?>">
+  <label for="price">가격:</label>
+  <input type="number" name="price" value="<?= htmlspecialchars($book['price']) ?>" required>
 
-        <label for="price">가격</label>
-        <input type="number" name="price" id="price" step="0.01" value="<?= $price ?>">
+  <label for="price">카테고리리:</label>
+  <input type="text" name="category" value="<?= htmlspecialchars($book['category']) ?>" required>
 
-        <label for="category">카테고리</label>
-        <input type="text" name="category" id="category" value="<?= $category ?>">
+  <button type="submit">수정하기</button>
+</form>
 
-        <button type="submit">수정 완료</button>
-      </form>
-    </main>
-  </div>
 </body>
 </html>
