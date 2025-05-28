@@ -139,24 +139,58 @@ $total_price = 0;
       </div>
     </div>
   </main>
+  <script>
+  const token = <?= json_encode($token) ?>;
+
+  // QR 표시 함수 추가
+  function showQR() {
+    const qrBox = document.getElementById('qr-box');
+    if (qrBox) {
+      qrBox.style.display = 'block';
+    }
+  }
+
+  // 결제 상태 주기적 확인
+  setInterval(() => {
+    fetch('check_status.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token: token })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'paid') {
+        alert('결제가 완료되었습니다!');
+        window.location.href = 'mypage.php';
+      }
+    });
+  }, 3000);
+</script>
+
   <?php include 'footer.php'; ?>
 </body>
 </html>
 
 <script>
-  function showQR() {
-    const qrBox = document.getElementById('qr-box');
-    qrBox.style.display = 'block';
+  const token = <?= json_encode($token) ?>;
 
-    setInterval(() => {
-      fetch('check_status.php?token=<?= urlencode($token) ?>')
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'paid') {
-            alert('결제가 완료되었습니다!');
-            location.reload();
-          }
-        });
-    }, 3000);
-  }
+  setInterval(() => {
+    fetch('check_status.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ token: token })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'paid') {
+        alert('결제가 완료되었습니다!');
+        window.location.href = 'mypage.php';
+      }
+    });
+  }, 3000);
 </script>
+

@@ -6,12 +6,13 @@ require_once 'header.php';
 // 1. token 가져오기
 $token = $_GET['token'] ?? null;
 
-if (!$token) {
+if (!preg_match('/^[a-zA-Z0-9]{20,}$/', $token)) {
   die('잘못된 접근입니다.');
 }
 
+
 // 2. QR URL 생성
-$qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
+$qr_url = "http://localhost:8080/pay.php?token=$token";
 
 ?>
 <!DOCTYPE html>
@@ -26,24 +27,31 @@ $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=
     <link rel="stylesheet" href="css/order_complete.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-  <script>
-    // QR 결제 상태 체크 (3초마다)
-    setInterval(() => {
-      fetch('check_status.php?token=<?= $token ?>')
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'paid') {
-            alert('결제가 완료되었습니다!');
-            window.location.href = 'mypage.php';
-          }
-        });
-    }, 3000);
-  </script>
+<script>
+  // QR 결제 상태 체크 (3초마다)
+  const token = <?= json_encode($token) ?>;
+
+setInterval(() => {
+  fetch('check_status.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: token })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'paid') {
+      alert('결제가 완료되었습니다!');
+      window.location.href = 'mypage.php';
+    }
+  });
+}, 3000);
+</script>
+
 <body>
   <div class="complete-container">
     <h2>주문이 완료되었습니다!</h2>
     <p>아래 QR 코드를 스캔해 결제를 완료해 주세요.</p>
-    <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="결제 QR코드">
+    <img src="generate_qr.php?data=<?= htmlspecialchars(urlencode($qr_url), ENT_QUOTES, 'UTF-8') ?>" alt="결제 QR코드">
     <br>
     <a href="mypage.php" class="btn">마이페이지로 이동</a>
   </div>

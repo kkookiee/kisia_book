@@ -3,22 +3,25 @@ require 'connect.php';
 require 'session_start.php';
 require 'header.php';
 
+$user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
 
-$user_id = $_SESSION['user_id'];
+if ($user_id === 0) {
+    die("로그인이 필요합니다.");
+}
 
-
-// 장바구니 조회
-$sql = "
+// SQL 인젝션 방지를 위해 prepared statement 사용
+$stmt = $conn->prepare("
     SELECT c.*, b.title, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
-    WHERE c.user_id = $user_id
-";
+    WHERE c.user_id = ?
+");
 
-$result = $conn->query($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $total_price = 0;
-
 ?>
 
 <!DOCTYPE html>
@@ -52,8 +55,8 @@ $total_price = 0;
             $total_price += $item_total;
           ?>
           <tr>
-            <td class="cart-product-info"><?= $row['title'] ?></td>
-            <td><?= $row['quantity'] ?></td>
+            <td class="cart-product-info"><?= htmlspecialchars($row['title']) ?></td>
+            <td><?= (int)$row['quantity'] ?></td>
             <td><?= number_format($item_total) ?>원</td>
           </tr>
           <?php endwhile; ?>
@@ -74,9 +77,9 @@ $total_price = 0;
         <div class="form-group">
           <label>휴대폰</label>
           <div style="display:flex; gap:5px;">
-            <input type="text" name="phone1" maxlength="3" required>
-            <input type="text" name="phone2" maxlength="4" required>
-            <input type="text" name="phone3" maxlength="4" required>
+            <input type="text" name="phone1" maxlength="3" required pattern="\d{2,3}">
+            <input type="text" name="phone2" maxlength="4" required pattern="\d{3,4}">
+            <input type="text" name="phone3" maxlength="4" required pattern="\d{4}">
           </div>
         </div>
 
