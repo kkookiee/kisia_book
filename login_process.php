@@ -16,21 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // CSRF 토큰 확인
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
     http_response_code(403);
-    exit('잘못된 요청입니다.'); // CSRF 공격 차단
+    exit('잘못된 요청입니다.');
 }
 
 // 입력값 정리
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
-
-// 실패 횟수 제한 (IP 기반 간단 구현)
-$ip = $_SERVER['REMOTE_ADDR'];
-$fail_key = "fail_count_$ip";
-$_SESSION[$fail_key] = $_SESSION[$fail_key] ?? 0;
-if ($_SESSION[$fail_key] >= 5) {
-    http_response_code(429);
-    exit('로그인 시도 제한 초과. 잠시 후 다시 시도하세요.');
-}
 
 // 사용자 조회
 $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
@@ -48,9 +39,6 @@ if ($user = $result->fetch_assoc()) {
         $_SESSION['email'] = $user['email'];
         $_SESSION['is_admin'] = $user['is_admin'];
 
-        // 실패 횟수 초기화
-        unset($_SESSION[$fail_key]);
-
         // 관리자 여부 분기
         $redirect = $user['is_admin'] ? "admin_dashboard.php" : "index.php";
         header("Location: $redirect");
@@ -59,7 +47,6 @@ if ($user = $result->fetch_assoc()) {
 }
 
 // 실패 시
-$_SESSION[$fail_key]++;
 header("Location: login.php?error=1");
 exit;
 ?>
