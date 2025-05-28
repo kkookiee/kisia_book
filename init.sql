@@ -13,7 +13,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100),
     is_admin TINYINT(1) DEFAULT 0, -- ✅ 관리자 여부 컬럼 추가
-   reset_token VARCHAR(255),
+    reset_token VARCHAR(255),
     reset_token_expiry DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );

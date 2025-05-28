@@ -5,16 +5,18 @@ include 'session_start.php';
 $user_id = $_SESSION['user_id'];
 
 // 장바구니 목록 조회
-$sql = "
+$stmt = $conn->prepare("
     SELECT c.*, b.title, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
-    WHERE c.user_id = $user_id
-";
+    WHERE c.user_id = ?
+");
+$stmt->bind_param("i",$user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$result = $conn->query($sql);
 if ($result->num_rows === 0) {
-    echo "장바구니가 비어있습니다.";
+    echo "<script>alert('장바구니가 비어있습니다.'); location.href='cart.php';</script>";
     exit;
 }
 
@@ -27,32 +29,36 @@ while ($row = $result->fetch_assoc()) {
     $price = $row["price"];
 
     $total_price += $price * $quantity;
-    $items[] = ["bookid" => $book_id, "quantity" => $quantity, "price" => $price];
+    $items[] = [
+        "book_id" => $book_id,
+        "quantity" => $quantity,
+        "price" => $price
+    ];
 }
+$stmt->close();
 
 // orders 테이블에 INSERT
-$order_sql = "INSERT INTO orders (user_id, total_price, created_at)
-              VALUES ($user_id, $total_price, NOW())";
-$conn->query($order_sql);
+$order_stmt = $conn->prepare("INSERT INTO orders (user_id, total_price, created_at) VALUES (?, ?, NOW())");
+$order_stmt->bind_param("id", $user_id, $total_price);
+$order_stmt->execute();
 $order_id = $conn->insert_id;
+$order_stmt->close();
 
-// order_items 테이블에 INSERT
+// 3. order_items 테이블에 INSERT
+$item_stmt = $conn->prepare("INSERT INTO order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)");
 foreach ($items as $item) {
-    $book_id = $item["bookid"];
-    $quantity = $item["quantity"];
-    $price = $item["price"];
-
-    $item_sql = "INSERT INTO order_items (order_id, book_id, quantity, price)
-                 VALUES ($order_id, $book_id, $quantity, $price)";
-    $conn->query($item_sql);
+    $item_stmt->bind_param("iiid", $order_id, $item["book_id"], $item["quantity"], $item["price"]);
+    $item_stmt->execute();
 }
+$item_stmt->close();
 
-// 장바구니 비우기
-$delete_cart_sql = "DELETE FROM cart WHERE user_id = $user_id";
-$conn->query($delete_cart_sql);
+// 4. 장바구니 비우기
+$delete_stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
+$delete_stmt->bind_param("i", $user_id);
+$delete_stmt->execute();
+$delete_stmt->close();
 
-// 완료 메시지 및 리디렉션
-// 주문이 성공적으로 완료되어 리디렉션 되면 html 실행하지 않음
+// 5. 완료 처리
 echo "<script>alert('주문이 완료되었습니다.'); location.href='mypage.php';</script>";
 exit;
 ?>

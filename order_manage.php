@@ -5,29 +5,59 @@ include 'session_start.php';
 $order_id = intval($_GET['order_id'] ?? 0);
 $user_id = $_SESSION['user_id'] ?? 0;
 
-if ($_SERVER['REQUEST_METHOD']==='POST'){
-    if (isset($_POST['update_qty'])){
-        $item_id = intval($_POST['item_id']);
-        $qty = max(1, intval($_POST['quantity']));
-        $conn->query("UPDATE order_items SET quantity = $qty WHERE id = $item_id");
-    } elseif (isset($_POST['cancel_order'])){
-        $conn->query("DELETE FROM order_items WHERE order_id = $order_id");
-        $conn->query("DELETE FROM orders WHERE id = $order_id");
-        echo"<script>alert('주문이 취소 되었습니다. '); location.href='mypage.php';</script>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_qty'])) {
+        $item_id = intval($_POST['item_id'] ?? 0);
+        $qty = max(1, intval($_POST['quantity'] ?? 1));
+
+        $stmt = $conn->prepare(
+            "UPDATE order_items oi
+             JOIN orders o ON oi.order_id = o.id
+             SET oi.quantity = ?
+             WHERE oi.id = ? AND o.user_id = ?"
+        );
+        $stmt->bind_param('iii', $qty, $item_id, $user_id);
+        $stmt->execute();
+        $stmt->close();
+
+    } elseif (isset($_POST['cancel_order'])) {
+        // 트랜잭션 시작
+        $conn->begin_transaction();
+        try {
+            $stmt1 = $conn->prepare("DELETE oi FROM order_items oi JOIN orders o ON oi.order_id = o.id WHERE o.id = ? AND o.user_id = ?");
+            $stmt1->bind_param("ii", $order_id, $user_id);
+            $stmt1->execute();
+            $stmt1->close();
+
+            $stmt2 = $conn->prepare("DELETE FROM orders WHERE id = ? AND user_id = ?");
+            $stmt2->bind_param("ii", $order_id, $user_id);
+            $stmt2->execute();
+            $stmt2->close();
+
+            $conn->commit();
+            echo "<script>alert('주문이 취소 되었습니다.'); location.href='mypage.php';</script>";
             exit;
+        } catch (Exception $e) {
+            $conn->rollback();
+            error_log("주문 취소 실패: " . $e->getMessage());
+            echo "<script>alert('주문 취소 중 오류가 발생했습니다.');</script>";
+        }
     }
 }
 
-//주문 조회
+// 주문 조회
 $sql = "
     SELECT oi.id AS item_id, b.title, b.price, oi.quantity
     FROM order_items oi
     JOIN books b ON oi.book_id = b.id
     JOIN orders o ON oi.order_id = o.id
-    WHERE oi.order_id = $order_id AND o.user_id = $user_id
+    WHERE oi.order_id = ? AND o.user_id = ?
 ";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $order_id, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -52,10 +82,10 @@ $result = $conn->query($sql);
         <tbody>
           <?php while ($row = $result->fetch_assoc()): ?>
           <tr>
-            <td><?= ($row['title']) ?></td>
+            <td><?= htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') ?></td>
             <td>
-              <input type="number" name="quantity" value="<?= $row['quantity'] ?>" min="1" />
-              <input type="hidden" name="item_id" value="<?= $row['item_id'] ?>">
+              <input type="number" name="quantity" value="<?= (int)$row['quantity'] ?>" min="1" />
+              <input type="hidden" name="item_id" value="<?= (int)$row['item_id'] ?>">
             </td>
             <td><?= number_format($row['price'] * $row['quantity']) ?>원</td>
             <td>
@@ -77,4 +107,4 @@ $result = $conn->query($sql);
 </main>
 <?php include 'footer.php' ?>
 </body>
-</html> 
+</html>
