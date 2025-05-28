@@ -76,7 +76,8 @@ try {
     $stmt->close();
 
     // 토큰 저장
-    $token = $user_id . '-' . $order_seq;
+    $token = bin2hex(random_bytes(32));
+    echo "<script>console.log('Token generated: $token');</script>";
     $stmt = $conn->prepare("UPDATE orders SET token = ? WHERE id = ?");
     $stmt->bind_param("si", $token, $order_id);
     $stmt->execute();
