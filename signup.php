@@ -16,6 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!preg_match('/^[a-zA-Z0-9_]{4,20}$/', $username)) {
         $signup_error = '아이디는 4~20자의 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.';
     }
+
+        // ✅ pw 형식 검사 (SQLi 방지 + 정책 적용)
+    if (!preg_match('/^[a-zA-Z0-9_]{4,20}$/', $password)) {
+        $signup_error = '패스워드는 4~20자의 영문자, 숫자, 밑줄(_)만 사용할 수 있습니다.';
+    }
+
+
     // ✅ 비밀번호 확인 검사
     elseif ($password !== $password_confirm) {
         $signup_error = '비밀번호가 일치하지 않습니다.';
