@@ -39,6 +39,8 @@ $csrf_token = $_SESSION['csrf_token'];
                 <button type="submit" class="auth-button">로그인</button>
                 <p class="auth-switch">
                     계정이 없으신가요? <a href="signup.php">회원가입</a>
+                                    <div class="form-links">
+                    <a href="password-reset.php">비밀번호 찾기</a>
                 </p>
             </form>
         </div>
