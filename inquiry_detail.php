@@ -4,18 +4,14 @@
 $inquiry_id = $_GET['id'];
 
 if (isset($_GET['file'])) {
-    $file = $_GET['file'];
-    $path = 'uploads/' . $file;  // ❌ ../ 우회 가능
+    #$file = $_GET['file'];
+    #$path = 'uploads/' . $file;
 
-    if (file_exists($path)) {
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($path) . '"');
-        readfile($path);
-        exit;
-    } else {
-        echo "File not found.";
-        exit;
-    }
+    // ❌ file_exists 제거 (우회 차단 안 되도록)
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+    readfile($path);
+    exit;
 }
 
 if (isset($_GET['include'])) {
