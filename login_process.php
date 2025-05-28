@@ -2,39 +2,64 @@
 require_once 'session_start.php';
 require_once 'connect.php';
 
-$username = $_POST['username'] ?? '';
+// 보안 헤더
+header("X-Content-Type-Options: nosniff");
+header("X-Frame-Options: SAMEORIGIN");
+header("Content-Security-Policy: default-src 'self';");
+
+// 요청 방식 확인
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('허용되지 않는 요청 방식입니다.');
+}
+
+// CSRF 토큰 확인
+if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
+    http_response_code(403);
+    exit('잘못된 요청입니다.'); // CSRF 공격 차단
+}
+
+// 입력값 정리
+$username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// ✅ Prepared Statement로 SQL Injection 방지
+// 실패 횟수 제한 (IP 기반 간단 구현)
+$ip = $_SERVER['REMOTE_ADDR'];
+$fail_key = "fail_count_$ip";
+$_SESSION[$fail_key] = $_SESSION[$fail_key] ?? 0;
+if ($_SESSION[$fail_key] >= 5) {
+    http_response_code(429);
+    exit('로그인 시도 제한 초과. 잠시 후 다시 시도하세요.');
+}
+
+// 사용자 조회
 $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->bind_param("s", $username);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($user = $result->fetch_assoc()) {
-    // ❗ 실제 사용 시엔 password_verify()로 암호화 비교
-    if ($user['password'] === $password) {
-        // ✅ 세션 저장
+    if (password_verify($password, $user['password'])) {
+        // 로그인 성공
+        session_regenerate_id(true);
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
-        $_SESSION['is_admin'] = $user['is_admin']; // ✅ 중요!
+        $_SESSION['is_admin'] = $user['is_admin'];
 
-        // ✅ 관리자 여부로 분기
-        if ($user['is_admin']) {
-            header("Location: admin_dashboard.php");
-        } else {
-            header("Location: index.php");
-        }
+        // 실패 횟수 초기화
+        unset($_SESSION[$fail_key]);
+
+        // 관리자 여부 분기
+        $redirect = $user['is_admin'] ? "admin_dashboard.php" : "index.php";
+        header("Location: $redirect");
         exit;
     }
 }
 
-// 로그인 실패
-echo "<script>
-    alert('아이디 또는 비밀번호가 잘못되었습니다.');
-    window.location.href = 'login.php';
-</script>";
+// 실패 시
+$_SESSION[$fail_key]++;
+header("Location: login.php?error=1");
 exit;
 ?>
