@@ -12,8 +12,10 @@ if (!preg_match('/^[a-zA-Z0-9]{20,}$/', $token)) {
 
 
 // 2. QR URL 생성
-// 안전한 상대 경로 기반
-$qr_url = "/pay.php?token=" . urlencode($token);
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST']; // 예: secure-kisia-book.koreacentral.cloudapp.azure.com
+$qr_url = "$protocol://$host/pay.php?token=" . urlencode($token);
+
 
 ?>
 <!DOCTYPE html>
