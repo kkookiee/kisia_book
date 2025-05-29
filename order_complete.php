@@ -12,7 +12,8 @@ if (!preg_match('/^[a-zA-Z0-9]{20,}$/', $token)) {
 
 
 // 2. QR URL 생성
-$qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
+// 안전한 상대 경로 기반
+$qr_url = "/pay.php?token=" . urlencode($token);
 
 ?>
 <!DOCTYPE html>
