@@ -2,6 +2,7 @@
 require_once 'session_start.php';
 require_once 'connect.php';
 
+// 로그인 확인
 $username = $_SESSION['username'] ?? '';
 if ($username === '') {
     echo "<script>alert('사용자 이름이 없습니다.'); history.back();</script>";
@@ -13,16 +14,16 @@ $book_id  = trim($_POST['book_id'] ?? '');
 $content  = trim($_POST['content'] ?? '');
 $rating   = isset($_POST['rating']) ? (int)$_POST['rating'] : 0;
 
-// 도서 유효성 확인
+// 유효한 도서인지 확인
 $book_check = $conn->prepare("SELECT id FROM books WHERE id = ?");
 $book_check->bind_param("s", $book_id);
 $book_check->execute();
 $book_result = $book_check->get_result();
+
 if ($book_result->num_rows === 0) {
     exit('잘못된 도서 ID입니다.');
 }
 
-// 이미지 업로드 처리
 $image_path = null;
 $upload_dir = __DIR__ . "/reviews/";
 $web_path_prefix = "reviews/";
@@ -56,12 +57,6 @@ if (isset($_FILES['image_path']) && $_FILES['image_path']['error'] === UPLOAD_ER
     }
 }
 
-// null → 빈 문자열 처리
-if ($image_path === null) {
-    $image_path = '';
-}
-
-// DB 저장
 $stmt = $conn->prepare("INSERT INTO reviews (user_id, book_id, content, rating, username, image_path) 
                         VALUES (?, ?, ?, ?, ?, ?)");
 $stmt->bind_param("ississ", $user_id, $book_id, $content, $rating, $username, $image_path);
