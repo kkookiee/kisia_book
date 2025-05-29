@@ -77,8 +77,8 @@ $newBooks = mysqli_query($conn, $sqlNew);
           <a href="category/book_detail.php?id=<?= $book['id'] ?>" class="book-card">
             <img src="<?= $book['image_path'] ?>" class="book-image">
             <div class="book-info">
-              <h4><?= $book['title'] ?></h4>
-              <p class="author"><?= $book['author'] ?></p>
+              <h4><?= htmlspecialchars((string)($book['title'] ?? ''), ENT_QUOTES, 'UTF-8') ?></h4>
+              <p class="author"><?= htmlspecialchars($book['author'], ENT_QUOTES, 'UTF-8') ?></p>
               <p class="price"><?= number_format($book['price']) ?>원</p>
             </div>
           </a>
@@ -95,8 +95,8 @@ $newBooks = mysqli_query($conn, $sqlNew);
             <div class="new-badge">NEW</div>
             <img src="<?= $book['image_path'] ?>" class="book-image">
             <div class="book-info">
-              <h4><?= $book['title'] ?></h4>
-              <p class="author"><?= $book['author'] ?></p>
+              <h4><?= htmlspecialchars((string)($book['title'] ?? ''), ENT_QUOTES, 'UTF-8') ?></h4>
+              <p class="author"><?= htmlspecialchars($book['author'], ENT_QUOTES, 'UTF-8') ?></p>
               <p class="price"><?= number_format($book['price']) ?>원</p>
             </div>
           </a>

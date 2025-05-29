@@ -40,7 +40,7 @@ $stmt->close();
     <div class="book-detail-container">
         <div class="book-info">
             <div class="book-image">
-                <img src="/<?= htmlspecialchars($book['image_path']) ?>" alt="도서 이미지">
+                <img src="../<?php echo $book['image_path']; ?>" alt="도서 이미지">
             </div>
             <div class="book-details">
                 <h1 class="book-title"><?= htmlspecialchars($book['title']) ?></h1>
@@ -64,7 +64,7 @@ $stmt->close();
         </div>
 
         <div class="tab-content description-tab active">
-            <img class="description-image" src="/<?= htmlspecialchars($book['additional_image_path']) ?>" alt="도서 이미지">
+            <img class="description-image" src="../<?php echo $book['additional_image_path']; ?>" alt="도서 이미지">
         </div>
 
         <div class="tab-content reviews-tab">
@@ -112,7 +112,7 @@ $stmt->close();
                 ?>
                 <div class="review-item">
                     <div class="review-content-wrapper">
-                        <img src="/<?= htmlspecialchars($review['image_path']) ?>" alt="리뷰 이미지">
+                        <img src="/<?= ($review['image_path']) ?>" alt="리뷰 이미지">
                         <div class="review-info">
                             <div class="review-rating">
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
