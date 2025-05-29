@@ -60,7 +60,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     $new_pw = trim($_POST["new_password"]);
 
     if (!empty($new_name) && !empty($new_email)) {
-        // 기존 비밀번호 가져오기
         $pw_check_sql = "SELECT password FROM users WHERE id = ?";
         $stmt = $conn->prepare($pw_check_sql);
         $stmt->bind_param('i', $user_id);
@@ -68,26 +67,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
         $result = $stmt->get_result();
         $pw_row = $result->fetch_assoc();
         $stored_pw = $pw_row['password'];
-
-        if ($current_pw === $stored_pw) {
-            // 새 비밀번호가 있으면 업데이트
+    
+        if (password_verify($current_pw, $stored_pw)) {
             if (!empty($new_pw)) {
-                $update_sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
-                $stmt = $conn->prepare($update_sql);
-                $stmt->bind_param('sssi', $new_name, $new_email, $new_pw, $user_id);
+                $new_hashed_pw = password_hash($new_pw, PASSWORD_DEFAULT);
+            } else {
+                $new_hashed_pw = $stored_pw; // 비밀번호 변경 안 할 경우
             }
-
+    
+            $update_sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
+            $stmt = $conn->prepare($update_sql);
+            $stmt->bind_param('sssi', $new_name, $new_email, $new_hashed_pw, $user_id);
+    
             if ($stmt->execute()) {
                 echo "<script>alert('회원 정보가 수정되었습니다.'); location.href='mypage.php';</script>";
                 exit;
             } else {
-                echo "<script>alert('수정 실패');</script>";
+                echo "<script>alert('수정 실패'); showTab('profile');</script>";
             }
-
         } else {
-            echo "<script>alert('현재 비밀번호가 일치하지 않습니다.');</script>";
+            echo "<script>alert('현재 비밀번호가 일치하지 않습니다.'); showTab('profile');</script>";
         }
-    }
+    }    
 }
 
 ?>
