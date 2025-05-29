@@ -51,7 +51,7 @@ setInterval(() => {
   <div class="complete-container">
     <h2>주문이 완료되었습니다!</h2>
     <p>아래 QR 코드를 스캔해 결제를 완료해 주세요.</p>
-    <img src="generate_qr.php?data=<?= htmlspecialchars(urlencode($qr_url), ENT_QUOTES, 'UTF-8') ?>" alt="결제 QR코드">
+    <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="결제 QR코드">
     <br>
     <a href="mypage.php" class="btn">마이페이지로 이동</a>
   </div>
