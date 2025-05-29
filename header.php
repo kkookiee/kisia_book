@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($search_input)) {
                     <select class="search-category">
                         <option value="all">전체</option>
                     </select>
-                    <form action="/search.php" method="GET">
+                    <form action="/search.php" method="POST">
                         <input type="text" placeholder="검색어를 입력하세요" name="search_query" value="<?= htmlspecialchars($_GET['search_query'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         <button type="submit"><i class="fas fa-search"></i></button>
                     </form>
