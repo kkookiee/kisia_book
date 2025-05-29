@@ -87,7 +87,7 @@ $total_price = 0;
         <button onclick="showQR()" class="btn" style="padding: 10px 20px;">결제 QR 다시 보기</button>
 
         <div id="qr-box" style="display: none; margin-top: 20px;">
-          <?php $qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=" . urlencode($token); ?>
+          <?php $qr_url = "http://kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=" . urlencode($token); ?>
           <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
           <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
         </div>
