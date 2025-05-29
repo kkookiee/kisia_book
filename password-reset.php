@@ -45,7 +45,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['email'])) {
             $mail->Encoding = 'base64';
 
             // ✅ 안전한 링크 전송
-            $link = "http://localhost:8080/reset_password.php?token=$token";
+            $link = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080//reset_password.php?token=$token";
             $mail->Body = "
                 <h3>비밀번호 재설정 안내</h3>
                 <p>아래 링크를 클릭하여 새 비밀번호를 설정하세요 (10분 내 유효)</p>

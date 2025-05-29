@@ -12,7 +12,7 @@ if (!preg_match('/^[a-zA-Z0-9]{20,}$/', $token)) {
 
 
 // 2. QR URL 생성
-$qr_url = "http://localhost:8080/pay.php?token=$token";
+$qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
 
 ?>
 <!DOCTYPE html>
