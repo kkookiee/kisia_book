@@ -1,8 +1,9 @@
 <?php
+ob_start();
 require_once 'session_start.php';
 require_once 'connect.php';
 
-// ✅ 로그인 안 된 사용자 차단
+// ✅ 로그인 확인
 if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
     echo "<script>alert('로그인이 필요합니다.'); location.href='login.php';</script>";
     exit;
@@ -35,24 +36,22 @@ $result_images = $stmt->get_result();
 $images = $result_images->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// ✅ 수정 요청 처리
+// ✅ 수정 처리
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
-    $deleteImage = isset($_POST['deleteImage']) && $_POST['deleteImage'] === '1';
 
-    if ($deleteImage) {
-        $stmt = $conn->prepare("DELETE FROM inquiries_images WHERE inquiry_id = ?");
-        $stmt->bind_param("i", $inquiry_id);
-        $stmt->execute();
-        $stmt->close();
-    }
-
+    // 게시글 내용 업데이트
     $stmt = $conn->prepare("UPDATE inquiries SET title = ?, content = ? WHERE id = ?");
     $stmt->bind_param("ssi", $title, $content, $inquiry_id);
     $stmt->execute();
     $stmt->close();
 
+    $deleteImage = isset($_POST['deleteImage']) && $_POST['deleteImage'] === '1';
+    $imageDeleted = false;
+    $imageUploaded = false;
+
+    // 새 파일 업로드 처리
     if (isset($_FILES['inquiry_file']) && $_FILES['inquiry_file']['error'] === UPLOAD_ERR_OK) {
         $file_tmp = $_FILES['inquiry_file']['tmp_name'];
         $file_name = basename($_FILES['inquiry_file']['name']);
@@ -64,6 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         finfo_close($finfo);
 
         if (in_array($file_ext, $allowed_ext) && strpos($mime, 'image/') === 0) {
+            if (!is_dir('uploads')) {
+                mkdir('uploads', 0755, true);
+            }
+
             $new_name = time() . '_' . bin2hex(random_bytes(4)) . '.' . $file_ext;
             $upload_path = 'uploads/' . $new_name;
 
@@ -73,14 +76,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("i", $inquiry_id);
                 $stmt->execute();
                 $stmt->close();
+                $imageDeleted = true;
 
-                // 새 이미지 저장
+                // 새 이미지 등록
                 $stmt = $conn->prepare("INSERT INTO inquiries_images (inquiry_id, image_path) VALUES (?, ?)");
                 $stmt->bind_param("is", $inquiry_id, $upload_path);
                 $stmt->execute();
                 $stmt->close();
+                $imageUploaded = true;
             }
         }
+    } elseif ($deleteImage) {
+        // 이미지 삭제 요청 처리 (업로드 없을 경우에만)
+        $stmt = $conn->prepare("DELETE FROM inquiries_images WHERE inquiry_id = ?");
+        $stmt->bind_param("i", $inquiry_id);
+        $stmt->execute();
+        $stmt->close();
+        $imageDeleted = true;
     }
 
     echo "<script>alert('문의사항이 수정되었습니다.'); location.href='inquiry_detail.php?id=$inquiry_id';</script>";
@@ -121,9 +133,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="form-label">현재 첨부된 이미지</label>
                 <div class="attached-images">
                     <?php foreach ($images as $image): ?>
-                    <div class="image-item">
-                        <img src="<?php echo htmlspecialchars($image['image_path']); ?>" alt="첨부 이미지">
-                    </div>
+                        <?php 
+                            $imagePath = htmlspecialchars($image['image_path']);
+                            if (!empty($imagePath) && file_exists($imagePath)): 
+                        ?>
+                        <div class="image-item">
+                            <img src="<?php echo $imagePath; ?>" alt="첨부 이미지">
+                        </div>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                     <div>
                         <label><input type="checkbox" name="deleteImage" value="1"> 이미지 삭제</label>
