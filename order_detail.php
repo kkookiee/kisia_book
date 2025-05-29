@@ -29,7 +29,7 @@ if ($order_result && $order_result->num_rows > 0) {
 }
 $stmt->close();
 
-// 주문 취소 요청 처리 (POST 요청 + Prepared Statement)
+// 주문 취소 요청 처리
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     $del_items_stmt = $conn->prepare("DELETE FROM order_items WHERE order_id = ?");
     $del_items_stmt->bind_param("i", $order_id);
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_order'])) {
     exit;
 }
 
-// 주문 상품 조회 (Prepared Statement 사용)
+// 주문 상품 조회
 $item_stmt = $conn->prepare("SELECT oi.id AS item_id, b.title, b.price, b.image_path, oi.quantity FROM order_items oi JOIN books b ON oi.book_id = b.id WHERE oi.order_id = ?");
 $item_stmt->bind_param("i", $order_id);
 $item_stmt->execute();
@@ -88,7 +88,9 @@ $total_price = 0;
 
         <div id="qr-box" style="display: none; margin-top: 20px;">
           <?php
-            $qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
+          $host = $_SERVER['HTTP_HOST'];  // 현재 도메인 추출
+          $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+          $qr_url = "$scheme://$host/pay.php?token=$token";
           ?>
           <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
           <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
