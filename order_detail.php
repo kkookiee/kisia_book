@@ -71,14 +71,14 @@ $total_price = 0;
       <h2>주문 상세</h2>
 
       <div class="status-box">
-        배송지: <?= htmlspecialchars($address, ENT_QUOTES, 'UTF-8') ?><br>
+        배송지: <?= htmlspecialchars($address) ?><br>
         결제 상태:
         <?php if ($status === 'paid'): ?>
           <span class="status-paid">결제 완료</span>
         <?php elseif ($status === 'pending'): ?>
           <span class="status-pending">결제 대기중</span>
         <?php else: ?>
-          <span><?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?></span>
+          <span><?= htmlspecialchars($status) ?></span>
         <?php endif; ?>
       </div>
 
@@ -87,7 +87,9 @@ $total_price = 0;
         <button onclick="showQR()" class="btn" style="padding: 10px 20px;">결제 QR 다시 보기</button>
 
         <div id="qr-box" style="display: none; margin-top: 20px;">
-          <?php $qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=" . urlencode($token); ?>
+          <?php
+            $qr_url = "http://secure-kisia-book.koreacentral.cloudapp.azure.com:8080/pay.php?token=$token";
+          ?>
           <p>아래 QR 코드를 스캔하여 결제를 완료해 주세요.</p>
           <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 결제 코드" style="width: 200px;">
         </div>
@@ -115,15 +117,15 @@ $total_price = 0;
             ?>
             <tr>
               <td class="cart-product-info">
-                <img src="<?= htmlspecialchars($row['image_path'] ?? 'images/default.jpg', ENT_QUOTES, 'UTF-8') ?>" alt="표지">
+                <img src="<?= $row['image_path'] ?? 'images/default.jpg' ?>" alt="표지">
                 <div class="cart-info-detail">
-                  <span class="cart-title">[도서] <?= htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') ?></span>
+                  <span class="cart-title">[도서] <?= htmlspecialchars($row['title']) ?></span>
                   <div class="cart-meta">
                     <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
                   </div>
                 </div>
               </td>
-              <td><?= intval($row['quantity']) ?>권</td>
+              <td><?= $row['quantity'] ?>권</td>
               <td><?= number_format($item_total) ?>원</td>
             </tr>
             <?php endwhile; ?>
@@ -138,40 +140,25 @@ $total_price = 0;
         </div>
       </div>
     </div>
-    </main>
+  </main>
   <?php include 'footer.php'; ?>
 </body>
 </html>
 
 <script>
-  const token = <?= json_encode($token) ?>;
-  const currentStatus = <?= json_encode($status) ?>;
-
-  // QR 표시 함수 정의 (이거 빠지면 다시 보기 버튼 작동 안함)
   function showQR() {
     const qrBox = document.getElementById('qr-box');
-    if (qrBox) {
-      qrBox.style.display = 'block';
-    }
-  }
+    qrBox.style.display = 'block';
 
-  // 결제 상태가 'pending'일 때만 상태 확인
-  if (currentStatus === 'pending') {
     setInterval(() => {
-      fetch('check_status.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ token: token })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'paid') {
-          alert('결제가 완료되었습니다!');
-          window.location.href = 'mypage.php';
-        }
-      });
+      fetch('check_status.php?token=<?= $token ?>')
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'paid') {
+            alert('결제가 완료되었습니다!');
+            location.reload();
+          }
+        });
     }, 3000);
   }
 </script>
