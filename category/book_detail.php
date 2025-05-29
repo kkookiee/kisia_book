@@ -3,14 +3,14 @@ require_once '../connect.php';
 require_once '../session_start.php';
 require_once '../header.php';
 
-// ✅ GET 파라미터 유효성 검사 (id는 숫자 또는 문자열 가능)
+// GET 파라미터 유효성 검사
 $book_id = $_GET['id'] ?? '';
 if (!preg_match('/^[0-9a-zA-Z_-]+$/', $book_id)) {
     http_response_code(400);
     exit('잘못된 요청입니다.');
 }
 
-// ✅ Prepared Statement로 SQL 실행
+// 도서 조회
 $stmt = $conn->prepare("SELECT * FROM books WHERE id = ?");
 $stmt->bind_param("s", $book_id);
 $stmt->execute();
@@ -40,7 +40,7 @@ $stmt->close();
     <div class="book-detail-container">
         <div class="book-info">
             <div class="book-image">
-                <img src="../<?php echo $book['image_path']; ?>" alt="도서 이미지">
+                <img src="../<?= htmlspecialchars($book['image_path']) ?>" alt="도서 이미지">
             </div>
             <div class="book-details">
                 <h1 class="book-title"><?= htmlspecialchars($book['title']) ?></h1>
@@ -64,7 +64,7 @@ $stmt->close();
         </div>
 
         <div class="tab-content description-tab active">
-            <img class="description-image" src="../<?php echo $book['additional_image_path']; ?>" alt="도서 이미지">
+            <img class="description-image" src="../<?= htmlspecialchars($book['additional_image_path']) ?>" alt="도서 이미지">
         </div>
 
         <div class="tab-content reviews-tab">
@@ -112,17 +112,23 @@ $stmt->close();
                 ?>
                 <div class="review-item">
                     <div class="review-content-wrapper">
-                        <img src="/<?= ($review['image_path']) ?>" alt="리뷰 이미지">
+                        <?php if (!empty($review['image_path'])): ?>
+                            <img src="/<?= htmlspecialchars($review['image_path']) ?>" alt="리뷰 이미지">
+                        <?php endif; ?>
                         <div class="review-info">
-                            <div class="review-rating">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <span class="star"><?= $i <= $review['rating'] ? '★' : '☆' ?></span>
-                                <?php endfor; ?>
+                            <div class="review-info-header">
+                                <div>
+                                    <div class="review-rating">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <span class="star"><?= $i <= $review['rating'] ? '★' : '☆' ?></span>
+                                        <?php endfor; ?>
+                                    </div>
+                                    <div class="review-author"><?= htmlspecialchars($review['username']) ?></div>
+                                </div>
+                                <div class="review-date"><?= date('Y-m-d', strtotime($review['created_at'])) ?></div>
                             </div>
-                            <span class="review-author"><?= htmlspecialchars($review['username']) ?></span>
-                            <span class="review-date"><?= date('Y-m-d', strtotime($review['created_at'])) ?></span>
+                            <div class="review-content"><?= nl2br(htmlspecialchars($review['content'])) ?></div>
                         </div>
-                        <div class="review-content"><?= nl2br(htmlspecialchars($review['content'])) ?></div>
                     </div>
                 </div>
                 <?php endwhile;

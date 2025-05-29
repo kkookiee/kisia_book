@@ -8,24 +8,21 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['user_id'];
 $name = '';
 $email = '';
 
-if ($user_id) {
-    $stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
-    $stmt->bind_param("i", $user_id);  // i: 정수형
-    $stmt->execute();
-    $result = $stmt->get_result();
+// 사용자 정보 조회
+$stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    if ($user = $result->fetch_assoc()) {
-        $name = $user['name'];
-        $email = $user['email'];
-    }
-
-    $stmt->close();
+if ($user = $result->fetch_assoc()) {
+    $name = $user['name'];
+    $email = $user['email'];
 }
-
+$stmt->close();
 
 // 주문 내역 조회
 $order_sql = "
@@ -37,7 +34,6 @@ $order_sql = "
     WHERE o.user_id = ?
     ORDER BY o.created_at DESC
 ";
-
 $stmt = $conn->prepare($order_sql);
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
@@ -46,13 +42,13 @@ $order_result = $stmt->get_result();
 $orders = [];
 while ($row = $order_result->fetch_assoc()) {
     $orders[$row['order_id']]['created_at'] = $row['created_at'];
-    $orders[$row['order_id']]['order_seq'] = $row['order_seq'];  // ✅ 추가
+    $orders[$row['order_id']]['order_seq'] = $row['order_seq'];
     $orders[$row['order_id']]['token'] = $row['token'];
     $orders[$row['order_id']]['items'][] = $row;
-
 }
+$stmt->close();
 
-// 회원정보 수정
+// 회원정보 수정 처리
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     $new_name = trim($_POST["edit_name"]);
     $new_email = trim($_POST["edit_email"]);
@@ -60,37 +56,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     $new_pw = trim($_POST["new_password"]);
 
     if (!empty($new_name) && !empty($new_email)) {
-        $pw_check_sql = "SELECT password FROM users WHERE id = ?";
-        $stmt = $conn->prepare($pw_check_sql);
+        $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $pw_row = $result->fetch_assoc();
         $stored_pw = $pw_row['password'];
-    
+
         if (password_verify($current_pw, $stored_pw)) {
-            if (!empty($new_pw)) {
-                $new_hashed_pw = password_hash($new_pw, PASSWORD_DEFAULT);
-            } else {
-                $new_hashed_pw = $stored_pw; // 비밀번호 변경 안 할 경우
-            }
-    
-            $update_sql = "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?";
-            $stmt = $conn->prepare($update_sql);
+            $new_hashed_pw = !empty($new_pw) ? password_hash($new_pw, PASSWORD_DEFAULT) : $stored_pw;
+
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?");
             $stmt->bind_param('sssi', $new_name, $new_email, $new_hashed_pw, $user_id);
-    
+
             if ($stmt->execute()) {
                 echo "<script>alert('회원 정보가 수정되었습니다.'); location.href='mypage.php';</script>";
                 exit;
             } else {
-                echo "<script>alert('수정 실패'); showTab('profile');</script>";
+                echo "<script>alert('수정 실패'); window.location.hash = '#profile'; location.reload();</script>";
+                exit;
             }
         } else {
-            echo "<script>alert('현재 비밀번호가 일치하지 않습니다.'); showTab('profile');</script>";
+            echo "<script>alert('현재 비밀번호가 일치하지 않습니다.'); window.location.hash = '#profile'; location.reload();</script>";
+            exit;
         }
-    }    
+    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -110,23 +101,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
     <div class="mypage-container">
         <div class="mypage-content">
             <aside class="sidebar">
-            <div class="user-info">
-                <div class="user-avatar"><i class="fas fa-user"></i></div>
-                <h3><?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?></h3> <!-- ✅ 적용 -->
-                <p><?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?></p>   <!-- ✅ 적용 -->
-            </div>
+                <div class="user-info">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <h3><?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?></h3>
+                    <p><?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?></p>
+                </div>
                 <ul class="sidebar-menu">
-                    <li><button onclick="showTab('orders')">주문 내역</button></li>
-                    <li><button onclick="showTab('reviews')">내가 쓴 리뷰</button></li>
-                    <li><button onclick="showTab('profile')">회원 정보 수정</button></li>
-                    <li><button onclick="location.href='withdraw.php'">회원 탈퇴</button></li>
+                    <li><a href="#orders" onclick="showTab('orders')">주문 내역</a></li>
+                    <li><a href="#reviews" onclick="showTab('reviews')">내가 쓴 리뷰</a></li>
+                    <li><a href="#profile" onclick="showTab('profile')">회원 정보 수정</a></li>
+                    <li><a href="withdraw.php">회원 탈퇴</a></li>
                 </ul>
             </aside>
 
             <div class="main-content">
                 <div id="orders" class="tab-content">
                     <h3>주문 내역</h3>
-                    <?php foreach ($orders as $order_id => $order): ?>
+                    <?php foreach ($orders as $order): ?>
                         <div class="order-item">
                             <div class="order-header">
                                 <span class="order-number">주문번호: <?= $order['order_seq'] ?></span>
@@ -135,20 +126,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                             <div class="order-details">
                                 <?php foreach ($order['items'] as $item): ?>
                                     <div class="order-product">
-                                        <img class="product-image" src="<?= $item['image_path'] ?>" alt="표지">
+                                        <img class="product-image" src="<?= htmlspecialchars($item['image_path']) ?>" alt="표지">
                                         <div class="product-info">
-                                        <div class="product-title">
-                                            <a href="../category/book_detail.php?id=<?= $item['book_id'] ?>">
-                                                <?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?> <!-- ✅ 적용 -->
-                                            </a>
-                                        </div>
-                                        <div class="product-author">
-                                            <?= htmlspecialchars($item['author'], ENT_QUOTES, 'UTF-8') ?>   <!-- ✅ 적용 -->
+                                            <div class="product-title">
+                                                <a href="../category/book_detail.php?id=<?= $item['book_id'] ?>">
+                                                    <?= htmlspecialchars($item['title'], ENT_QUOTES, 'UTF-8') ?>
+                                                </a>
+                                            </div>
+                                            <div class="product-author"><?= htmlspecialchars($item['author'], ENT_QUOTES, 'UTF-8') ?></div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            <div class="order-actions" style="text-align:right; margin-top:10px;">
+                            <div class="order-actions" style="text-align:right;">
                                 <a href="order_detail.php?token=<?= $order['token'] ?>">상세보기</a>
                             </div>
                         </div>
@@ -173,11 +163,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                     while ($review = $review_result->fetch_assoc()):
                     ?>
                         <div class="review-item">
-                            <img class="product-image" src="<?= $review['image_path'] ?>" alt="표지">
+                            <img class="product-image" src="<?= htmlspecialchars($review['image_path']) ?>" alt="표지">
                             <div class="review-content">
-                            <a href="../category/book_detail.php?id=<?= $review['book_id'] ?>">
-                                <?= htmlspecialchars($review['title'], ENT_QUOTES, 'UTF-8') ?> <!-- ✅ 적용 -->
-                            </a>
+                                <a href="../category/book_detail.php?id=<?= $review['book_id'] ?>">
+                                    <?= htmlspecialchars($review['title'], ENT_QUOTES, 'UTF-8') ?>
+                                </a>
                                 <div class="review-rating">
                                     <?= str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']) ?>
                                 </div>
@@ -206,8 +196,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
 <script>
 function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
+    const tab = document.getElementById(tabId);
+    if (tab) tab.style.display = 'block';
 }
+
+// 페이지 로드 시 해시 기반 탭 표시
+window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.substring(1);
+    if (hash === 'profile' || hash === 'reviews') {
+        showTab(hash);
+    } else {
+        showTab('orders'); // 기본 탭
+    }
+});
 </script>
 
 <?php require_once 'footer.php'; ?>
