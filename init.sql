@@ -12,14 +12,14 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100),
-    is_admin TINYINT(1) DEFAULT 0, -- ✅ 관리자 여부 컬럼 추가
+    is_admin TINYINT(1) DEFAULT 0,
     reset_token VARCHAR(255),
     reset_token_expiry DATETIME,
+    point INT NOT NULL DEFAULT 0, -- ✅ 보유 포인트 컬럼 추가
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-
--- 📘 2. books (도서 테이블 - 사용자 제공 init 기준)
+-- 📘 2. books (도서 테이블)
 CREATE TABLE books (
     id VARCHAR(50) NOT NULL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -44,22 +44,21 @@ CREATE TABLE cart (
 );
 
 -- 📦 4. orders (주문 테이블)
--- 📦 4. orders (주문 테이블)
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    order_seq INT NOT NULL,  -- ✅ 회원별 주문번호
+    order_seq INT NOT NULL,
     recipient VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
     address VARCHAR(255) NOT NULL,
     total_price INT NOT NULL,
     status ENUM('pending', 'paid', 'cancel') DEFAULT 'pending',
-    token VARCHAR(255) UNIQUE NULL,
+    payment_method ENUM('bank_transfer', 'point') DEFAULT 'bank_transfer',
+    used_point INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY uq_user_order_seq (user_id, order_seq)  -- ✅ 회원별 중복 방지
+    UNIQUE KEY uq_user_order_seq (user_id, order_seq)
 );
-
 
 -- 📦 5. order_items (주문 상세 테이블)
 CREATE TABLE order_items (
@@ -86,7 +85,7 @@ CREATE TABLE reviews (
     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
 ); 
 
--- 7. inquiries (문의글 테이블)
+-- 📩 7. inquiries (문의글 테이블)
 CREATE TABLE inquiries (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -99,7 +98,7 @@ CREATE TABLE inquiries (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 8. inquiries_images (문의글 이미지 테이블)
+-- 🖼️ 8. inquiries_images (문의글 이미지 테이블)
 CREATE TABLE inquiries_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     inquiry_id INT NOT NULL,

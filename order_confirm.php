@@ -4,24 +4,37 @@ require 'session_start.php';
 require 'header.php';
 
 $user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
-
 if ($user_id === 0) {
     die("로그인이 필요합니다.");
 }
 
-// SQL 인젝션 방지를 위해 prepared statement 사용
+// 장바구니 조회
 $stmt = $conn->prepare("
     SELECT c.*, b.title, b.price
     FROM cart c
     JOIN books b ON c.book_id = b.id
     WHERE c.user_id = ?
 ");
-
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $total_price = 0;
+$cart_items = [];
+while ($row = $result->fetch_assoc()) {
+    $row['item_total'] = $row['price'] * $row['quantity'];
+    $total_price += $row['item_total'];
+    $cart_items[] = $row;
+}
+$stmt->close();
+
+// 사용자 포인트 조회
+$stmt = $conn->prepare("SELECT point FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user_point = $user_result->fetch_assoc()['point'] ?? 0;
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -50,24 +63,23 @@ $total_price = 0;
           </tr>
         </thead>
         <tbody>
-          <?php while ($row = $result->fetch_assoc()):
-            $item_total = $row['price'] * $row['quantity'];
-            $total_price += $item_total;
-          ?>
+          <?php foreach ($cart_items as $row): ?>
           <tr>
             <td class="cart-product-info"><?= htmlspecialchars($row['title']) ?></td>
             <td><?= (int)$row['quantity'] ?></td>
-            <td><?= number_format($item_total) ?>원</td>
+            <td><?= number_format($row['item_total']) ?>원</td>
           </tr>
-          <?php endwhile; ?>
+          <?php endforeach; ?>
         </tbody>
       </table>
 
       <div class="cart-summary">
-        <span>총 결제 금액: <?= number_format($total_price) ?>원</span>
+        <span>총 결제 금액: <strong id="total-price"><?= number_format($total_price) ?></strong>원</span><br>
+        <span>보유 포인트: <strong id="user-point"><?= number_format($user_point) ?></strong>P</span><br>
+        <span id="point-warning" style="color:red; font-weight:bold;"></span>
       </div>
 
-      <form action="order_process.php" method="post" class="order-form">
+      <form action="order_process.php" method="post" class="order-form" id="order-form">
         <h3>배송 정보 입력</h3>
         <div class="form-group">
           <label for="recipient">수령인</label>
@@ -94,7 +106,7 @@ $total_price = 0;
           <input type="text" id="detailAddress" name="detail_address" placeholder="상세 주소" required>
         </div>
 
-        <button type="submit" class="checkout-btn">주문 확정</button>
+        <button type="submit" class="checkout-btn" id="checkout-btn">주문 확정</button>
       </form>
     </div>
   </main>
@@ -102,16 +114,19 @@ $total_price = 0;
 </body>
 </html>
 
-<!-- 카카오 주소 API 스크립트 -->
-<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-  function execDaumPostcode() {
-    new daum.Postcode({
-      oncomplete: function(data) {
-        document.getElementById('postcode').value = data.zonecode;
-        document.getElementById('roadAddress').value = data.roadAddress;
-        document.getElementById('jibunAddress').value = data.jibunAddress;
-      }
-    }).open();
-  }
+
+  // ✅ 포인트 부족시 주문 차단
+  window.addEventListener('DOMContentLoaded', () => {
+    const totalPrice = parseInt(document.getElementById('total-price').innerText.replace(/[^0-9]/g, ''));
+    const userPoint = parseInt(document.getElementById('user-point').innerText.replace(/[^0-9]/g, ''));
+    const warning = document.getElementById('point-warning');
+    const btn = document.getElementById('checkout-btn');
+
+    if (userPoint < totalPrice) {
+      warning.textContent = '⚠ 포인트가 부족합니다. 충전 후 주문해주세요.';
+      btn.disabled = true;
+      btn.style.opacity = 0.5;
+    }
+  });
 </script>

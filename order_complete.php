@@ -3,58 +3,28 @@ require_once 'connect.php';
 session_start();
 require_once 'header.php';
 
-// 1. token 가져오기
-$token = $_GET['token'] ?? null;
-
-// 토큰 유효성 검증 (통일된 형식 사용)
-if (!preg_match('/^[a-f0-9]{64}$/', $token)) {
-  die('잘못된 접근입니다.');
+// 로그인 여부 확인 (선택 사항)
+if (!isset($_SESSION['user_id'])) {
+    echo "<script>alert('로그인이 필요합니다.'); location.href='login.php';</script>";
+    exit;
 }
-
-$host = $_SERVER['HTTP_HOST'];
-$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$qr_url = "$scheme://$host/pay.php?token=" . urlencode($token);
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로그인 - 온라인 서점</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/auth.css">
-    <link rel="stylesheet" href="css/order_complete.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주문 완료 - 온라인 서점</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/order_complete.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<script>
-  // QR 결제 상태 체크 (3초마다)
-  const token = <?= json_encode($token) ?>;
-
-setInterval(() => {
-  fetch('check_status.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token: token })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.status === 'paid') {
-      alert('결제가 완료되었습니다!');
-      window.location.href = 'mypage.php';
-    }
-  });
-}, 3000);
-</script>
-
 <body>
   <div class="complete-container">
-    <h2>주문이 완료되었습니다!</h2>
-    <p>아래 QR 코드를 스캔해 결제를 완료해주세요.</p>
-    
-    <img src="generate_qr.php?data=<?= urlencode($qr_url) ?>" alt="QR 코드">
-    <br>
+    <h2>포인트 결제로 주문이 완료되었습니다!</h2>
+    <p>마이페이지에서 주문 내역을 확인하실 수 있습니다.</p>
     <a href="mypage.php" class="btn">마이페이지로 이동</a>
   </div>
 </body>

@@ -18,10 +18,11 @@ $address = "($postcode) $road $detail";
 $items = [];
 $total_price = 0;
 
+// 🔐 트랜잭션 시작
 $conn->begin_transaction();
 
 try {
-    // 장바구니 항목 불러오기
+    // 🛒 장바구니 항목 조회
     $stmt = $conn->prepare("SELECT c.book_id, c.quantity, b.price FROM cart c JOIN books b ON c.book_id = b.id WHERE c.user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
@@ -30,23 +31,21 @@ try {
         $book_id = $row['book_id'];
         $quantity = $row['quantity'];
         $price = $row['price'];
-
         $items[$book_id] = ['quantity' => $quantity, 'price' => $price];
         $total_price += $price * $quantity;
     }
     $stmt->close();
 
-    // 바로 구매 처리 (선택 사항)
+    // ➕ 직접 구매 추가 (직접구매 우선)
     if (isset($_POST['direct_buy'], $_POST['book_id'], $_POST['quantity'])) {
         $book_id = $_POST['book_id'];
         $quantity = intval($_POST['quantity']);
 
-        // 가격은 반드시 DB에서 다시 조회
-        $price_stmt = $conn->prepare("SELECT price FROM books WHERE id = ?");
-        $price_stmt->bind_param("s", $book_id);
-        $price_stmt->execute();
-        $price_result = $price_stmt->get_result();
-        if ($book = $price_result->fetch_assoc()) {
+        $stmt = $conn->prepare("SELECT price FROM books WHERE id = ?");
+        $stmt->bind_param("s", $book_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($book = $res->fetch_assoc()) {
             $price = $book['price'];
             if (isset($items[$book_id])) {
                 $items[$book_id]['quantity'] += $quantity;
@@ -55,35 +54,47 @@ try {
             }
             $total_price += $price * $quantity;
         }
-        $price_stmt->close();
+        $stmt->close();
     }
 
-    // 주문 번호(order_seq) 생성
+    if (empty($items)) {
+        throw new Exception("주문할 항목이 없습니다.");
+    }
+
+    // 💰 포인트 확인
+    $stmt = $conn->prepare("SELECT point FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $user = $res->fetch_assoc();
+    $stmt->close();
+
+    if (!$user || $user['point'] < $total_price) {
+        $conn->rollback();
+        echo "<script>alert('포인트가 부족합니다.'); history.back();</script>";
+        exit;
+    }
+
+    // 📦 주문번호 생성
     $stmt = $conn->prepare("SELECT MAX(order_seq) FROM orders WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($max_seq);
     $stmt->fetch();
     $stmt->close();
-
     $order_seq = ($max_seq ?? 0) + 1;
 
-    // 주문 저장
-    $stmt = $conn->prepare("INSERT INTO orders (user_id, order_seq, recipient, phone, address, total_price, created_at, status) VALUES (?, ?, ?, ?, ?, ?, NOW(), 'pending')");
-    $stmt->bind_param("iisssd", $user_id, $order_seq, $recipient, $phone, $address, $total_price);
+    // 📤 주문 테이블 저장
+    $stmt = $conn->prepare("
+        INSERT INTO orders (user_id, order_seq, recipient, phone, address, total_price, payment_method, used_point, status, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, 'point', ?, 'paid', NOW())
+    ");
+    $stmt->bind_param("iisssii", $user_id, $order_seq, $recipient, $phone, $address, $total_price, $total_price);
     $stmt->execute();
     $order_id = $stmt->insert_id;
     $stmt->close();
 
-    // 토큰 저장
-    $token = bin2hex(random_bytes(32));
-    echo "<script>console.log('Token generated: $token');</script>";
-    $stmt = $conn->prepare("UPDATE orders SET token = ? WHERE id = ?");
-    $stmt->bind_param("si", $token, $order_id);
-    $stmt->execute();
-    $stmt->close();
-
-    // 주문 상세 저장
+    // 🧾 주문 상세 저장
     $stmt = $conn->prepare("INSERT INTO order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)");
     foreach ($items as $book_id => $info) {
         $quantity = $info['quantity'];
@@ -93,15 +104,22 @@ try {
     }
     $stmt->close();
 
-    // 장바구니 비우기
+    // ➖ 포인트 차감
+    $stmt = $conn->prepare("UPDATE users SET point = point - ? WHERE id = ?");
+    $stmt->bind_param("ii", $total_price, $user_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // 🧹 장바구니 비우기 (직접구매인 경우도 포함)
     $stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->close();
 
     $conn->commit();
-    echo "<script>alert('주문이 완료되었습니다.'); location.href='order_complete.php?token=" . urlencode($token) . "';</script>";
+    echo "<script>alert('포인트 결제로 주문이 완료되었습니다.'); location.href='order_complete.php';</script>";
     exit;
+
 } catch (Exception $e) {
     $conn->rollback();
     error_log("주문 처리 실패: " . $e->getMessage());

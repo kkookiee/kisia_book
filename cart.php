@@ -56,14 +56,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
 
 // 2. 수량 변경 (취약하게)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
-    $cart_id = $_POST["cart_id"];
-    $quantity = $_POST["quantity"];
-    if ($quantity > 0) {
+    $cart_id = (int)$_POST["cart_id"];
+    $quantity = (int)$_POST["quantity"];
+
+    if ($quantity >= 1 && $quantity <= 99) {
         $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ?");
         $update_stmt->bind_param('ii', $quantity, $cart_id);
         $update_stmt->execute();
         $update_stmt->close();
+    } else {
+        echo "<script>alert('수량은 1~99 사이여야 합니다.'); history.back();</script>";
+        exit;
     }
+
     header("Location: cart.php");
     exit;
 }
@@ -143,7 +148,7 @@ $total_price = 0;
             <td class="cart-qty">
                 <form method="post" action="cart.php" class="inline-form">
                     <input type="hidden" name="cart_id" value="<?= htmlspecialchars($row['cart_id'], ENT_QUOTES, 'UTF-8') ?>">
-                    <input type="number" name="quantity" value="<?= htmlspecialchars($row['quantity'], ENT_QUOTES, 'UTF-8') ?>" min="1" max="99" />
+                    <input type="number" name="quantity" value="<?= htmlspecialchars($row['quantity'], ENT_QUOTES, 'UTF-8') ?>" min="1" max="99" required />
                     <button type="submit" name="update_quantity" class="cart-update-btn">변경</button>
                 </form>
             </td>

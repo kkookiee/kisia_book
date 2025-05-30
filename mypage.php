@@ -11,9 +11,10 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = $_SESSION['user_id'];
 $name = '';
 $email = '';
+$point = 0;
 
 // 사용자 정보 조회
-$stmt = $conn->prepare("SELECT name, email FROM users WHERE id = ?");
+$stmt = $conn->prepare("SELECT name, email, point FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -21,12 +22,13 @@ $result = $stmt->get_result();
 if ($user = $result->fetch_assoc()) {
     $name = $user['name'];
     $email = $user['email'];
+    $point = $user['point'];
 }
 $stmt->close();
 
-// 주문 내역 조회
+// 주문 내역 조회 (token 제거됨)
 $order_sql = "
-    SELECT o.id AS order_id, o.order_seq, o.token, o.created_at,
+    SELECT o.id AS order_id, o.order_seq, o.created_at,
            b.id AS book_id, b.title, b.author, b.price, b.image_path, oi.quantity
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
@@ -43,7 +45,6 @@ $orders = [];
 while ($row = $order_result->fetch_assoc()) {
     $orders[$row['order_id']]['created_at'] = $row['created_at'];
     $orders[$row['order_id']]['order_seq'] = $row['order_seq'];
-    $orders[$row['order_id']]['token'] = $row['token'];
     $orders[$row['order_id']]['items'][] = $row;
 }
 $stmt->close();
@@ -110,14 +111,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                     <li><a href="#orders" onclick="showTab('orders')">주문 내역</a></li>
                     <li><a href="#reviews" onclick="showTab('reviews')">내가 쓴 리뷰</a></li>
                     <li><a href="#profile" onclick="showTab('profile')">회원 정보 수정</a></li>
+                    <li><a href="#point" onclick="showTab('point')">포인트 관리</a></li>
                     <li><a href="withdraw.php">회원 탈퇴</a></li>
                 </ul>
             </aside>
 
             <div class="main-content">
+                <!-- 주문 내역 -->
                 <div id="orders" class="tab-content">
                     <h3>주문 내역</h3>
-                    <?php foreach ($orders as $order): ?>
+                    <?php foreach ($orders as $order_id => $order): ?>
                         <div class="order-item">
                             <div class="order-header">
                                 <span class="order-number">주문번호: <?= $order['order_seq'] ?></span>
@@ -139,12 +142,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                                 <?php endforeach; ?>
                             </div>
                             <div class="order-actions" style="text-align:right;">
-                                <a href="order_detail.php?token=<?= $order['token'] ?>">상세보기</a>
+                                <a href="order_detail.php?order_id=<?= $order_id ?>">상세보기</a>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
 
+                <!-- 내가 쓴 리뷰 -->
                 <div id="reviews" class="tab-content" style="display:none;">
                     <h3>내가 쓴 리뷰</h3>
                     <?php
@@ -178,6 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                     <?php endwhile; ?>
                 </div>
 
+                <!-- 회원 정보 수정 -->
                 <div id="profile" class="tab-content" style="display:none;">
                     <h3>회원 정보 수정</h3>
                     <form method="POST">
@@ -187,6 +192,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_profile"])) {
                         <label>새 비밀번호 (변경 시 입력):<br><input type="password" name="new_password"></label><br>
                         <button type="submit" name="update_profile" class="primary-btn">정보 수정</button>
                     </form>
+                </div>
+
+                <!-- 포인트 관리 -->
+                <div id="point" class="tab-content" style="display:none;">
+                    <h3>포인트 관리</h3>
+                    <div class="profile-form-container">
+                        <p><strong>현재 보유 포인트 :</strong> <?= htmlspecialchars(number_format($point), ENT_QUOTES, 'UTF-8') ?> P</p>
+                        <form action="./charge_point_action.php" method="post">
+                            <div class="mypage-form-group">
+                                <label for="charge_amount">충전할 포인트</label>
+                                <input type="number" name="point" id="point" step="100" min="0" required>
+                            </div>
+                            <button type="submit" class="save-btn">충전</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,13 +220,12 @@ function showTab(tabId) {
     if (tab) tab.style.display = 'block';
 }
 
-// 페이지 로드 시 해시 기반 탭 표시
 window.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash.substring(1);
-    if (hash === 'profile' || hash === 'reviews') {
+    if (['profile', 'reviews', 'point'].includes(hash)) {
         showTab(hash);
     } else {
-        showTab('orders'); // 기본 탭
+        showTab('orders');
     }
 });
 </script>
