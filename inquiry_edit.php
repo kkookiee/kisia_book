@@ -3,8 +3,8 @@ ob_start();
 require_once 'session_start.php';
 require_once 'connect.php';
 
-// ✅ 로그인 확인
-if (!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+// ✅ 로그인 확인 (is_login 대신 user_id 기준으로)
+if (!isset($_SESSION['user_id'])) {
     echo "<script>alert('로그인이 필요합니다.'); location.href='login.php';</script>";
     exit;
 }
@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>

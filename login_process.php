@@ -38,6 +38,8 @@ if ($user = $result->fetch_assoc()) {
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['is_admin'] = $user['is_admin'];
+        $_SESSION['is_login'] = true; // ✅ 추가 필요
+
 
         // 관리자 여부 분기
         $redirect = $user['is_admin'] ? "admin_dashboard.php" : "index.php";
