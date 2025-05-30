@@ -2,10 +2,11 @@
 session_start();
 require_once 'connect.php';
 
-// ✅ 관리자 인증 확인
+// ✅ 관리자 인증 확인 먼저!
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
-    http_response_code(403);
-    exit('접근 권한이 없습니다.');
+  // 404 페이지로 리다이렉트
+  header("Location: /404.php");
+  exit();
 }
 
 // ✅ SQL 에러 노출 제거 (운영 환경에서는 로그만 남기도록 설정)
