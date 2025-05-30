@@ -1,5 +1,5 @@
 <?php
-ob_start(); // 출력 버퍼링 시작 (header 에러 방지)
+ob_start(); // 출력 버퍼링 시작
 
 include 'session_start.php';
 include 'connect.php';
@@ -13,14 +13,10 @@ if (!$user_id) {
     exit;
 }
 
-// 1. 장바구니 추가 또는 바로 구매 처리
-$buy_now = isset($_POST['buy_now']) && $_POST['buy_now'] == '1';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset($_POST['cart_id'])) {
     $book_id = $_POST['book_id'];
     $quantity = $_POST['quantity'] ?? 1;
 
-    // 중복 확인 (취약하게)
     $check_stmt = $conn->prepare("SELECT * FROM cart WHERE user_id = ? AND book_id = ?");
     $check_stmt->bind_param('is', $user_id, $book_id);
     $check_stmt->execute();
@@ -30,10 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
         $existing = $check_result->fetch_assoc();
         $new_qty = $existing['quantity'] + $quantity;
 
-        // 예시: 수량 변경 처리 시
+        $cart_id = $existing['id']; // cart_id 추출
+
         $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
-        $update_stmt->bind_param("iii", $quantity, $cart_id, $user_id);
-        $update_stme->execute();
+        $update_stmt->bind_param("iii", $new_qty, $cart_id, $user_id);
+        $update_stmt->execute();
         $update_stmt->close();
     } else {
         $insert_stmt = $conn->prepare("INSERT INTO cart (user_id, book_id, quantity) VALUES (?, ?, ?)");
@@ -44,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
 
     $check_stmt->close();
 
-    // 바로 구매인 경우
     if ($buy_now) {
         header("Location: order_confirm.php?book_id=" . urlencode($book_id) . "&quantity=" . urlencode($quantity));
         exit;
@@ -54,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['book_id']) && !isset(
     exit;
 }
 
-// 2. 수량 변경 (취약하게)
+// 수량 변경 (보안 강화: user_id 확인)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
     $cart_id = (int)$_POST["cart_id"];
     $quantity = (int)$_POST["quantity"];
 
     if ($quantity >= 1 && $quantity <= 99) {
-        $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ?");
-        $update_stmt->bind_param('ii', $quantity, $cart_id);
+        $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
+        $update_stmt->bind_param('iii', $quantity, $cart_id, $user_id);
         $update_stmt->execute();
         $update_stmt->close();
     } else {
@@ -73,18 +69,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_quantity"])) {
     exit;
 }
 
-// 3. 항목 삭제 (취약하게)
+// 항목 삭제 (보안 강화: user_id 확인)
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["delete_item"])) {
-    $cart_id = $_POST["cart_id"];
-    $delete_stmt = $conn->prepare("DELETE FROM cart WHERE id = ?");
-    $delete_stmt->bind_param('i', $cart_id);
+    $cart_id = (int)$_POST["cart_id"];
+    $delete_stmt = $conn->prepare("DELETE FROM cart WHERE id = ? AND user_id = ?");
+    $delete_stmt->bind_param('ii', $cart_id, $user_id);
     $delete_stmt->execute();
     $delete_stmt->close();
     header("Location: cart.php");
     exit;
 }
 
-// 4. 장바구니 조회 (취약하게)
+// 장바구니 조회
 $stmt = $conn->prepare("
     SELECT 
         c.id AS cart_id,
@@ -104,7 +100,6 @@ $result = $stmt->get_result();
 
 $total_price = 0;
 ?>
-
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -136,46 +131,45 @@ $total_price = 0;
             ?>
             <tr>
                 <td class="cart-product-info">
-                <img src="<?= htmlspecialchars($row['image_path'], ENT_NOQUOTES, 'UTF-8') ?>" alt="도서 이미지" class="cart-thumb">
+                    <img src="<?= htmlspecialchars($row['image_path'], ENT_NOQUOTES, 'UTF-8') ?>" alt="도서 이미지" class="cart-thumb">
                     <div class="cart-info-detail">
-                    <span class="cart-title">[도서] <?= htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') ?></span>
-                    <div class="cart-meta">
-                        <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
-                        <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
+                        <span class="cart-title">[도서] <?= htmlspecialchars($row['title'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <div class="cart-meta">
+                            <span class="cart-price-sale"><?= number_format($row['price']) ?>원</span>
+                            <span class="cart-point"><?= number_format($row['price'] * 0.05) ?>포인트</span>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td class="cart-qty">
-                <form method="post" action="cart.php" class="inline-form">
-                    <input type="hidden" name="cart_id" value="<?= htmlspecialchars($row['cart_id'], ENT_QUOTES, 'UTF-8') ?>">
-                    <input type="number" name="quantity" value="<?= htmlspecialchars($row['quantity'], ENT_QUOTES, 'UTF-8') ?>" min="1" max="99" required />
-                    <button type="submit" name="update_quantity" class="cart-update-btn">변경</button>
-                </form>
-            </td>
-            <td class="cart-sum">
-                <span><?= number_format($item_total) ?>원</span>
-                <form method="post" action="cart.php" class="inline-form">
-                    <input type="hidden" name="cart_id" value="<?= htmlspecialchars($row['cart_id'], ENT_QUOTES, 'UTF-8') ?>">
-                    <button type="submit" name="delete_item" class="cart-delete-btn">삭제</button>
-                </form>
-            </td>
+                </td>
+                <td class="cart-qty">
+                    <form method="post" action="cart.php" class="inline-form">
+                        <input type="hidden" name="cart_id" value="<?= htmlspecialchars($row['cart_id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <input type="number" name="quantity" value="<?= htmlspecialchars($row['quantity'], ENT_QUOTES, 'UTF-8') ?>" min="1" max="99" required />
+                        <button type="submit" name="update_quantity" class="cart-update-btn">변경</button>
+                    </form>
+                </td>
+                <td class="cart-sum">
+                    <span><?= number_format($item_total) ?>원</span>
+                    <form method="post" action="cart.php" class="inline-form">
+                        <input type="hidden" name="cart_id" value="<?= htmlspecialchars($row['cart_id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <button type="submit" name="delete_item" class="cart-delete-btn">삭제</button>
+                    </form>
+                </td>
             </tr>
             <?php endwhile; ?>
             </tbody>
         </table>
 
-            <div class="cart-summary">
-                <div class="summary-item total">
-                    <span>총 결제 금액</span>
-                    <span><?= number_format($total_price) ?>원</span>
-                </div>
-                <form action="order_confirm.php" method="post">
-                    <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
-                </form>
+        <div class="cart-summary">
+            <div class="summary-item total">
+                <span>총 결제 금액</span>
+                <span><?= number_format($total_price) ?>원</span>
             </div>
+            <form action="order_confirm.php" method="post">
+                <button type="submit" name="order_submit" class="checkout-btn">주문하기</button>
+            </form>
         </div>
-    </main>
-
-    <?php require_once 'footer.php'; ?>
+    </div>
+</main>
+<?php require_once 'footer.php'; ?>
 </body>
 </html>
