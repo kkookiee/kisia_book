@@ -1,0 +1,291 @@
+.book-detail-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+.book-info {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.book-image {
+  flex: 0 0 300px;
+}
+
+.book-image img {
+  width: 100%;
+  height: 390px;
+  border-radius: 0px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.book-details {
+  flex: 1;
+}
+
+.book-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.book-author {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.book-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+.book-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.action-button {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.cart-btn { background: #2376c7; color: #fff; }
+.buy-btn { background: #1abc9c; color: #fff; }
+.wish-btn { background: #fff; color: #222; border: 1px solid #ddd; }
+
+.cart-btn:hover { background: #0056a3; }
+.buy-btn:hover { background: #159c8a; }
+.wish-btn:hover { background: #f5f5f5; }
+
+.book-description {
+  margin-top: 40px;
+}
+
+.book-description h3 {
+  margin-bottom: 15px;
+}
+
+.book-description p {
+  line-height: 1.6;
+  color: #444;
+}
+
+.reviews-section {
+  margin-top: 40px;
+}
+
+.review-form {
+  margin-bottom: 30px;
+}
+
+.review-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  min-height: 100px;
+}
+
+.review-item {
+  border-bottom: 1px solid #eee;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.review-content-wrapper {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.description-image {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.review-content-wrapper img {
+  width: 200px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-info {
+  flex: 1;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.review-author {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.review-date {
+  color: #666;
+}
+
+.review-rating {
+  margin: 10px 0;
+}
+
+.review-rating .star {
+  color: #ffd700;
+  font-size: 1.2rem;
+}
+
+.review-content {
+  line-height: 1.6;
+  color: #444;
+  margin-top: 15px;
+}
+
+.book-meta span {
+  display: inline-block;
+  margin-right: 18px;
+  color: #666;
+  font-size: 1rem;
+}
+
+.discount-price {
+  color: #e74c3c;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.original-price {
+  color: #aaa;
+  text-decoration: line-through;
+  margin-right: 6px;
+}
+
+.discount-rate {
+  color: #2376c7;
+  margin-right: 6px;
+}
+
+.book-detail-tabs {
+  margin-top: 32px;
+  border-bottom: 2px solid #eee;
+  display: flex;
+  gap: 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  padding: 12px 24px;
+  cursor: pointer;
+  color: #2376c7;
+  font-weight: 600;
+}
+
+.tab-btn.active {
+  border-bottom: 3px solid #2376c7;
+  color: #222;
+}
+
+.tab-content {
+  display: none;
+  padding: 20px 0;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.tab-content img {
+  max-width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.review-list {
+  margin-top: 20px;
+}
+
+.starGrp {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.starGrp a {
+  text-decoration: none;
+  color: #ddd;
+  font-size: 24px;
+  margin-right: 2px;
+}
+
+.starGrp a em {
+  font-style: normal;
+}
+
+.starGrp a em.rating_on {
+  color: #0056b3;
+}
+
+.improved-review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.improved-review-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.improved-review-form .ipt_msg {
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+  margin-top: 5px;
+}
+
+.review-submit-btn {
+  align-self: flex-end;
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.review-submit-btn:hover {
+  background-color: #0056b3;
+}

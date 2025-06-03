@@ -1,0 +1,56 @@
+/* css/complete.css */
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f7f9fc;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .complete-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .complete-container h2 {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  .complete-container p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .complete-container img {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+  
+  .btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #2980b9;
+  }
+  
